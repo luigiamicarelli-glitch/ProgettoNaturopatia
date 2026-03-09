@@ -1417,6 +1417,64 @@ function Lock({T,form,setForm,error,onSubmit,onChangeLang}) {
   );
 }
 
+// ═══════════════════════════════════════════════════════════════
+// MODULO ANALISI EMATICHE — dati e logica pura (no AI)
+// ═══════════════════════════════════════════════════════════════
+const HEMO_STATUS = {
+  "empty":         { color:"var(--nm-text-dimmer)", badge:"—",   bg:"transparent" },
+  "normal":        { color:"#4aaa4a",               badge:"✓",   bg:"transparent" },
+  "low":           { color:"#c8940a",               badge:"↓",   bg:"rgba(200,148,10,0.07)" },
+  "high":          { color:"#c8940a",               badge:"↑",   bg:"rgba(200,148,10,0.07)" },
+  "critical-low":  { color:"#cc5555",               badge:"↓↓",  bg:"rgba(200,80,80,0.10)" },
+  "critical-high": { color:"#cc5555",               badge:"↑↑",  bg:"rgba(200,80,80,0.10)" },
+};
+
+function getParamStatus(p) {
+  const v = parseFloat(p.value);
+  if (isNaN(v) || p.value === "") return "empty";
+  const margin = (p.refMax - p.refMin) * 0.25;
+  if (v < p.refMin - margin) return "critical-low";
+  if (v > p.refMax + margin) return "critical-high";
+  if (v < p.refMin) return "low";
+  if (v > p.refMax) return "high";
+  return "normal";
+}
+
+const DEFAULT_HEMO_PARAMS = [
+  {id:"hgb",    label:"Emoglobina",          value:"", unit:"g/dL",    refMin:12.0, refMax:17.5, cat:"Emocromo"},
+  {id:"hct",    label:"Ematocrito",           value:"", unit:"%",       refMin:36,   refMax:52,   cat:"Emocromo"},
+  {id:"rbc",    label:"Globuli Rossi",        value:"", unit:"M/µL",    refMin:3.8,  refMax:5.8,  cat:"Emocromo"},
+  {id:"wbc",    label:"Globuli Bianchi",      value:"", unit:"K/µL",    refMin:4.0,  refMax:10.0, cat:"Emocromo"},
+  {id:"plt",    label:"Piastrine",            value:"", unit:"K/µL",    refMin:150,  refMax:400,  cat:"Emocromo"},
+  {id:"mcv",    label:"MCV",                  value:"", unit:"fL",      refMin:80,   refMax:100,  cat:"Emocromo"},
+  {id:"ferr",   label:"Ferritina",            value:"", unit:"µg/L",    refMin:12,   refMax:200,  cat:"Ferro"},
+  {id:"fe",     label:"Ferro Sierico",        value:"", unit:"µg/dL",   refMin:60,   refMax:170,  cat:"Ferro"},
+  {id:"tf",     label:"Transferrina",         value:"", unit:"mg/dL",   refMin:200,  refMax:360,  cat:"Ferro"},
+  {id:"pcr",    label:"PCR",                  value:"", unit:"mg/L",    refMin:0,    refMax:5,    cat:"Infiammazione"},
+  {id:"ves",    label:"VES",                  value:"", unit:"mm/h",    refMin:0,    refMax:20,   cat:"Infiammazione"},
+  {id:"fibr",   label:"Fibrinogeno",          value:"", unit:"mg/dL",   refMin:200,  refMax:400,  cat:"Infiammazione"},
+  {id:"chol",   label:"Colesterolo Tot.",     value:"", unit:"mg/dL",   refMin:0,    refMax:200,  cat:"Lipidi"},
+  {id:"hdl",    label:"HDL",                  value:"", unit:"mg/dL",   refMin:40,   refMax:99,   cat:"Lipidi"},
+  {id:"ldl",    label:"LDL",                  value:"", unit:"mg/dL",   refMin:0,    refMax:130,  cat:"Lipidi"},
+  {id:"trig",   label:"Trigliceridi",         value:"", unit:"mg/dL",   refMin:0,    refMax:150,  cat:"Lipidi"},
+  {id:"glic",   label:"Glicemia",             value:"", unit:"mg/dL",   refMin:70,   refMax:100,  cat:"Glicemia"},
+  {id:"hba1c",  label:"HbA1c",                value:"", unit:"%",       refMin:0,    refMax:5.7,  cat:"Glicemia"},
+  {id:"ins",    label:"Insulina",             value:"", unit:"µUI/mL",  refMin:2,    refMax:25,   cat:"Glicemia"},
+  {id:"alt",    label:"ALT (GPT)",            value:"", unit:"U/L",     refMin:0,    refMax:40,   cat:"Fegato"},
+  {id:"ast",    label:"AST (GOT)",            value:"", unit:"U/L",     refMin:0,    refMax:40,   cat:"Fegato"},
+  {id:"ggt",    label:"GGT",                  value:"", unit:"U/L",     refMin:0,    refMax:55,   cat:"Fegato"},
+  {id:"crea",   label:"Creatinina",           value:"", unit:"mg/dL",   refMin:0.6,  refMax:1.2,  cat:"Rene"},
+  {id:"urea",   label:"Urea",                 value:"", unit:"mg/dL",   refMin:15,   refMax:45,   cat:"Rene"},
+  {id:"tsh",    label:"TSH",                  value:"", unit:"µUI/mL",  refMin:0.4,  refMax:4.0,  cat:"Tiroide"},
+  {id:"ft4",    label:"FT4",                  value:"", unit:"ng/dL",   refMin:0.8,  refMax:1.8,  cat:"Tiroide"},
+  {id:"ft3",    label:"FT3",                  value:"", unit:"pg/mL",   refMin:2.3,  refMax:4.2,  cat:"Tiroide"},
+  {id:"vitd",   label:"Vitamina D (25-OH)",   value:"", unit:"ng/mL",   refMin:30,   refMax:100,  cat:"Micronutrienti"},
+  {id:"b12",    label:"Vitamina B12",         value:"", unit:"pg/mL",   refMin:200,  refMax:900,  cat:"Micronutrienti"},
+  {id:"folati", label:"Folati",               value:"", unit:"ng/mL",   refMin:3,    refMax:20,   cat:"Micronutrienti"},
+  {id:"mg",     label:"Magnesio",             value:"", unit:"mg/dL",   refMin:1.7,  refMax:2.4,  cat:"Micronutrienti"},
+  {id:"zn",     label:"Zinco",                value:"", unit:"µg/dL",   refMin:70,   refMax:120,  cat:"Micronutrienti"},
+];
+
 function NaturopatiaAI() {
   // ── THEME + LANGUAGE STATE ──────────────────────────────────
   const [theme, setTheme] = useState(() => getSavedTheme());
@@ -1503,6 +1561,15 @@ function NaturopatiaAI() {
   const [docEdit, setDocEdit] = useState(null);
   const [docNewForm, setDocNewForm] = useState({doc_type:"disclaimer",title:"",content:"",version:"1.0"});
   const [showNewDoc, setShowNewDoc] = useState(false);
+
+  // Analisi Ematiche
+  const [hemoParams, setHemoParams] = useState(DEFAULT_HEMO_PARAMS);
+  const [hemoMsgs, setHemoMsgs] = useState([]);
+  const [hemoInput, setHemoInput] = useState("");
+  const [hemoLoading, setHemoLoading] = useState(false);
+  const [hemoPatient, setHemoPatient] = useState("");
+  const [hemoVerified, setHemoVerified] = useState(false);
+  const [hemoCats, setHemoCats] = useState({}); // {catName: bool} — true=aperta
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -2476,6 +2543,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
     {id:"kb",icon:"◉",label:T.nav_kb},
     {id:"kb_add",icon:"⊕",label:T.nav_kb_add},
     {id:"patients",icon:"♦",label:T.nav_patients},
+    {id:"hemo",icon:"🩸",label:"Analisi Ematiche"},
     {id:"referti",icon:"▣",label:T.nav_reports},
     {id:"documents",icon:"☰",label:T.nav_docs},
     ...(_optionalChain([currentUser, 'optionalAccess', _56 => _56.role])==="admin"?[{id:"admin",icon:"⚙",label:T.nav_admin}]:[]),
@@ -3189,6 +3257,199 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 )
               )
               , settingsMsg && React.createElement('div', { style: {color:"var(--nm-accent)",fontSize:11,marginTop:8,padding:"8px 12px",background:"var(--nm-nav-active)",borderRadius:8,border:"1px solid var(--nm-border)"},}, settingsMsg)
+            )
+          )
+        )
+
+        /* ── ANALISI EMATICHE ── */
+        , panel==="hemo" && React.createElement(React.Fragment, null
+          , React.createElement(PanelHeader, {title:"Analisi Ematiche", sub:"Human-in-the-Loop — verifica obbligatoria prima del consulto AI"})
+          , React.createElement('div', {style:{flex:1,display:"flex",overflow:"hidden"}}
+
+            /* ── GRIGLIA PARAMETRI (sinistra) ── */
+            , React.createElement('div', {style:{width:"42%",minWidth:300,display:"flex",flexDirection:"column",
+              borderRight:"1px solid var(--nm-border)",overflowY:"auto",padding:"14px 12px 24px 18px",gap:6}}
+
+              /* Pulsante PDF — stub visivo, logica AI futura */
+              , React.createElement('button', {disabled:true,
+                title:"Funzionalità futura: l'AI estrarrà i valori dal PDF e li inietterà nei campi — tu li verificherai prima del consulto",
+                style:{padding:"9px 12px",borderRadius:8,border:"1px dashed var(--nm-border2)",
+                  background:"transparent",color:"var(--nm-text-dimmer)",cursor:"not-allowed",
+                  fontSize:11,fontFamily:"'DM Mono',monospace",textAlign:"left",letterSpacing:"0.3px",marginBottom:2}}
+                , "📄 Carica Referto PDF  — pre-compilazione AI (in arrivo)"
+              )
+
+              /* Paziente + Reset */
+              , React.createElement('div', {style:{display:"flex",gap:8,alignItems:"center"}}
+                , React.createElement('select', {value:hemoPatient, onChange:e=>setHemoPatient(e.target.value),
+                  style:{flex:1,background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                    padding:"6px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
+                  , React.createElement('option',{value:""},"— Paziente (opzionale) —")
+                  , patients.map(p=>React.createElement('option',{key:p.id,value:p.patient_code},p.patient_code))
+                )
+                , React.createElement(Btn, {variant:"secondary",style:{padding:"5px 10px",fontSize:10,flexShrink:0},
+                  onClick:()=>{setHemoParams(DEFAULT_HEMO_PARAMS.map(p=>({...p,value:""}))); setHemoVerified(false);}}
+                  , "Reset"
+                )
+              )
+
+              /* Intestazione colonne */
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px 50px 28px",
+                gap:6,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
+                , ["Parametro","Valore","Unità",""].map(h=>React.createElement('span',{key:h,
+                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
+              )
+
+              /* Sezioni per categoria — collassabili */
+              , ...Object.entries(
+                  hemoParams.reduce((acc,p)=>{(acc[p.cat]=acc[p.cat]||[]).push(p);return acc;},{})
+                ).map(([cat,catParams])=>{
+                  const isOpen = hemoCats[cat] !== false;
+                  const altCount = catParams.filter(p=>{const s=getParamStatus(p);return s!=="normal"&&s!=="empty";}).length;
+                  return React.createElement('div',{key:cat,style:{marginBottom:2}}
+                    /* Header categoria */
+                    , React.createElement('button',{
+                      onClick:()=>setHemoCats(prev=>({...prev,[cat]:!isOpen})),
+                      style:{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",
+                        padding:"5px 8px",cursor:"pointer",background:"var(--nm-bg2)",
+                        border:"1px solid var(--nm-border)",borderRadius:6,
+                        color:"var(--nm-text-head)",fontSize:10,fontFamily:"'DM Mono',monospace",
+                        letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:isOpen?2:0}}
+                      , React.createElement('span',null, isOpen?"▾ ":"▸ ", cat)
+                      , altCount>0&&React.createElement('span',{style:{fontSize:9,background:"#200a0a",
+                        color:"#cc5555",border:"1px solid #5a1a1a",borderRadius:10,padding:"1px 6px"}}
+                        , altCount," alt.")
+                    )
+                    /* Righe parametri */
+                    , isOpen && catParams.map(p=>{
+                      const s = getParamStatus(p);
+                      const sc = HEMO_STATUS[s];
+                      return React.createElement('div',{key:p.id,
+                        style:{display:"grid",gridTemplateColumns:"1fr 80px 50px 28px",
+                          gap:6,alignItems:"center",padding:"3px 8px",borderRadius:5,
+                          background:sc.bg,transition:"background 0.15s"}}
+                        /* Label */
+                        , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)",
+                          overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},title:p.label}, p.label)
+                        /* Input numerico — UNICO metodo di inserimento */
+                        , React.createElement('input',{type:"number",value:p.value,step:"any",placeholder:"—",
+                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,value:e.target.value}:x)),
+                          style:{background:"var(--nm-bg3)",
+                            border:`1px solid ${s==="normal"||s==="empty"?"var(--nm-border2)":sc.color}`,
+                            borderRadius:6,padding:"3px 6px",color:sc.color,fontSize:12,
+                            fontFamily:"'DM Mono',monospace",textAlign:"right",width:"100%",
+                            outline:"none",transition:"border-color 0.2s"}})
+                        /* Unità */
+                        , React.createElement('span',{style:{fontSize:9,color:"var(--nm-text-dim)",
+                          overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"},title:p.unit}, p.unit)
+                        /* Badge stato */
+                        , React.createElement('span',{style:{fontSize:10,fontWeight:600,
+                          color:sc.color,textAlign:"center",fontFamily:"'DM Mono',monospace"}}, sc.badge)
+                      );
+                    })
+                  );
+                })
+
+              /* ── CHECKBOX DI SICUREZZA (Human-in-the-Loop) ── */
+              , React.createElement('label',{style:{display:"flex",alignItems:"flex-start",gap:10,marginTop:14,
+                padding:"12px 14px",borderRadius:8,cursor:"pointer",transition:"all 0.25s",
+                background:hemoVerified?"#0d200d":"rgba(200,60,60,0.07)",
+                border:`2px solid ${hemoVerified?"#2a5a2a":"#7a2a2a"}`}}
+                , React.createElement('input',{type:"checkbox",checked:hemoVerified,
+                  onChange:e=>setHemoVerified(e.target.checked),
+                  style:{marginTop:3,width:15,height:15,cursor:"pointer",accentColor:"#4aaa4a",flexShrink:0}})
+                , React.createElement('span',{style:{fontSize:11,lineHeight:1.6,fontWeight:500,
+                  color:hemoVerified?"#6aaa6a":"#cc6666"}}
+                  , "⚠ Confermo di aver verificato l'esattezza di tutti i valori numerici e dei range di riferimento prima di avviare il consulto AI."
+                )
+              )
+
+              /* ── PULSANTE AVVIA — bloccato senza checkbox ── */
+              , React.createElement('button',{
+                disabled:!hemoVerified||hemoParams.filter(p=>p.value!=="").length===0,
+                onClick:()=>{/* startHemoConsult — logica AI futura */},
+                style:{padding:"11px 16px",borderRadius:8,fontSize:12,fontFamily:"'DM Mono',monospace",
+                  width:"100%",letterSpacing:"0.3px",marginTop:6,transition:"all 0.25s",
+                  background:hemoVerified?"var(--nm-btn-bg)":"transparent",
+                  border:`1px solid ${hemoVerified?"var(--nm-btn-border)":"#3a3a3a"}`,
+                  color:hemoVerified?"var(--nm-accent)":"var(--nm-text-dimmer)",
+                  cursor:hemoVerified&&hemoParams.filter(p=>p.value!=="").length>0?"pointer":"not-allowed"}}
+                , hemoVerified
+                  ? "🔬 Avvia Consulto Ematoclinico"
+                  : "🔒 Verifica i dati per sbloccare il consulto"
+              )
+            )
+
+            /* ── CHAT CONSULTO (destra) ── */
+            , React.createElement('div',{style:{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}
+              /* Area messaggi */
+              , React.createElement('div',{style:{flex:1,overflowY:"auto",padding:"28px 28px 14px",
+                display:"flex",flexDirection:"column",gap:14}}
+                , hemoMsgs.length===0&&React.createElement('div',{style:{color:"var(--nm-text-dimmer)",
+                  fontSize:12,textAlign:"center",lineHeight:2.2,maxWidth:340,
+                  margin:"auto",padding:"40px 0"}}
+                  , React.createElement('div',{style:{fontSize:32,marginBottom:16,opacity:0.25}},"🩸")
+                  , "Inserisci i valori nella griglia."
+                  , React.createElement('br',null)
+                  , "Verifica la checkbox di sicurezza,"
+                  , React.createElement('br',null)
+                  , "poi premi "
+                  , React.createElement('em',null,"Avvia Consulto")
+                  , " per l'analisi sistematica."
+                )
+                , hemoMsgs.map((msg,i)=>React.createElement('div',{key:i,
+                  style:{display:"flex",gap:10,alignItems:"flex-start",
+                    justifyContent:msg.role==="user"?"flex-end":"flex-start"}}
+                  , msg.role==="assistant"&&React.createElement('div',{style:{width:34,height:34,
+                    borderRadius:"50%",background:"#0f1e2e",border:"1px solid #1a3a4a",
+                    display:"flex",alignItems:"center",justifyContent:"center",
+                    fontSize:16,flexShrink:0,marginTop:2}},"🩸")
+                  , React.createElement('div',{style:{maxWidth:"75%",
+                    background:msg.role==="user"?"var(--nm-user-msg)":"var(--nm-bg2)",
+                    border:`1px solid ${msg.role==="user"?"var(--nm-user-border)":"var(--nm-border)"}`,
+                    borderRadius:msg.role==="user"?"16px 4px 16px 16px":"4px 16px 16px 16px",
+                    padding:"12px 16px",fontSize:13,lineHeight:1.7,
+                    color:msg.role==="user"?"var(--nm-user-text)":"var(--nm-text)",
+                    whiteSpace:"pre-wrap"}}
+                    , msg.content
+                  )
+                ))
+                , hemoLoading&&React.createElement('div',{style:{display:"flex",alignItems:"center",
+                  gap:6,color:"var(--nm-text-dim)",fontSize:12,padding:"4px 0"}}
+                  , React.createElement('span',{style:{display:"flex",gap:3}}
+                    , [0,1,2].map(i=>React.createElement('span',{key:i,style:{animation:"blink 1.4s infinite",
+                      animationDelay:`${i*0.2}s`,fontSize:8,color:"var(--nm-accent)"}},"●"))
+                  )
+                  ," Analisi in corso..."
+                )
+              )
+              /* Input area — opacizzata e disabilitata senza verifica */
+              , React.createElement('div',{style:{padding:"12px 20px 18px",
+                borderTop:"1px solid var(--nm-border)",
+                opacity:hemoVerified?1:0.38,transition:"opacity 0.3s",
+                pointerEvents:hemoVerified?"auto":"none"}}
+                , !hemoVerified&&React.createElement('div',{style:{textAlign:"center",fontSize:10,
+                  color:"#cc6666",marginBottom:8,letterSpacing:"0.3px"}}
+                  , "🔒  Spunta la checkbox di verifica per abilitare il consulto"
+                )
+                , React.createElement('div',{style:{display:"flex",gap:10,alignItems:"flex-end"}}
+                  , React.createElement('textarea',{value:hemoInput,
+                    onChange:e=>setHemoInput(e.target.value),
+                    onKeyDown:e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();}},
+                    placeholder:"Chiedi un approfondimento su un pattern specifico...",
+                    rows:2,
+                    style:{flex:1,resize:"none",background:"var(--nm-bg3)",
+                      border:"1px solid var(--nm-border2)",borderRadius:8,
+                      padding:"10px 12px",color:"var(--nm-text)",fontSize:12,
+                      fontFamily:"'DM Mono',monospace",outline:"none"}})
+                  , React.createElement(Btn,{
+                    disabled:!hemoVerified||!hemoInput.trim()||hemoLoading,
+                    onClick:()=>{/* sendHemoChat — logica AI futura */},
+                    style:{padding:"10px 16px"}}
+                    ,"Invia"
+                  )
+                )
+              )
             )
           )
         )
