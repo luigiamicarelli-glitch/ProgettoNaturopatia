@@ -13,6 +13,7 @@
     select option{background:var(--nm-bg3,#0f1f0f)}
     input::placeholder,textarea::placeholder{color:var(--nm-placeholder,#3a5a3a);opacity:1}
     button:hover:not(:disabled){filter:brightness(1.08)}
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--nm-accent,#6aaa6a);outline-offset:2px;border-radius:4px}
   </style>
 </head><body>
   <div id="root"></div>
@@ -1513,6 +1514,8 @@ function NaturopatiaAI() {
   const [profileForm, setProfileForm] = useState({name:"",address:"",phone:"",email:"",piva:"",albo_number:""});
   const [settingsMsg, setSettingsMsg] = useState("");
 
+  const [saveStatus, setSaveStatus] = useState(null); // null | "saving" | "saved"
+
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileKbRef = useRef(null);
@@ -1641,7 +1644,12 @@ function NaturopatiaAI() {
   // ── AUTO-SAVE: persiste la sessione 30s dopo l'ultimo messaggio ───────────
   useEffect(() => {
     if(messages.length<=1||screen!=="app"||!currentUser) return;
-    const t = setTimeout(()=>saveSession(), 30000);
+    const t = setTimeout(async ()=>{
+      setSaveStatus("saving");
+      await saveSession();
+      setSaveStatus("saved");
+      setTimeout(()=>setSaveStatus(null), 3000);
+    }, 30000);
     return ()=>clearTimeout(t);
   }, [messages]);
 
@@ -1943,6 +1951,7 @@ function NaturopatiaAI() {
   };
 
   const delKB = async id => {
+    if(!window.confirm("Eliminare questa voce dalla Banca Dati?")) return;
     await sb(`nm_knowledge_base?id=eq.${id}`,"DELETE");
     setKb(prev=>prev.filter(e=>e.id!==id));
   };
@@ -2355,6 +2364,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
     setDocNewForm({doc_type:"disclaimer",title:"",content:"",version:"1.0"});
   };
   const delDoc = async id => {
+    if(!window.confirm("Eliminare questo documento?")) return;
     await sb(`nm_documents?id=eq.${id}`,"DELETE");
     setDocuments(prev=>prev.filter(x=>x.id!==id));
   };
@@ -2546,6 +2556,9 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               , React.createElement(Btn, { onClick: saveSession, variant: "secondary", disabled: messages.length<=1||sessionSaved, style: {padding:"7px 12px"},}
                 , sessionSaved?T.btn_saved:T.btn_save
               )
+              , saveStatus && React.createElement('span', { style: {fontSize:10,color:saveStatus==="saving"?"var(--nm-text-dim)":"var(--nm-accent)",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap",transition:"color 0.3s"},}
+                , saveStatus==="saving" ? "⏳ Salvataggio..." : "✓ Salvata"
+              )
               , React.createElement(Btn, { onClick: newSession, variant: "secondary", style: {padding:"7px 12px"},}, T.btn_new)
             ),})
           , React.createElement('div', { style: {flex:1,overflowY:"auto",padding:"20px 28px",display:"flex",flexDirection:"column",gap:14},}
@@ -2693,8 +2706,19 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   )
                 )
                 , React.createElement('p', { style: {fontSize:11,color:"#5a7a5a",lineHeight:1.6,marginBottom:8},}, e.content.slice(0,200), "...")
-                , React.createElement('div', { style: {display:"flex",flexWrap:"wrap",gap:4},}
-                  , (e.tags||[]).map(t=>React.createElement('span', { key: t, style: {fontSize:10,color:"var(--nm-accent-dim)",background:"var(--nm-nav-active)",padding:"2px 8px",borderRadius:6},}, "#", t))
+                , React.createElement('div', { style: {display:"flex",flexDirection:"column",gap:4},}
+                  , (e.tags||[]).length>0 && React.createElement('div', { style: {display:"flex",flexWrap:"wrap",gap:4}},
+                      (e.tags||[]).map(t=>React.createElement('span', { key: t, style: {fontSize:10,color:"var(--nm-accent-dim)",background:"var(--nm-nav-active)",padding:"2px 8px",borderRadius:6}}, "#", t))
+                    )
+                  , (e.rimedi||[]).length>0 && React.createElement('div', { style: {display:"flex",flexWrap:"wrap",gap:4}},
+                      (e.rimedi||[]).map(t=>React.createElement('span', { key: t, style: {fontSize:10,color:"#4aaa4a",background:"#0d200d",border:"1px solid #2a5a2a",padding:"2px 8px",borderRadius:6}}, "🌿 ", t))
+                    )
+                  , (e.sintomi||[]).length>0 && React.createElement('div', { style: {display:"flex",flexWrap:"wrap",gap:4}},
+                      (e.sintomi||[]).map(t=>React.createElement('span', { key: t, style: {fontSize:10,color:"#5a9aaa",background:"#0a1a22",border:"1px solid #1a4a5a",padding:"2px 8px",borderRadius:6}}, "◉ ", t))
+                    )
+                  , (e.controindicazioni||[]).length>0 && React.createElement('div', { style: {display:"flex",flexWrap:"wrap",gap:4}},
+                      (e.controindicazioni||[]).map(t=>React.createElement('span', { key: t, style: {fontSize:10,color:"#cc5555",background:"#200a0a",border:"1px solid #5a1a1a",padding:"2px 8px",borderRadius:6,fontWeight:500}}, "⚠ ", t))
+                    )
                 )
                 , e.created_by && React.createElement('div', { style: {fontSize:9,color:"#2a4a2a",marginTop:6},}, "Aggiunto da "  , e.created_by, " · "  , fmtDate(e.created_at))
               ))
@@ -2709,6 +2733,27 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
             , React.createElement(Lbl, null, "Contenuto (incolla prima il testo — poi usa Analizza)"        )
             , React.createElement('textarea', { value: kbForm.content,
               onChange: e=>setKbForm(f=>({...f,content:e.target.value})),
+              onPaste: e=>{
+                const text = e.clipboardData.getData('text');
+                if(text.length <= 3500) return; // testo breve → lascia il normale onChange
+                e.preventDefault();
+                const CHUNK=3500, OVERLAP=Math.round(3500*0.15);
+                const name = kbForm.title||"Testo incollato";
+                const chunks=[]; let idx=0, part=1;
+                while(idx<text.length){
+                  let end=Math.min(idx+CHUNK,text.length);
+                  if(end<text.length){
+                    const nl=text.lastIndexOf("\n",end);
+                    if(nl>idx+CHUNK/2) end=nl;
+                    else{const sp=text.lastIndexOf(" ",end);if(sp>idx+CHUNK/2) end=sp;}
+                  }
+                  chunks.push({title:`${name} — parte ${part}`,content:text.slice(idx,end).trim()});
+                  idx=end<text.length?end-OVERLAP:text.length; part++;
+                }
+                setPdfChunks(chunks); setPdfChunkIdx(0); setPdfChunkTotal(chunks.length);
+                setKbForm(fm=>({...fm,title:chunks[0].title,content:chunks[0].content}));
+                setKbAnalyzeMsg(`✓ Testo lungo: ${chunks.length} blocchi da ~${CHUNK} car. Usa "🔍 Analizza" poi salva blocco per blocco.`);
+              },
               onDragOver: e=>{e.preventDefault();e.currentTarget.style.borderColor="#4a8a4a";},
               onDragLeave: e=>{e.currentTarget.style.borderColor="#1e3a1e";},
               onDrop: async e=>{

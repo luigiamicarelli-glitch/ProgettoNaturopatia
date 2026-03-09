@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 // Inject CSS for blink animation
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
-  style.textContent = `@keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} } @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap');`;
+  style.textContent = `@keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} } @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap'); button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--nm-accent,#6aaa6a);outline-offset:2px;border-radius:4px}`;
   document.head.appendChild(style);
 }
 
@@ -1167,7 +1167,7 @@ export default function NaturopatiaAI() {
   const [setupErr, setSetupErr] = useState("");
 
   // KB Add
-  const [kbForm, setKbForm] = useState({title:"",discipline:"fitoterapia",content:"",tags:""});
+  const [kbForm, setKbForm] = useState({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
   const [kbSearch, setKbSearch] = useState("");
   const [kbAnalyzing, setKbAnalyzing] = useState(false);
   const [kbAnalyzeMsg, setKbAnalyzeMsg] = useState("");
@@ -1200,11 +1200,15 @@ export default function NaturopatiaAI() {
   const [profileForm, setProfileForm] = useState({name:"",address:"",phone:"",email:"",piva:"",albo_number:""});
   const [settingsMsg, setSettingsMsg] = useState("");
 
+  const [saveStatus, setSaveStatus] = useState(null); // null | "saving" | "saved"
+
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileKbRef = useRef(null);
   const [kbFileQueue, setKbFileQueue] = useState([]);
   const [kbFileIdx, setKbFileIdx] = useState(0);
+  const [pdfChunks, setPdfChunks] = useState([]);
+  const [pdfChunkIdx, setPdfChunkIdx] = useState(0);
   const fileLogoRef = useRef(null);
 
   // ── INIT ──────────────────────────────────────────────────────
@@ -1323,14 +1327,26 @@ export default function NaturopatiaAI() {
   // ── AUTO-SAVE: persiste la sessione 30s dopo l'ultimo messaggio ───────────
   useEffect(() => {
     if(messages.length<=1||screen!=="app"||!currentUser) return;
-    const t = setTimeout(()=>saveSession(), 30000);
+    const t = setTimeout(async ()=>{
+      setSaveStatus("saving");
+      await saveSession();
+      setSaveStatus("saved");
+      setTimeout(()=>setSaveStatus(null), 3000);
+    }, 30000);
     return ()=>clearTimeout(t);
   }, [messages]);
 
   const kbContext = useCallback(() => {
     if(!kb.length) return "";
     return "\n\n--- BANCA DATI ---\n"+
-      kb.map(e=>`[${e.title} | ${DISCIPLINES.find(d=>d.id===e.discipline)?.label||e.discipline}]\n${e.content}`).join("\n\n")+
+      kb.map(e=>{
+        const disc = DISCIPLINES.find(d=>d.id===e.discipline)?.label||e.discipline;
+        let meta = `[${e.title} | ${disc}]`;
+        if(e.rimedi?.length)          meta += `\nRimedi: ${e.rimedi.join(", ")}`;
+        if(e.sintomi?.length)         meta += `\nSintomi/Patologie: ${e.sintomi.join(", ")}`;
+        if(e.controindicazioni?.length) meta += `\nControindicazioni: ${e.controindicazioni.join(", ")}`;
+        return meta+"\n"+e.content;
+      }).join("\n\n")+
       "\n--- FINE BANCA DATI ---";
   }, [kb]);
 
@@ -1441,11 +1457,15 @@ export default function NaturopatiaAI() {
   const addKB = async () => {
     if(!kbForm.title||!kbForm.content) return;
     const entry = {title:kbForm.title,discipline:kbForm.discipline,content:kbForm.content,
-      tags:kbForm.tags.split(",").map(t=>t.trim()).filter(Boolean),created_by:currentUser?.username};
+      tags:kbForm.tags.split(",").map(t=>t.trim()).filter(Boolean),
+      rimedi:kbForm.rimedi.split(",").map(t=>t.trim()).filter(Boolean),
+      sintomi:kbForm.sintomi.split(",").map(t=>t.trim()).filter(Boolean),
+      controindicazioni:kbForm.controindicazioni.split(",").map(t=>t.trim()).filter(Boolean),
+      created_by:currentUser?.username};
     const r = await sb("nm_knowledge_base","POST",entry);
     setKb(prev=>[r[0],...prev]);
     await logAccess(currentUser?.username,"ADD_KB",kbForm.title);
-    setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+    setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
     setPanel("kb");
   };
 
@@ -1491,7 +1511,7 @@ export default function NaturopatiaAI() {
     const next = kbFileIdx + 1;
     if(next < kbFileQueue.length) {
       setKbFileIdx(next);
-      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
       setKbAnalyzeMsg("");
       await processKbFile(kbFileQueue[next]);
     } else {
@@ -1500,7 +1520,22 @@ export default function NaturopatiaAI() {
     }
   };
 
+  const nextPdfChunk = () => {
+    const next = pdfChunkIdx + 1;
+    if(next < pdfChunks.length) {
+      setPdfChunkIdx(next);
+      setKbForm(fm=>({...fm, title:pdfChunks[next].title, content:pdfChunks[next].content}));
+      setKbAnalyzeMsg(`Blocco ${next+1}/${pdfChunks.length} — modifica titolo se vuoi, poi Aggiungi.`);
+    } else {
+      setPdfChunks([]); setPdfChunkIdx(0);
+      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
+      setKbAnalyzeMsg("✓ Tutti i blocchi caricati!");
+      setTimeout(()=>setKbAnalyzeMsg(""), 3000);
+    }
+  };
+
   const delKB = async id => {
+    if(!window.confirm("Eliminare questa voce dalla Banca Dati?")) return;
     await sb(`nm_knowledge_base?id=eq.${id}`,"DELETE");
     setKb(prev=>prev.filter(e=>e.id!==id));
   };
@@ -1513,7 +1548,7 @@ export default function NaturopatiaAI() {
       const res = await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:500,
+          model:"claude-sonnet-4-20250514", max_tokens:800,
           messages:[{role:"user", content:`Analizza questo testo naturopatico e rispondi SOLO con un oggetto JSON valido, senza markdown, senza backtick, senza testo aggiuntivo.
 
 TESTO:
@@ -1522,8 +1557,8 @@ ${kbForm.content.slice(0,2000)}
 DISCIPLINE DISPONIBILI (usa SOLO questi id):
 ${disciplineList}
 
-Rispondi con questo JSON esatto:
-{"discipline":"id_disciplina","title":"titolo_breve_bibliografico","tags":["tag1","tag2","tag3","tag4"],"area":"nome_area_tematica"}`}]
+Rispondi con questo JSON esatto (array vuoto [] se non ci sono elementi per una categoria):
+{"discipline":"id_disciplina","title":"titolo_breve_bibliografico","tags":["tag1","tag2"],"area":"nome_area_tematica","rimedi":["pianta1","integratore2"],"sintomi":["sintomo1","patologia2"],"controindicazioni":["controindicazione1"]}`}]
         })
       });
       const data = await res.json();
@@ -1536,8 +1571,17 @@ Rispondi con questo JSON esatto:
         discipline: parsed.discipline || f.discipline,
         title: f.title || parsed.title || f.title,
         tags: parsed.tags?.join(", ") || f.tags,
+        rimedi: parsed.rimedi?.join(", ") || f.rimedi,
+        sintomi: parsed.sintomi?.join(", ") || f.sintomi,
+        controindicazioni: parsed.controindicazioni?.join(", ") || f.controindicazioni,
       }));
-      setKbAnalyzeMsg(`✓ Categorizzato come: ${DISCIPLINES.find(d=>d.id===parsed.discipline)?.label||parsed.discipline} · Area: ${parsed.area}`);
+      const disc = DISCIPLINES.find(d=>d.id===parsed.discipline)?.label||parsed.discipline;
+      const summary = [
+        parsed.rimedi?.length ? `Rimedi: ${parsed.rimedi.slice(0,3).join(", ")}` : "",
+        parsed.sintomi?.length ? `Sintomi: ${parsed.sintomi.slice(0,3).join(", ")}` : "",
+        parsed.controindicazioni?.length ? `⚠ Controindicazioni: ${parsed.controindicazioni.slice(0,2).join(", ")}` : "",
+      ].filter(Boolean).join(" · ");
+      setKbAnalyzeMsg(`✓ ${disc} · Area: ${parsed.area}${summary ? "\n"+summary : ""}`);
     } catch(e) {
       setKbAnalyzeMsg("Errore nell'analisi. Controlla il testo e riprova.");
     }
@@ -1689,6 +1733,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
     setDocNewForm({doc_type:"disclaimer",title:"",content:"",version:"1.0"});
   };
   const delDoc = async id => {
+    if(!window.confirm("Eliminare questo documento?")) return;
     await sb(`nm_documents?id=eq.${id}`,"DELETE");
     setDocuments(prev=>prev.filter(x=>x.id!==id));
   };
@@ -1880,6 +1925,9 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               <Btn onClick={saveSession} variant="secondary" disabled={messages.length<=1||sessionSaved} style={{padding:"7px 12px"}}>
                 {sessionSaved?T.btn_saved:T.btn_save}
               </Btn>
+              {saveStatus && <span style={{fontSize:10,color:saveStatus==="saving"?"var(--nm-text-dim)":"var(--nm-accent)",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap",transition:"color 0.3s"}}>
+                {saveStatus==="saving" ? "⏳ Salvataggio..." : "✓ Salvata"}
+              </span>}
               <Btn onClick={newSession} variant="secondary" style={{padding:"7px 12px"}}>{T.btn_new}</Btn>
             </div>}/>
           <div style={{flex:1,overflowY:"auto",padding:"20px 28px",display:"flex",flexDirection:"column",gap:14}}>
@@ -2027,8 +2075,19 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   </div>
                 </div>
                 <p style={{fontSize:11,color:"#5a7a5a",lineHeight:1.6,marginBottom:8}}>{e.content.slice(0,200)}...</p>
-                <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
-                  {(e.tags||[]).map(t=><span key={t} style={{fontSize:10,color:"#3a6a3a",background:"#1a3a1a",padding:"2px 8px",borderRadius:6}}>#{t}</span>)}
+                <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                  {(e.tags||[]).length>0 && <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {(e.tags||[]).map(t=><span key={t} style={{fontSize:10,color:"var(--nm-accent-dim,#4a8a4a)",background:"var(--nm-nav-active,#1a3a1a)",padding:"2px 8px",borderRadius:6}}>#{t}</span>)}
+                  </div>}
+                  {(e.rimedi||[]).length>0 && <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {(e.rimedi||[]).map(t=><span key={t} style={{fontSize:10,color:"#4aaa4a",background:"#0d200d",border:"1px solid #2a5a2a",padding:"2px 8px",borderRadius:6}}>🌿 {t}</span>)}
+                  </div>}
+                  {(e.sintomi||[]).length>0 && <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {(e.sintomi||[]).map(t=><span key={t} style={{fontSize:10,color:"#5a9aaa",background:"#0a1a22",border:"1px solid #1a4a5a",padding:"2px 8px",borderRadius:6}}>◉ {t}</span>)}
+                  </div>}
+                  {(e.controindicazioni||[]).length>0 && <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                    {(e.controindicazioni||[]).map(t=><span key={t} style={{fontSize:10,color:"#cc5555",background:"#200a0a",border:"1px solid #5a1a1a",padding:"2px 8px",borderRadius:6,fontWeight:500}}>⚠ {t}</span>)}
+                  </div>}
                 </div>
                 {e.created_by && <div style={{fontSize:9,color:"#2a4a2a",marginTop:6}}>Aggiunto da {e.created_by} · {fmtDate(e.created_at)}</div>}
               </Card>)}
@@ -2042,6 +2101,27 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
           <div style={{flex:1,overflowY:"auto",padding:"20px 28px",display:"flex",flexDirection:"column",gap:12}}>
             <Lbl>Contenuto (incolla prima il testo — poi usa Analizza)</Lbl>
             <textarea value={kbForm.content} onChange={e=>setKbForm(f=>({...f,content:e.target.value}))}
+              onPaste={e=>{
+                const text = e.clipboardData.getData('text');
+                if(text.length <= 3500) return;
+                e.preventDefault();
+                const CHUNK=3500, OVERLAP=Math.round(3500*0.15);
+                const name = kbForm.title||"Testo incollato";
+                const chunks=[]; let idx=0, part=1;
+                while(idx<text.length){
+                  let end=Math.min(idx+CHUNK,text.length);
+                  if(end<text.length){
+                    const nl=text.lastIndexOf("\n",end);
+                    if(nl>idx+CHUNK/2) end=nl;
+                    else{const sp=text.lastIndexOf(" ",end);if(sp>idx+CHUNK/2) end=sp;}
+                  }
+                  chunks.push({title:`${name} — parte ${part}`,content:text.slice(idx,end).trim()});
+                  idx=end<text.length?end-OVERLAP:text.length; part++;
+                }
+                setPdfChunks(chunks); setPdfChunkIdx(0);
+                setKbForm(fm=>({...fm,title:chunks[0].title,content:chunks[0].content}));
+                setKbAnalyzeMsg(`✓ Testo lungo: ${chunks.length} blocchi da ~${CHUNK} car. Usa "🔍 Analizza" poi salva blocco per blocco.`);
+              }}
               placeholder="Incolla il testo della fonte: sintomi, rimedi, indicazioni, meccanismi d'azione..."
               style={{background:"#0f1f0f",border:"1px solid #1e3a1e",borderRadius:8,padding:"12px 14px",
                 color:"#b8d0b0",fontSize:12,fontFamily:"'DM Mono',monospace",outline:"none",
@@ -2068,6 +2148,12 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               borderRadius:8,border:`1px solid ${kbAnalyzeMsg.startsWith("✓")?"#1a4a1a":"#4a3a0a"}`,
               display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <span>{kbAnalyzeMsg}</span>
+              {pdfChunks.length>1 && pdfChunkIdx<pdfChunks.length-1 &&
+                <button onClick={nextPdfChunk}
+                  style={{background:"#1a4a1a",border:"1px solid #2a6a2a",color:"#6aaa6a",
+                    borderRadius:6,padding:"3px 10px",cursor:"pointer",fontSize:10,fontFamily:"'DM Mono',monospace"}}>
+                  Blocco successivo ({pdfChunkIdx+2}/{pdfChunks.length}) →
+                </button>}
               {kbFileQueue.length>1 && kbFileIdx<kbFileQueue.length-1 &&
                 <button onClick={nextKbFile}
                   style={{background:"#1a4a1a",border:"1px solid #2a6a2a",color:"#6aaa6a",
