@@ -36,15 +36,20 @@ const DISCIPLINES = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── kbContext: genera il testo di contesto dalla Banca Dati ────────────────
+// (versione aggiornata con entity metadata: rimedi, sintomi, controindicazioni)
 function kbContext(kb) {
   if (!kb.length) return "";
   return (
     "\n\n--- BANCA DATI ---\n" +
     kb
-      .map(
-        (e) =>
-          `[${e.title} | ${DISCIPLINES.find((d) => d.id === e.discipline)?.label || e.discipline}]\n${e.content}`
-      )
+      .map((e) => {
+        const disc = DISCIPLINES.find((d) => d.id === e.discipline)?.label || e.discipline;
+        let meta = `[${e.title} | ${disc}]`;
+        if (e.rimedi?.length)           meta += `\nRimedi: ${e.rimedi.join(", ")}`;
+        if (e.sintomi?.length)          meta += `\nSintomi/Patologie: ${e.sintomi.join(", ")}`;
+        if (e.controindicazioni?.length) meta += `\nControindicazioni: ${e.controindicazioni.join(", ")}`;
+        return meta + "\n" + e.content;
+      })
       .join("\n\n") +
     "\n--- FINE BANCA DATI ---"
   );
@@ -154,6 +159,51 @@ describe("kbContext()", () => {
     const kb = [{ title: "Libro di Weiss", discipline: "fitoterapia", content: "..." }];
     const ctx = kbContext(kb);
     expect(ctx).toContain("[Libro di Weiss | Fitoterapia]");
+  });
+
+  test("include i rimedi come metadato strutturato", () => {
+    const kb = [{ title: "Cardo Mariano", discipline: "fitoterapia", content: "...",
+      rimedi: ["Silybum marianum", "Carciofo"] }];
+    const ctx = kbContext(kb);
+    expect(ctx).toContain("Rimedi: Silybum marianum, Carciofo");
+  });
+
+  test("include i sintomi come metadato strutturato", () => {
+    const kb = [{ title: "Test", discipline: "fitoterapia", content: "...",
+      sintomi: ["epatite", "steatosi"] }];
+    const ctx = kbContext(kb);
+    expect(ctx).toContain("Sintomi/Patologie: epatite, steatosi");
+  });
+
+  test("include le controindicazioni come metadato strutturato", () => {
+    const kb = [{ title: "Test", discipline: "fitoterapia", content: "...",
+      controindicazioni: ["gravidanza", "bambini < 12 anni"] }];
+    const ctx = kbContext(kb);
+    expect(ctx).toContain("Controindicazioni: gravidanza, bambini < 12 anni");
+  });
+
+  test("non include righe Rimedi/Sintomi/Controindicazioni se array vuoto", () => {
+    const kb = [{ title: "Fonte semplice", discipline: "nutraceutica", content: "Testo",
+      rimedi: [], sintomi: [], controindicazioni: [] }];
+    const ctx = kbContext(kb);
+    expect(ctx).not.toContain("Rimedi:");
+    expect(ctx).not.toContain("Sintomi/Patologie:");
+    expect(ctx).not.toContain("Controindicazioni:");
+  });
+
+  test("non include righe Rimedi se campo assente (undefined)", () => {
+    const kb = [{ title: "Fonte legacy", discipline: "fitoterapia", content: "Testo" }];
+    const ctx = kbContext(kb);
+    expect(ctx).not.toContain("Rimedi:");
+  });
+
+  test("i metadati appaiono prima del contenuto", () => {
+    const kb = [{ title: "T", discipline: "fitoterapia", content: "CONTENUTO_TESTO",
+      rimedi: ["Valeriana"] }];
+    const ctx = kbContext(kb);
+    const rimedIdx = ctx.indexOf("Rimedi:");
+    const contentIdx = ctx.indexOf("CONTENUTO_TESTO");
+    expect(rimedIdx).toBeLessThan(contentIdx);
   });
 });
 
