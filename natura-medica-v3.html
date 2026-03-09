@@ -1166,6 +1166,26 @@ const fmtDate = d => d ? new Date(d).toLocaleDateString() : "";
 const fmtDT   = d => d ? new Date(d).toLocaleString() : "";
 const fmtTime = d => d ? new Date(d).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) : "";
 
+// ── SANITIZZAZIONE TESTO PDF ─────────────────────────────────────
+function sanitizePdfText(text) {
+  // 1. Ricollega sillabazioni di fine riga: "antinfiam- matorio" → "antinfiammatorio"
+  let t = text.replace(/(\w)-\s*\n\s*(\w)/g, "$1$2");
+  // 2. Ricollega dosaggi spezzati a capo: "500\nmg" → "500 mg"
+  t = t.replace(/(\d+)\s*\n\s*(mg|g|ml|gocce|compresse|cps|misurini|mcg|ui)\b/gi, "$1 $2");
+  // 3. Rimuove numeri di pagina SOLO se esplicitamente marcati:
+  //    "- 47 -", "— 47 —", "pag. 12", "pagina 12" — NON numeri isolati (potrebbero essere dosaggi)
+  t = t.replace(/^\s*[-–—]\s*\d+\s*[-–—]\s*$/gm, "");
+  t = t.replace(/^\s*pag(?:ina)?\.?\s*\d+\s*$/gim, "");
+  // 4. Rimuove righe che si ripetono ≥ 3 volte (intestazioni/footer)
+  const lines = t.split("\n");
+  const freq = {};
+  lines.forEach(l => { const s = l.trim(); if(s.length > 8) freq[s] = (freq[s]||0)+1; });
+  t = lines.filter(l => (freq[l.trim()]||0) < 3).join("\n");
+  // 5. Normalizza spazi multipli e righe vuote eccessive
+  t = t.replace(/[ \t]{2,}/g, " ").replace(/\n{3,}/g, "\n\n");
+  return t.trim();
+}
+
 // ═══════════════════════════════════════════════════════════════
 // REUSABLE COMPONENTS
 // ═══════════════════════════════════════════════════════════════
@@ -1460,7 +1480,7 @@ function NaturopatiaAI() {
   const [setupErr, setSetupErr] = useState("");
 
   // KB Add
-  const [kbForm, setKbForm] = useState({title:"",discipline:"fitoterapia",content:"",tags:""});
+  const [kbForm, setKbForm] = useState({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
   const [kbSearch, setKbSearch] = useState("");
   const [kbAnalyzing, setKbAnalyzing] = useState(false);
   const [kbAnalyzeMsg, setKbAnalyzeMsg] = useState("");
@@ -1628,7 +1648,14 @@ function NaturopatiaAI() {
   const kbContext = useCallback(() => {
     if(!kb.length) return "";
     return "\n\n--- BANCA DATI ---\n"+
-      kb.map(e=>`[${e.title} | ${_optionalChain([DISCIPLINES, 'access', _13 => _13.find, 'call', _14 => _14(d=>d.id===e.discipline), 'optionalAccess', _15 => _15.label])||e.discipline}]\n${e.content}`).join("\n\n")+
+      kb.map(e=>{
+        const disc = _optionalChain([DISCIPLINES, 'access', _13 => _13.find, 'call', _14 => _14(d=>d.id===e.discipline), 'optionalAccess', _15 => _15.label])||e.discipline;
+        let meta = `[${e.title} | ${disc}]`;
+        if(e.rimedi?.length)          meta += `\nRimedi: ${e.rimedi.join(", ")}`;
+        if(e.sintomi?.length)         meta += `\nSintomi/Patologie: ${e.sintomi.join(", ")}`;
+        if(e.controindicazioni?.length) meta += `\nControindicazioni: ${e.controindicazioni.join(", ")}`;
+        return meta+"\n"+e.content;
+      }).join("\n\n")+
       "\n--- FINE BANCA DATI ---";
   }, [kb]);
 
@@ -1739,7 +1766,11 @@ function NaturopatiaAI() {
   const addKB = async () => {
     if(!kbForm.title||!kbForm.content) return;
     const entry = {title:kbForm.title,discipline:kbForm.discipline,content:kbForm.content,
-      tags:kbForm.tags.split(",").map(t=>t.trim()).filter(Boolean),created_by:_optionalChain([currentUser, 'optionalAccess', _25 => _25.username])};
+      tags:kbForm.tags.split(",").map(t=>t.trim()).filter(Boolean),
+      rimedi:kbForm.rimedi.split(",").map(t=>t.trim()).filter(Boolean),
+      sintomi:kbForm.sintomi.split(",").map(t=>t.trim()).filter(Boolean),
+      controindicazioni:kbForm.controindicazioni.split(",").map(t=>t.trim()).filter(Boolean),
+      created_by:_optionalChain([currentUser, 'optionalAccess', _25 => _25.username])};
     const r = await sb("nm_knowledge_base","POST",entry);
     setKb(prev=>[r[0],...prev]);
     await logAccess(_optionalChain([currentUser, 'optionalAccess', _26 => _26.username]),"ADD_KB",kbForm.title);
@@ -1761,7 +1792,7 @@ function NaturopatiaAI() {
         setKbAnalyzeMsg("✓ Tutti i blocchi salvati nella Banca Dati!");
         setTimeout(()=>setKbAnalyzeMsg(""), 3000);
       }
-      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
       setPanel("kb");
     }
   };
@@ -1811,26 +1842,35 @@ function NaturopatiaAI() {
         }
         // Se il testo è lungo (libro intero) → dividi in blocchi da 3500 char
         const CHUNK = 3500;
+        const OVERLAP = Math.round(CHUNK * 0.15); // ~525 caratteri di contesto condiviso
+        fullText = sanitizePdfText(fullText);
         if(fullText.length <= CHUNK) {
           setKbForm(fm=>({...fm, title:name, content:fullText}));
           setKbAnalyzeMsg(`✓ PDF estratto (${totalPages} pag.) — ${fullText.length} caratteri`);
         } else {
-          // Crea blocchi e li mette in coda per salvataggio automatico
+          // Crea blocchi con overlap del 15% per preservare il contesto tra blocchi
           const chunks = [];
           let idx = 0;
           let part = 1;
           while(idx < fullText.length) {
-            // Cerca fine paragrafo vicino al limite
             let end = Math.min(idx + CHUNK, fullText.length);
             if(end < fullText.length) {
+              // Preferisce tagliare al newline più vicino per non spezzare paragrafi
               const lastNL = fullText.lastIndexOf("\n", end);
               if(lastNL > idx + CHUNK/2) end = lastNL;
+              else {
+                // Fallback: taglia all'ultimo spazio per non spezzare parole
+                const lastSp = fullText.lastIndexOf(" ", end);
+                if(lastSp > idx + CHUNK/2) end = lastSp;
+              }
             }
             chunks.push({
               title: `${name} — parte ${part}`,
               content: fullText.slice(idx, end).trim(),
             });
-            idx = end;
+            // Il prossimo blocco inizia OVERLAP chars prima della fine di questo,
+            // così i due blocchi condividono ~525 chars di contesto
+            idx = end < fullText.length ? end - OVERLAP : fullText.length;
             part++;
           }
           setPdfChunks(chunks);
@@ -1850,6 +1890,7 @@ function NaturopatiaAI() {
       reader.onload = ev => {
         const text = ev.target.result;
         const CHUNK = 3500;
+        const OVERLAP = Math.round(CHUNK * 0.15); // ~525 caratteri di contesto condiviso
         if(text.length <= CHUNK) {
           setKbForm(fm=>({...fm, title:name, content:text}));
           setKbAnalyzeMsg("✓ File caricato: "+name);
@@ -1858,9 +1899,13 @@ function NaturopatiaAI() {
           let idx=0, part=1;
           while(idx<text.length) {
             let end = Math.min(idx+CHUNK, text.length);
-            if(end<text.length) { const nl=text.lastIndexOf("\n",end); if(nl>idx+CHUNK/2) end=nl; }
+            if(end<text.length) {
+              const nl=text.lastIndexOf("\n",end);
+              if(nl>idx+CHUNK/2) end=nl;
+              else { const sp=text.lastIndexOf(" ",end); if(sp>idx+CHUNK/2) end=sp; }
+            }
             chunks.push({title:`${name} — parte ${part}`, content:text.slice(idx,end).trim()});
-            idx=end; part++;
+            idx = end < text.length ? end - OVERLAP : text.length; part++;
           }
           setPdfChunks(chunks); setPdfChunkIdx(0); setPdfChunkTotal(chunks.length);
           setKbForm(fm=>({...fm, title:chunks[0].title, content:chunks[0].content}));
@@ -1879,7 +1924,7 @@ function NaturopatiaAI() {
       setKbAnalyzeMsg(`Blocco ${next+1}/${pdfChunks.length} — modifica titolo se vuoi, poi Aggiungi.`);
     } else {
       setPdfChunks([]); setPdfChunkIdx(0); setPdfChunkTotal(0);
-      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
       setKbAnalyzeMsg("✓ Tutti i blocchi caricati!");
     }
   };
@@ -1888,7 +1933,7 @@ function NaturopatiaAI() {
     const next = kbFileIdx + 1;
     if(next < kbFileQueue.length) {
       setKbFileIdx(next);
-      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+      setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
       setKbAnalyzeMsg("");
       await processKbFile(kbFileQueue[next]);
     } else {
@@ -2103,7 +2148,7 @@ function NaturopatiaAI() {
     setAutoImporting(false);
     setPdfChunks([]); setPdfChunkIdx(0); setPdfChunkTotal(0);
     setKbFileQueue([]); setKbFileIdx(0);
-    setKbForm({title:"",discipline:"fitoterapia",content:"",tags:""});
+    setKbForm({title:"",discipline:"fitoterapia",content:"",tags:"",rimedi:"",sintomi:"",controindicazioni:""});
     setKbAnalyzeMsg("✅ Import automatico completato! Tutti i blocchi sono in Banca Dati.");
     await loadAll();
     setTimeout(()=>{ setKbAnalyzeMsg(""); setPanel("kb"); }, 3000);
@@ -2123,7 +2168,7 @@ function NaturopatiaAI() {
       const res = await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST", headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:500,
+          model:"claude-sonnet-4-20250514", max_tokens:800,
           messages:[{role:"user", content:`Analizza questo testo naturopatico e rispondi SOLO con un oggetto JSON valido, senza markdown, senza backtick, senza testo aggiuntivo.
 
 TESTO:
@@ -2132,8 +2177,8 @@ ${kbForm.content.slice(0,2000)}
 DISCIPLINE DISPONIBILI (usa SOLO questi id):
 ${disciplineList}
 
-Rispondi con questo JSON esatto:
-{"discipline":"id_disciplina","title":"titolo_breve_bibliografico","tags":["tag1","tag2","tag3","tag4"],"area":"nome_area_tematica"}`}]
+Rispondi con questo JSON esatto (array vuoto [] se non ci sono elementi per una categoria):
+{"discipline":"id_disciplina","title":"titolo_breve_bibliografico","tags":["tag1","tag2"],"area":"nome_area_tematica","rimedi":["pianta1","integratore2"],"sintomi":["sintomo1","patologia2"],"controindicazioni":["controindicazione1"]}`}]
         })
       });
       const data = await res.json();
@@ -2145,11 +2190,20 @@ Rispondi con questo JSON esatto:
         const validD2 = DISCIPLINES.find(d=>normId2(d.id)===normId2(parsed.discipline)||d.id===parsed.discipline);
       setKbForm(f=>({
         ...f,
-      discipline: validD2 ? validD2.id : (parsed.discipline || f.discipline),
+        discipline: validD2 ? validD2.id : (parsed.discipline || f.discipline),
         title: f.title || parsed.title || f.title,
         tags: _optionalChain([parsed, 'access', _35 => _35.tags, 'optionalAccess', _36 => _36.join, 'call', _37 => _37(", ")]) || f.tags,
+        rimedi: parsed.rimedi?.join(", ") || f.rimedi,
+        sintomi: parsed.sintomi?.join(", ") || f.sintomi,
+        controindicazioni: parsed.controindicazioni?.join(", ") || f.controindicazioni,
       }));
-      setKbAnalyzeMsg(`✓ Categorizzato come: ${_optionalChain([DISCIPLINES, 'access', _38 => _38.find, 'call', _39 => _39(d=>d.id===parsed.discipline), 'optionalAccess', _40 => _40.label])||parsed.discipline} · Area: ${parsed.area}`);
+      const disc = _optionalChain([DISCIPLINES, 'access', _38 => _38.find, 'call', _39 => _39(d=>d.id===parsed.discipline), 'optionalAccess', _40 => _40.label])||parsed.discipline;
+      const summary = [
+        parsed.rimedi?.length ? `Rimedi: ${parsed.rimedi.slice(0,3).join(", ")}` : "",
+        parsed.sintomi?.length ? `Sintomi: ${parsed.sintomi.slice(0,3).join(", ")}` : "",
+        parsed.controindicazioni?.length ? `⚠ Controindicazioni: ${parsed.controindicazioni.slice(0,2).join(", ")}` : "",
+      ].filter(Boolean).join(" · ");
+      setKbAnalyzeMsg(`✓ ${disc} · Area: ${parsed.area}${summary ? "\n"+summary : ""}`);
     } catch(e) {
       setKbAnalyzeMsg("Errore nell'analisi. Controlla il testo e riprova.");
     }
