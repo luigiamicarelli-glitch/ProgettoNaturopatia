@@ -1421,58 +1421,76 @@ function Lock({T,form,setForm,error,onSubmit,onChangeLang}) {
 // MODULO ANALISI EMATICHE — dati e logica pura (no AI)
 // ═══════════════════════════════════════════════════════════════
 const HEMO_STATUS = {
-  "empty":         { color:"var(--nm-text-dimmer)", badge:"—",   bg:"transparent" },
-  "normal":        { color:"#4aaa4a",               badge:"✓",   bg:"transparent" },
-  "low":           { color:"#c8940a",               badge:"↓",   bg:"rgba(200,148,10,0.07)" },
-  "high":          { color:"#c8940a",               badge:"↑",   bg:"rgba(200,148,10,0.07)" },
-  "critical-low":  { color:"#cc5555",               badge:"↓↓",  bg:"rgba(200,80,80,0.10)" },
-  "critical-high": { color:"#cc5555",               badge:"↑↑",  bg:"rgba(200,80,80,0.10)" },
+  "empty":    { color:"var(--nm-text-dimmer)", badge:"—",  bg:"transparent",          title:"Clicca per impostare lo stato" },
+  "normal":   { color:"#4aaa4a",              badge:"✓",  bg:"transparent",          title:"Normale — clicca per cambiare" },
+  "high":     { color:"#c8940a",              badge:"↑",  bg:"rgba(200,148,10,0.07)",title:"Alto — clicca per cambiare" },
+  "critical": { color:"#cc5555",              badge:"⚠",  bg:"rgba(200,80,80,0.10)", title:"Critico — clicca per cambiare" },
+  "low":      { color:"#c8940a",              badge:"↓",  bg:"rgba(200,148,10,0.07)",title:"Basso — clicca per cambiare" },
 };
 
-function getParamStatus(p) {
+// Ciclo manuale badge: empty → normal → high → critical → low → empty
+const HEMO_CYCLE = ["empty","normal","high","critical","low"];
+
+function cycleHemoStatus(current) {
+  const idx = HEMO_CYCLE.indexOf(current || "empty");
+  return HEMO_CYCLE[(idx + 1) % HEMO_CYCLE.length];
+}
+
+// Prova l'auto-calcolo: se valore e range sono numerici semplici usa l'aritmetica,
+// altrimenti ritorna "empty" così l'utente può impostare lo stato manualmente.
+function getAutoStatus(p) {
+  if (!p.value.trim()) return "empty";
   const v = parseFloat(p.value);
-  if (isNaN(v) || p.value === "") return "empty";
-  const margin = (p.refMax - p.refMin) * 0.25;
-  if (v < p.refMin - margin) return "critical-low";
-  if (v > p.refMax + margin) return "critical-high";
-  if (v < p.refMin) return "low";
-  if (v > p.refMax) return "high";
+  if (isNaN(v)) return "empty"; // valore testuale → solo override manuale
+  // Cerca "numero – numero" nel range (es. "12.0 – 17.5" o "70-100")
+  const m = p.range.match(/([\d.]+)\s*[-–]\s*([\d.]+)/);
+  if (!m) return "empty"; // range testuale → solo override manuale
+  const rMin = parseFloat(m[1]), rMax = parseFloat(m[2]);
+  const margin = (rMax - rMin) * 0.25;
+  if (v < rMin - margin || v > rMax + margin) return "critical";
+  if (v < rMin) return "low";
+  if (v > rMax) return "high";
   return "normal";
 }
 
+// Stato effettivo: override manuale se impostato, altrimenti auto
+function getParamStatus(p) {
+  return p.statusOverride || getAutoStatus(p);
+}
+
 const DEFAULT_HEMO_PARAMS = [
-  {id:"hgb",    label:"Emoglobina",          value:"", unit:"g/dL",    refMin:12.0, refMax:17.5, cat:"Emocromo"},
-  {id:"hct",    label:"Ematocrito",           value:"", unit:"%",       refMin:36,   refMax:52,   cat:"Emocromo"},
-  {id:"rbc",    label:"Globuli Rossi",        value:"", unit:"M/µL",    refMin:3.8,  refMax:5.8,  cat:"Emocromo"},
-  {id:"wbc",    label:"Globuli Bianchi",      value:"", unit:"K/µL",    refMin:4.0,  refMax:10.0, cat:"Emocromo"},
-  {id:"plt",    label:"Piastrine",            value:"", unit:"K/µL",    refMin:150,  refMax:400,  cat:"Emocromo"},
-  {id:"mcv",    label:"MCV",                  value:"", unit:"fL",      refMin:80,   refMax:100,  cat:"Emocromo"},
-  {id:"ferr",   label:"Ferritina",            value:"", unit:"µg/L",    refMin:12,   refMax:200,  cat:"Ferro"},
-  {id:"fe",     label:"Ferro Sierico",        value:"", unit:"µg/dL",   refMin:60,   refMax:170,  cat:"Ferro"},
-  {id:"tf",     label:"Transferrina",         value:"", unit:"mg/dL",   refMin:200,  refMax:360,  cat:"Ferro"},
-  {id:"pcr",    label:"PCR",                  value:"", unit:"mg/L",    refMin:0,    refMax:5,    cat:"Infiammazione"},
-  {id:"ves",    label:"VES",                  value:"", unit:"mm/h",    refMin:0,    refMax:20,   cat:"Infiammazione"},
-  {id:"fibr",   label:"Fibrinogeno",          value:"", unit:"mg/dL",   refMin:200,  refMax:400,  cat:"Infiammazione"},
-  {id:"chol",   label:"Colesterolo Tot.",     value:"", unit:"mg/dL",   refMin:0,    refMax:200,  cat:"Lipidi"},
-  {id:"hdl",    label:"HDL",                  value:"", unit:"mg/dL",   refMin:40,   refMax:99,   cat:"Lipidi"},
-  {id:"ldl",    label:"LDL",                  value:"", unit:"mg/dL",   refMin:0,    refMax:130,  cat:"Lipidi"},
-  {id:"trig",   label:"Trigliceridi",         value:"", unit:"mg/dL",   refMin:0,    refMax:150,  cat:"Lipidi"},
-  {id:"glic",   label:"Glicemia",             value:"", unit:"mg/dL",   refMin:70,   refMax:100,  cat:"Glicemia"},
-  {id:"hba1c",  label:"HbA1c",                value:"", unit:"%",       refMin:0,    refMax:5.7,  cat:"Glicemia"},
-  {id:"ins",    label:"Insulina",             value:"", unit:"µUI/mL",  refMin:2,    refMax:25,   cat:"Glicemia"},
-  {id:"alt",    label:"ALT (GPT)",            value:"", unit:"U/L",     refMin:0,    refMax:40,   cat:"Fegato"},
-  {id:"ast",    label:"AST (GOT)",            value:"", unit:"U/L",     refMin:0,    refMax:40,   cat:"Fegato"},
-  {id:"ggt",    label:"GGT",                  value:"", unit:"U/L",     refMin:0,    refMax:55,   cat:"Fegato"},
-  {id:"crea",   label:"Creatinina",           value:"", unit:"mg/dL",   refMin:0.6,  refMax:1.2,  cat:"Rene"},
-  {id:"urea",   label:"Urea",                 value:"", unit:"mg/dL",   refMin:15,   refMax:45,   cat:"Rene"},
-  {id:"tsh",    label:"TSH",                  value:"", unit:"µUI/mL",  refMin:0.4,  refMax:4.0,  cat:"Tiroide"},
-  {id:"ft4",    label:"FT4",                  value:"", unit:"ng/dL",   refMin:0.8,  refMax:1.8,  cat:"Tiroide"},
-  {id:"ft3",    label:"FT3",                  value:"", unit:"pg/mL",   refMin:2.3,  refMax:4.2,  cat:"Tiroide"},
-  {id:"vitd",   label:"Vitamina D (25-OH)",   value:"", unit:"ng/mL",   refMin:30,   refMax:100,  cat:"Micronutrienti"},
-  {id:"b12",    label:"Vitamina B12",         value:"", unit:"pg/mL",   refMin:200,  refMax:900,  cat:"Micronutrienti"},
-  {id:"folati", label:"Folati",               value:"", unit:"ng/mL",   refMin:3,    refMax:20,   cat:"Micronutrienti"},
-  {id:"mg",     label:"Magnesio",             value:"", unit:"mg/dL",   refMin:1.7,  refMax:2.4,  cat:"Micronutrienti"},
-  {id:"zn",     label:"Zinco",                value:"", unit:"µg/dL",   refMin:70,   refMax:120,  cat:"Micronutrienti"},
+  {id:"hgb",    label:"Emoglobina",        value:"", range:"12.0 – 17.5", unit:"g/dL",   cat:"Emocromo",      statusOverride:null},
+  {id:"hct",    label:"Ematocrito",         value:"", range:"36 – 52",     unit:"%",      cat:"Emocromo",      statusOverride:null},
+  {id:"rbc",    label:"Globuli Rossi",      value:"", range:"3.8 – 5.8",   unit:"M/µL",   cat:"Emocromo",      statusOverride:null},
+  {id:"wbc",    label:"Globuli Bianchi",    value:"", range:"4.0 – 10.0",  unit:"K/µL",   cat:"Emocromo",      statusOverride:null},
+  {id:"plt",    label:"Piastrine",          value:"", range:"150 – 400",   unit:"K/µL",   cat:"Emocromo",      statusOverride:null},
+  {id:"mcv",    label:"MCV",               value:"", range:"80 – 100",    unit:"fL",     cat:"Emocromo",      statusOverride:null},
+  {id:"ferr",   label:"Ferritina",          value:"", range:"M: 30–400 / F: 10–200", unit:"µg/L", cat:"Ferro", statusOverride:null},
+  {id:"fe",     label:"Ferro Sierico",      value:"", range:"60 – 170",    unit:"µg/dL",  cat:"Ferro",         statusOverride:null},
+  {id:"tf",     label:"Transferrina",       value:"", range:"200 – 360",   unit:"mg/dL",  cat:"Ferro",         statusOverride:null},
+  {id:"pcr",    label:"PCR",               value:"", range:"< 5",         unit:"mg/L",   cat:"Infiammazione", statusOverride:null},
+  {id:"ves",    label:"VES",               value:"", range:"M: 0–15 / F: 0–20", unit:"mm/h", cat:"Infiammazione", statusOverride:null},
+  {id:"fibr",   label:"Fibrinogeno",        value:"", range:"200 – 400",   unit:"mg/dL",  cat:"Infiammazione", statusOverride:null},
+  {id:"chol",   label:"Colesterolo Tot.",   value:"", range:"< 200",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
+  {id:"hdl",    label:"HDL",               value:"", range:"M: > 40 / F: > 50", unit:"mg/dL", cat:"Lipidi",  statusOverride:null},
+  {id:"ldl",    label:"LDL",               value:"", range:"< 130",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
+  {id:"trig",   label:"Trigliceridi",       value:"", range:"< 150",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
+  {id:"glic",   label:"Glicemia",           value:"", range:"70 – 100",    unit:"mg/dL",  cat:"Glicemia",      statusOverride:null},
+  {id:"hba1c",  label:"HbA1c",             value:"", range:"< 5.7",       unit:"%",      cat:"Glicemia",      statusOverride:null},
+  {id:"ins",    label:"Insulina",           value:"", range:"2 – 25",      unit:"µUI/mL", cat:"Glicemia",      statusOverride:null},
+  {id:"alt",    label:"ALT (GPT)",          value:"", range:"< 40",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
+  {id:"ast",    label:"AST (GOT)",          value:"", range:"< 40",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
+  {id:"ggt",    label:"GGT",               value:"", range:"< 55",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
+  {id:"crea",   label:"Creatinina",         value:"", range:"0.6 – 1.2",   unit:"mg/dL",  cat:"Rene",          statusOverride:null},
+  {id:"urea",   label:"Urea",              value:"", range:"15 – 45",     unit:"mg/dL",  cat:"Rene",          statusOverride:null},
+  {id:"tsh",    label:"TSH",               value:"", range:"0.4 – 4.0",   unit:"µUI/mL", cat:"Tiroide",       statusOverride:null},
+  {id:"ft4",    label:"FT4",               value:"", range:"0.8 – 1.8",   unit:"ng/dL",  cat:"Tiroide",       statusOverride:null},
+  {id:"ft3",    label:"FT3",               value:"", range:"2.3 – 4.2",   unit:"pg/mL",  cat:"Tiroide",       statusOverride:null},
+  {id:"vitd",   label:"Vitamina D (25-OH)", value:"", range:"30 – 100",   unit:"ng/mL",  cat:"Micronutrienti",statusOverride:null},
+  {id:"b12",    label:"Vitamina B12",       value:"", range:"200 – 900",   unit:"pg/mL",  cat:"Micronutrienti",statusOverride:null},
+  {id:"folati", label:"Folati",             value:"", range:"3 – 20",      unit:"ng/mL",  cat:"Micronutrienti",statusOverride:null},
+  {id:"mg",     label:"Magnesio",           value:"", range:"1.7 – 2.4",   unit:"mg/dL",  cat:"Micronutrienti",statusOverride:null},
+  {id:"zn",     label:"Zinco",             value:"", range:"70 – 120",    unit:"µg/dL",  cat:"Micronutrienti",statusOverride:null},
 ];
 
 function NaturopatiaAI() {
@@ -3294,11 +3312,10 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               )
 
               /* Intestazione colonne */
-              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 68px 52px 52px 40px 24px",
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px",
                 gap:4,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
-                , ["Parametro","Valore","Min","Max","Unità",""].map(h=>React.createElement('span',{key:h,
-                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em",
-                    textAlign:h==="Min"||h==="Max"||h==="Valore"?"right":"left"}},h))
+                , ["Parametro","Valore","Range Rif.","Unità",""].map(h=>React.createElement('span',{key:h,
+                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
               )
 
               /* Sezioni per categoria — collassabili */
@@ -3325,38 +3342,44 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     , isOpen && catParams.map(p=>{
                       const s = getParamStatus(p);
                       const sc = HEMO_STATUS[s];
-                      const rangeInputStyle = {background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
-                        borderRadius:5,padding:"3px 5px",color:"var(--nm-text-dim)",fontSize:11,
-                        fontFamily:"'DM Mono',monospace",textAlign:"right",width:"100%",outline:"none"};
+                      const isAutoComputable = !p.statusOverride && getAutoStatus(p) !== "empty" && p.value.trim();
                       return React.createElement('div',{key:p.id,
-                        style:{display:"grid",gridTemplateColumns:"1fr 68px 52px 52px 40px 24px",
+                        style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px",
                           gap:4,alignItems:"center",padding:"3px 8px",borderRadius:5,
                           background:sc.bg,transition:"background 0.15s"}}
                         /* Label */
                         , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)",
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},title:p.label}, p.label)
-                        /* Valore — input numerico, unico metodo di inserimento */
-                        , React.createElement('input',{type:"number",value:p.value,step:"any",placeholder:"—",
-                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,value:e.target.value}:x)),
+                        /* Valore — testo libero: numeri, "Assenti", "< 5", ecc. */
+                        , React.createElement('input',{type:"text",value:p.value,placeholder:"—",
+                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                            ?{...x,value:e.target.value,statusOverride:null}:x)),
                           style:{background:"var(--nm-bg3)",
                             border:`1px solid ${s==="normal"||s==="empty"?"var(--nm-border2)":sc.color}`,
                             borderRadius:6,padding:"3px 6px",color:sc.color,fontSize:12,
-                            fontFamily:"'DM Mono',monospace",textAlign:"right",width:"100%",
+                            fontFamily:"'DM Mono',monospace",width:"100%",
                             outline:"none",transition:"border-color 0.2s"}})
-                        /* Min editabile */
-                        , React.createElement('input',{type:"number",value:p.refMin,step:"any",
-                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,refMin:parseFloat(e.target.value)||0}:x)),
-                          style:rangeInputStyle})
-                        /* Max editabile */
-                        , React.createElement('input',{type:"number",value:p.refMax,step:"any",
-                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,refMax:parseFloat(e.target.value)||0}:x)),
-                          style:rangeInputStyle})
+                        /* Range riferimento — testo libero */
+                        , React.createElement('input',{type:"text",value:p.range,
+                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                            ?{...x,range:e.target.value,statusOverride:null}:x)),
+                          style:{background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
+                            borderRadius:5,padding:"3px 5px",color:"var(--nm-text-dim)",fontSize:10,
+                            fontFamily:"'DM Mono',monospace",width:"100%",outline:"none"}})
                         /* Unità */
                         , React.createElement('span',{style:{fontSize:9,color:"var(--nm-text-dim)",
                           overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"},title:p.unit}, p.unit)
-                        /* Badge stato */
-                        , React.createElement('span',{style:{fontSize:10,fontWeight:600,
-                          color:sc.color,textAlign:"center",fontFamily:"'DM Mono',monospace"}}, sc.badge)
+                        /* Badge — cliccabile per override manuale */
+                        , React.createElement('span',{
+                          onClick:()=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                            ?{...x,statusOverride:cycleHemoStatus(x.statusOverride||getAutoStatus(x))}:x)),
+                          title:sc.title+(isAutoComputable?" (auto)":"  ← clicca per impostare"),
+                          style:{fontSize:10,fontWeight:600,color:sc.color,textAlign:"center",
+                            fontFamily:"'DM Mono',monospace",cursor:"pointer",userSelect:"none",
+                            borderRadius:4,padding:"1px 2px",
+                            outline:p.statusOverride?"1px solid "+sc.color:"none"}}
+                          , sc.badge
+                        )
                       );
                     })
                   );
