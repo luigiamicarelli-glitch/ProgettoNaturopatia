@@ -3294,10 +3294,11 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               )
 
               /* Intestazione colonne */
-              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px 50px 28px",
-                gap:6,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
-                , ["Parametro","Valore","Unità",""].map(h=>React.createElement('span',{key:h,
-                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 68px 52px 52px 40px 24px",
+                gap:4,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
+                , ["Parametro","Valore","Min","Max","Unità",""].map(h=>React.createElement('span',{key:h,
+                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em",
+                    textAlign:h==="Min"||h==="Max"||h==="Valore"?"right":"left"}},h))
               )
 
               /* Sezioni per categoria — collassabili */
@@ -3324,14 +3325,17 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     , isOpen && catParams.map(p=>{
                       const s = getParamStatus(p);
                       const sc = HEMO_STATUS[s];
+                      const rangeInputStyle = {background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
+                        borderRadius:5,padding:"3px 5px",color:"var(--nm-text-dim)",fontSize:11,
+                        fontFamily:"'DM Mono',monospace",textAlign:"right",width:"100%",outline:"none"};
                       return React.createElement('div',{key:p.id,
-                        style:{display:"grid",gridTemplateColumns:"1fr 80px 50px 28px",
-                          gap:6,alignItems:"center",padding:"3px 8px",borderRadius:5,
+                        style:{display:"grid",gridTemplateColumns:"1fr 68px 52px 52px 40px 24px",
+                          gap:4,alignItems:"center",padding:"3px 8px",borderRadius:5,
                           background:sc.bg,transition:"background 0.15s"}}
                         /* Label */
                         , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)",
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},title:p.label}, p.label)
-                        /* Input numerico — UNICO metodo di inserimento */
+                        /* Valore — input numerico, unico metodo di inserimento */
                         , React.createElement('input',{type:"number",value:p.value,step:"any",placeholder:"—",
                           onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,value:e.target.value}:x)),
                           style:{background:"var(--nm-bg3)",
@@ -3339,6 +3343,14 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                             borderRadius:6,padding:"3px 6px",color:sc.color,fontSize:12,
                             fontFamily:"'DM Mono',monospace",textAlign:"right",width:"100%",
                             outline:"none",transition:"border-color 0.2s"}})
+                        /* Min editabile */
+                        , React.createElement('input',{type:"number",value:p.refMin,step:"any",
+                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,refMin:parseFloat(e.target.value)||0}:x)),
+                          style:rangeInputStyle})
+                        /* Max editabile */
+                        , React.createElement('input',{type:"number",value:p.refMax,step:"any",
+                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id?{...x,refMax:parseFloat(e.target.value)||0}:x)),
+                          style:rangeInputStyle})
                         /* Unità */
                         , React.createElement('span',{style:{fontSize:9,color:"var(--nm-text-dim)",
                           overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"},title:p.unit}, p.unit)
