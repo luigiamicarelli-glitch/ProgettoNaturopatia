@@ -1552,7 +1552,10 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"im_cd4",   label:"CD4+ (T helper)",        value:"", range:"28 – 58",           unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
   {id:"im_cd8",   label:"CD8+ (T citotossici)",   value:"", range:"19 – 37",           unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
   {id:"im_cd48",  label:"CD4/CD8 ratio",          value:"", range:"1.5 – 2.5",         unit:"ratio",    cat:"Linfociti",            tab:"immunologia", statusOverride:null},
-  {id:"im_nk",    label:"NK (CD56+)",             value:"", range:"5 – 20",            unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_nk",       label:"NK totali (CD56+)",         value:"", range:"5 – 20",    unit:"%",     cat:"Linfociti NK",  tab:"immunologia", statusOverride:null},
+  {id:"im_nk_bright",label:"NK CD56bright (immunomod.)", value:"", range:"5 – 15",    unit:"% NK",  cat:"Linfociti NK",  tab:"immunologia", statusOverride:null},
+  {id:"im_nk_dim",   label:"NK CD56dim (citotossiche)",  value:"", range:"85 – 95",   unit:"% NK",  cat:"Linfociti NK",  tab:"immunologia", statusOverride:null},
+  {id:"im_cd57",     label:"CD57+ (senescenza NK)",      value:"", range:"> 60",       unit:"cell/µL",cat:"Linfociti NK",  tab:"immunologia", statusOverride:null},
   {id:"im_bcd19", label:"B cells (CD19+)",        value:"", range:"5 – 15",            unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
   // ── MICROIMMUNOLOGIA ─────────────────────────────────────────
   {id:"mi_il1b",  label:"IL-1β (Interleuchina-1β)", value:"", range:"< 5",            unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
@@ -1784,6 +1787,86 @@ const INFO_MODALS = {
       <text x="160" y="149" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">per distinguere IBD organica da IBS funzionale</text>
     </svg>`,
     note: "La calprotectina fecale è rilasciata dai neutrofili infiltranti la mucosa intestinale infiammata. È il gold-standard non-invasivo per distinguere IBD (Crohn, Colite Ulcerosa) dall'IBS funzionale. Valori > 200 µg/g indicano infiammazione attiva e richiedono colonscopia. Utile anche per monitorare la risposta terapeutica nelle IBD."
+  },
+  im_nk: {
+    title: "Cellule NK — Maturazione e Sottopopolazioni",
+    svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="200" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">Maturazione Cellule NK</text>
+      <!-- Progenitore -->
+      <rect x="120" y="30" width="80" height="26" rx="4" fill="#1a2e1a" stroke="#4a9e4a" stroke-width="1.5"/>
+      <text x="160" y="47" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Progenitore NK (BM)</text>
+      <!-- Arrow down -->
+      <line x1="160" y1="56" x2="160" y2="70" stroke="#4a9e4a" stroke-width="1.5" marker-end="url(#ank)"/>
+      <!-- Immatura -->
+      <rect x="105" y="70" width="110" height="26" rx="4" fill="#1a2e2e" stroke="#40a0a0" stroke-width="1.5"/>
+      <text x="160" y="87" fill="#80e0e0" font-size="9" text-anchor="middle" font-family="monospace">NK immatura (linfonodo)</text>
+      <!-- Fork -->
+      <line x1="120" y1="96" x2="80" y2="118" stroke="#40a0a0" stroke-width="1.5" marker-end="url(#ank2)"/>
+      <line x1="200" y1="96" x2="240" y2="118" stroke="#40a0a0" stroke-width="1.5" marker-end="url(#ank2)"/>
+      <!-- CD56bright -->
+      <rect x="20" y="118" width="110" height="38" rx="4" fill="#1a1a2e" stroke="#6060e0" stroke-width="1.5"/>
+      <text x="75" y="133" fill="#a0a0f0" font-size="9" text-anchor="middle" font-family="monospace">CD56bright</text>
+      <text x="75" y="145" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">Immunomodulatorie</text>
+      <text x="75" y="153" fill="#6060b0" font-size="7" text-anchor="middle" font-family="monospace">5–15% delle NK</text>
+      <!-- CD56dim -->
+      <rect x="190" y="118" width="110" height="38" rx="4" fill="#2e1a1a" stroke="#e06060" stroke-width="1.5"/>
+      <text x="245" y="133" fill="#f09090" font-size="9" text-anchor="middle" font-family="monospace">CD56dim</text>
+      <text x="245" y="145" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Citotossiche (KIR+)</text>
+      <text x="245" y="153" fill="#c06060" font-size="7" text-anchor="middle" font-family="monospace">85–95% delle NK</text>
+      <!-- Arrows between -->
+      <line x1="130" y1="137" x2="190" y2="137" stroke="#888" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#ank3)"/>
+      <text x="160" y="133" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">differenz.</text>
+      <!-- Functions -->
+      <rect x="10" y="168" width="135" height="24" rx="3" fill="#111" stroke="#333"/>
+      <text x="77" y="179" fill="#a0a0f0" font-size="7" text-anchor="middle" font-family="monospace">Citochine: IFN-γ, TNF-α</text>
+      <text x="77" y="188" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">Regolazione Th1/Th2</text>
+      <rect x="175" y="168" width="135" height="24" rx="3" fill="#111" stroke="#333"/>
+      <text x="242" y="179" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">ADCC · lisi diretta</text>
+      <text x="242" y="188" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Sorveglianza tumorale</text>
+      <defs>
+        <marker id="ank" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#4a9e4a"/></marker>
+        <marker id="ank2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#40a0a0"/></marker>
+        <marker id="ank3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#888"/></marker>
+      </defs>
+    </svg>`,
+    note: "Le cellule NK si dividono in due sottopopolazioni funzionalmente distinte: CD56bright (5–15%) sono immunomodulatorie, producono IFN-γ e TNF-α e regolano la risposta adattativa; CD56dim (85–95%) sono citotossiche, esprimono recettori KIR e svolgono ADCC e sorveglianza tumorale. Un'inversione del rapporto bright/dim può indicare stati infiammatori cronici o disregolazione immunitaria."
+  },
+  im_cd57: {
+    title: "CD57 — Senescenza NK e Infezioni Croniche",
+    svg: `<svg viewBox="0 0 320 195" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="195" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">CD57 — Marker di Senescenza NK</text>
+      <!-- Scale -->
+      <rect x="20" y="32" width="280" height="20" rx="4" fill="#111"/>
+      <rect x="20" y="32" width="93" height="20" rx="4" fill="#cc4444" opacity="0.8"/>
+      <rect x="113" y="32" width="94" height="20" rx="0" fill="#c89010" opacity="0.8"/>
+      <rect x="207" y="32" width="93" height="20" rx="4" fill="#2a6a2a" opacity="0.8"/>
+      <text x="66" y="46" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">&lt; 30 cell/µL</text>
+      <text x="160" y="46" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">30 – 60</text>
+      <text x="253" y="46" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">&gt; 60 cell/µL</text>
+      <text x="66" y="62" fill="#f08080" font-size="8" text-anchor="middle" font-family="monospace">Critico</text>
+      <text x="160" y="62" fill="#e0a030" font-size="8" text-anchor="middle" font-family="monospace">Borderline</text>
+      <text x="253" y="62" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">Normale</text>
+      <!-- Causes of low CD57 -->
+      <text x="160" y="82" fill="#f09090" font-size="9" text-anchor="middle" font-family="monospace">CD57 basso — cause principali</text>
+      <rect x="10" y="88" width="90" height="35" rx="4" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="55" y="102" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">Malattia di Lyme</text>
+      <text x="55" y="113" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Borrelia cronica</text>
+      <rect x="115" y="88" width="90" height="35" rx="4" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="160" y="102" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">EBV / CMV</text>
+      <text x="160" y="113" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Infezioni persistenti</text>
+      <rect x="220" y="88" width="90" height="35" rx="4" fill="#2e2e1a" stroke="#c0a020"/>
+      <text x="265" y="102" fill="#e0e070" font-size="8" text-anchor="middle" font-family="monospace">Stress cronico</text>
+      <text x="265" y="113" fill="#b0b050" font-size="7" text-anchor="middle" font-family="monospace">Esaurimento NK</text>
+      <!-- Mechanism -->
+      <rect x="10" y="132" width="300" height="50" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="147" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Meccanismo: senescenza replicativa</text>
+      <text x="160" y="159" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">CD57 aumenta con l'esaurimento funzionale delle NK</text>
+      <text x="160" y="171" fill="#68a868" font-size="7" text-anchor="middle" font-family="monospace">Valori bassi = NK giovani ma esaurite da stimolazione antigenica cronica</text>
+      <text x="160" y="182" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Indagare: anticorpi Borrelia, EBV-VCA IgG, CMV IgG, cortisolo</text>
+    </svg>`,
+    note: "Il CD57 è espresso dalle NK terminalmente differenziate (senescenti). Paradossalmente, valori bassi di CD57 indicano NK giovani ma funzionalmente esaurite da stimolazione antigenica cronica (Borrelia, EBV, CMV). Soglia critica < 30 cell/µL: alta correlazione con Lyme cronica. Valori borderline 30–60: approfondire con sierologia specifica. Strategie di supporto: astragalo, beta-glucani, vitamina D3, melatonina ad alto dosaggio serale."
   },
   blood_group: {
     title: "Gruppo Sanguigno — Implicazioni Cliniche",
