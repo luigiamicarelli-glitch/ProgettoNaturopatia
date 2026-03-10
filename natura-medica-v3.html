@@ -1532,24 +1532,28 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"f_sang",   label:"Sangue occulto",         value:"", range:"Negativo",          unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
   {id:"f_paras",  label:"Parassiti / Protozoi",   value:"", range:"Assenti",           unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
   // ── IMMUNOLOGIA ─────────────────────────────────────────────
-  {id:"im_ige",   label:"IgE totali",             value:"", range:"< 100",             unit:"kU/L",     cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
-  {id:"im_iga",   label:"IgA",                   value:"", range:"70 – 400",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
-  {id:"im_igg",   label:"IgG",                   value:"", range:"700 – 1600",         unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
-  {id:"im_igm",   label:"IgM",                   value:"", range:"40 – 230",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
-  {id:"im_ana",   label:"ANA (antinucleo)",       value:"", range:"< 1:80",            unit:"titolo",   cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
-  {id:"im_anca",  label:"ANCA",                  value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
-  {id:"im_tpo",   label:"Anti-TPO",              value:"", range:"< 34",              unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
-  {id:"im_tg",    label:"Anti-Tireoglobulina",   value:"", range:"< 115",             unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
-  {id:"im_rf",    label:"Fattore Reumatoide",    value:"", range:"< 14",              unit:"IU/mL",    cat:"Artrite",              tab:"immunologia", statusOverride:null},
-  {id:"im_ccp",   label:"Anti-CCP",              value:"", range:"< 7",               unit:"U/mL",     cat:"Artrite",              tab:"immunologia", statusOverride:null},
-  {id:"im_c3",    label:"Complemento C3",        value:"", range:"90 – 180",           unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
-  {id:"im_c4",    label:"Complemento C4",        value:"", range:"16 – 47",            unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
+  {id:"im_ige",   label:"IgE totali",             value:"", range:"< 100",             unit:"kU/L",     cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
+  {id:"im_iga",   label:"IgA",                   value:"", range:"70 – 400",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
+  {id:"im_igg",   label:"IgG",                   value:"", range:"700 – 1600",         unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
+  {id:"im_igm",   label:"IgM",                   value:"", range:"40 – 230",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
+  {id:"im_ana",   label:"ANA (antinucleo)",       value:"", range:"< 1:80",            unit:"titolo",   cat:"Autoimmunità",         tab:"altro", statusOverride:null},
+  {id:"im_anca",  label:"ANCA",                  value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"altro", statusOverride:null},
+  {id:"im_tpo",   label:"Anti-TPO",              value:"", range:"< 34",              unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"altro", statusOverride:null},
+  {id:"im_tg",    label:"Anti-Tireoglobulina",   value:"", range:"< 115",             unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"altro", statusOverride:null},
+  {id:"im_rf",    label:"Fattore Reumatoide",    value:"", range:"< 14",              unit:"IU/mL",    cat:"Artrite",              tab:"altro", statusOverride:null},
+  {id:"im_ccp",   label:"Anti-CCP",              value:"", range:"< 7",               unit:"U/mL",     cat:"Artrite",              tab:"altro", statusOverride:null},
+  {id:"im_c3",    label:"Complemento C3",        value:"", range:"90 – 180",           unit:"mg/dL",    cat:"Complemento",          tab:"altro", statusOverride:null},
+  {id:"im_c4",    label:"Complemento C4",        value:"", range:"16 – 47",            unit:"mg/dL",    cat:"Complemento",          tab:"altro", statusOverride:null},
   // ── GENETICA ────────────────────────────────────────────────
+  {id:"g_fvl",     label:"Fattore V di Leiden",   value:"", range:"Negativo/Wild-Type",unit:"genotipo", cat:"Coagulazione",          tab:"genetica", statusOverride:null},
+  {id:"g_f2",      label:"Fattore II (Protrombina G20210A)", value:"", range:"Negativo/Wild-Type", unit:"genotipo", cat:"Coagulazione", tab:"genetica", statusOverride:null},
+  {id:"g_pai1",    label:"PAI-1 (4G/5G)",        value:"", range:"5G/5G (normale)",   unit:"genotipo", cat:"Coagulazione",          tab:"genetica", statusOverride:null},
   {id:"g_mthfrc",  label:"MTHFR C677T",          value:"", range:"Wild-type (C/C)",   unit:"genotipo", cat:"Metilazione",           tab:"genetica", statusOverride:null},
   {id:"g_mthfra",  label:"MTHFR A1298C",         value:"", range:"Wild-type (A/A)",   unit:"genotipo", cat:"Metilazione",           tab:"genetica", statusOverride:null},
+  {id:"g_apoe",    label:"APOE genotipo",         value:"", range:"ε3/ε3",            unit:"genotipo", cat:"Metabolismo lipidico",  tab:"genetica", statusOverride:null},
+  {id:"g_fto",     label:"FTO (obesità)",         value:"", range:"Wild-type",         unit:"genotipo", cat:"Metabolismo lipidico",  tab:"genetica", statusOverride:null},
   {id:"g_comt",    label:"COMT Val158Met",        value:"", range:"Val/Val",           unit:"genotipo", cat:"Neurotrasmettitori",    tab:"genetica", statusOverride:null},
   {id:"g_vdr",     label:"VDR (Vit. D receptor)",value:"", range:"Wild-type",         unit:"genotipo", cat:"Metabolismo",           tab:"genetica", statusOverride:null},
-  {id:"g_apoe",    label:"APOE genotipo",         value:"", range:"ε3/ε3",            unit:"genotipo", cat:"Metabolismo lipidico",  tab:"genetica", statusOverride:null},
   {id:"g_cyp1b1",  label:"CYP1B1",               value:"", range:"Wild-type",         unit:"genotipo", cat:"Detossificazione",      tab:"genetica", statusOverride:null},
   {id:"g_gstm1",   label:"GSTM1",                value:"", range:"Normale",           unit:"genotipo", cat:"Detossificazione",      tab:"genetica", statusOverride:null},
   {id:"g_hmox",    label:"HO-1 (HMOX1)",         value:"", range:"Normale",           unit:"genotipo", cat:"Stress ossidativo",     tab:"genetica", statusOverride:null},
@@ -1642,7 +1646,7 @@ function NaturopatiaAI() {
   const [docNewForm, setDocNewForm] = useState({doc_type:"disclaimer",title:"",content:"",version:"1.0"});
   const [showNewDoc, setShowNewDoc] = useState(false);
 
-  // Analisi Ematiche
+  // Diagnostica Integrata
   const [hemoParams, setHemoParams] = useState(DEFAULT_HEMO_PARAMS);
   const [hemoMsgs, setHemoMsgs] = useState([]);
   const [hemoInput, setHemoInput] = useState("");
@@ -1685,6 +1689,17 @@ function NaturopatiaAI() {
   const [hemoLastName,  setHemoLastName]  = useState("");
   const [hemoSignature, setHemoSignature] = useState(()=>localStorage.getItem("nm_hemo_sig")||null);
   const hemoSigRef = React.useRef(null);
+  // Anagrafica Costituzionale
+  const [hemoBloodGroup, setHemoBloodGroup] = useState(()=>localStorage.getItem("nm_blood_group")||"");
+  const [hemoRhFactor,   setHemoRhFactor]   = useState(()=>localStorage.getItem("nm_rh_factor")||"");
+  // Comorbilità
+  const [hemoComorbilita, setHemoComorbilita] = useState(()=>{
+    try{return JSON.parse(localStorage.getItem("nm_comorbilita")||"{}");}catch{return {};}
+  });
+  // Firma Professionale
+  const [firmaLinea1, setFirmaLinea1] = useState(()=>localStorage.getItem("nm_firma1")||"Dott. Luigi Amicarelli");
+  const [firmaLinea2, setFirmaLinea2] = useState(()=>localStorage.getItem("nm_firma2")||"Biologo Nutrizionista");
+  const [firmaLinea3, setFirmaLinea3] = useState(()=>localStorage.getItem("nm_firma3")||"");
   // Global Search Bar
   const [hemoSearchOpen, setHemoSearchOpen] = useState(false);
   const [hemoSearchQ,    setHemoSearchQ]    = useState("");
@@ -2676,7 +2691,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
     {id:"kb",icon:"◉",label:T.nav_kb},
     {id:"kb_add",icon:"⊕",label:T.nav_kb_add},
     {id:"patients",icon:"♦",label:T.nav_patients},
-    {id:"hemo",icon:"🩸",label:"Analisi Ematiche"},
+    {id:"hemo",icon:"🩸",label:"Diagnostica Integrata"},
     {id:"referti",icon:"▣",label:T.nav_reports},
     {id:"documents",icon:"☰",label:T.nav_docs},
     ...(_optionalChain([currentUser, 'optionalAccess', _56 => _56.role])==="admin"?[{id:"admin",icon:"⚙",label:T.nav_admin}]:[]),
@@ -3309,6 +3324,61 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
         /* ── SETTINGS ── */
         , panel==="settings" && React.createElement(React.Fragment, null
           , React.createElement(PanelHeader, { title: T.settings_title, sub: T.settings_sub,})
+
+          /* FIRMA PROFESSIONALE */
+          , React.createElement('div',{style:{padding:"18px 28px",borderBottom:"1px solid var(--nm-border)"}}
+            , React.createElement('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:16,
+                color:"var(--nm-text-head)",marginBottom:14}}
+              , "✒ Firma Professionale"
+            )
+            , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:8}}
+              , [
+                  {state:firmaLinea1, setter:setFirmaLinea1, key:"nm_firma1",
+                   label:"Linea 1 — Nome", ph:"Es: Dott. Mario Rossi"},
+                  {state:firmaLinea2, setter:setFirmaLinea2, key:"nm_firma2",
+                   label:"Linea 2 — Ruolo", ph:"Es: Biologo Nutrizionista"},
+                  {state:firmaLinea3, setter:setFirmaLinea3, key:"nm_firma3",
+                   label:"Linea 3 — Specializzazione (opzionale)", ph:"Es: Naturopata · ONAF"},
+                ].map(({state,setter,key,label,ph})=>
+                  React.createElement('div',{key:key}
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , label
+                    )
+                    , React.createElement('input',{type:"text",value:state,
+                        onChange:e=>{setter(e.target.value);localStorage.setItem(key,e.target.value);},
+                        placeholder:ph,
+                        style:{width:"100%",boxSizing:"border-box",
+                          background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                          borderRadius:6,padding:"8px 10px",color:"var(--nm-text)",
+                          fontSize:12,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                  )
+                )
+              /* Preview firma */
+              , React.createElement('div',{style:{
+                  marginTop:6,padding:"12px 16px",
+                  background:"rgba(255,255,255,0.03)",border:"1px solid var(--nm-border)",
+                  borderRadius:8,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}
+                , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                    marginBottom:6,letterSpacing:"0.5px",textTransform:"uppercase",alignSelf:"flex-start"}}
+                  , "Anteprima referto"
+                )
+                , React.createElement('div',{style:{borderBottom:"1px dashed var(--nm-border2)",
+                    width:160,marginBottom:6,height:36}}
+                  /* spazio firma */
+                )
+                , [firmaLinea1,firmaLinea2,firmaLinea3].filter(Boolean).map((line,i)=>
+                    React.createElement('div',{key:i,style:{
+                        fontSize:i===0?13:11,fontWeight:i===0?600:400,textAlign:"center",
+                        fontFamily:i===0?"'Cormorant Garamond',serif":"'DM Mono',monospace",
+                        color:i===0?"var(--nm-text)":"var(--nm-text-dim)",letterSpacing:"0.2px"}}
+                      , line
+                    )
+                  )
+              )
+            )
+          )
+
           /* TEMA COLORI */
           , React.createElement('div', { style: {padding:"20px 28px",borderBottom:"1px solid var(--nm-border)"},}
             , React.createElement('div', { style: {fontFamily:"'Cormorant Garamond',serif",fontSize:16,color:"var(--nm-text-head)",marginBottom:14},}, "🎨 "
@@ -3396,7 +3466,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
 
         /* ── ANALISI EMATICHE ── */
         , panel==="hemo" && React.createElement(React.Fragment, null
-          , React.createElement(PanelHeader, {title:"Analisi Ematiche", sub:"Human-in-the-Loop — verifica obbligatoria prima del consulto AI",
+          , React.createElement(PanelHeader, {title:"Diagnostica Integrata", sub:"Human-in-the-Loop — verifica obbligatoria prima del consulto AI",
               action:React.createElement('button',{onClick:()=>{setHemoSearchOpen(true);setHemoSearchQ("");},
                 style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border)",borderRadius:6,
                   padding:"4px 10px",fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
@@ -3418,8 +3488,8 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     {id:"ematologia",  label:"🔴 Ematologia"},
                     {id:"urine",       label:"🟡 Urine"},
                     {id:"feci",        label:"🟤 Feci"},
-                    {id:"immunologia", label:"🔵 Immunologia"},
                     {id:"genetica",    label:"🧬 Genetica"},
+                    {id:"farmaci",     label:"💊 Farmaci & Comorbilità"},
                     {id:"altro",       label:"➕ Altro"},
                   ].map(t=>React.createElement('button',{key:t.id,
                     onClick:()=>{setHemoTab(t.id);setHemoShowAdd(false);},
@@ -3592,6 +3662,26 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       fontFamily:"'DM Mono',monospace",outline:"none",width:"100%"}})
               )
 
+              /* Gruppo Sanguigno + Fattore Rh */
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px",gap:6}}
+                , React.createElement('select',{value:hemoBloodGroup,
+                    onChange:e=>{setHemoBloodGroup(e.target.value);localStorage.setItem("nm_blood_group",e.target.value);},
+                    style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                      padding:"6px 8px",color:hemoBloodGroup?"var(--nm-text)":"var(--nm-text-dimmer)",
+                      fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
+                  , React.createElement('option',{value:""},"— Gruppo sanguigno —")
+                  , ["A","B","AB","0"].map(g=>React.createElement('option',{key:g,value:g},"Gruppo "+g))
+                )
+                , React.createElement('select',{value:hemoRhFactor,
+                    onChange:e=>{setHemoRhFactor(e.target.value);localStorage.setItem("nm_rh_factor",e.target.value);},
+                    style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                      padding:"6px 8px",color:hemoRhFactor?"var(--nm-text)":"var(--nm-text-dimmer)",
+                      fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
+                  , React.createElement('option',{value:""},"Rh")
+                  , ["+","-"].map(r=>React.createElement('option',{key:r,value:r},"Rh "+r))
+                )
+              )
+
               /* Paziente + Reset */
               , React.createElement('div', {style:{display:"flex",gap:8,alignItems:"center"}}
                 , React.createElement('select', {value:hemoPatient, onChange:e=>setHemoPatient(e.target.value),
@@ -3606,12 +3696,94 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 )
               )
 
-              /* Intestazione colonne */
-              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px",
-                gap:4,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
-                , ["Parametro","Valore","Range Rif.","Unità","",""].map(h=>React.createElement('span',{key:h,
-                  style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
-              )
+              /* ── TAB FARMACI: UI speciale ── */
+              , hemoTab==="farmaci"
+                ? React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:10,paddingTop:4}}
+
+                    /* Alert Cross-Talk */
+                    , (()=>{
+                        const alerts = [];
+                        const c = hemoComorbilita;
+                        const hasIpo = c.ipotiroidismo&&c.ipotiroidismo!=="";
+                        const hasFe  = hemoParams.some(p=>["ferr","fe"].includes(p.id)&&p.value!=="");
+                        const hasMg  = hemoParams.some(p=>p.id==="mg"&&p.value!=="");
+                        const hasCa  = hemoParams.some(p=>p.id==="ca"&&p.value!=="");
+                        if(hasIpo&&(hasFe||hasMg||hasCa))
+                          alerts.push("⚠ Eutirox + Calcio/Ferro/Magnesio: distanziare l'assunzione di almeno 2–4 ore.");
+                        const hasFVL = hemoParams.some(p=>p.id==="g_fvl"&&p.value&&p.value!=="");
+                        const hasF2  = hemoParams.some(p=>p.id==="g_f2"&&p.value&&p.value!=="");
+                        if((hasFVL||hasF2)&&c.ipertensione)
+                          alerts.push("⚠ Trombofilia genetica + Ipertensione: valutare anticoagulazione con il medico.");
+                        if(alerts.length===0) return React.createElement('div',{style:{fontSize:10,
+                            color:"var(--nm-text-dimmer)",padding:"8px 10px",
+                            background:"rgba(10,30,10,0.3)",borderRadius:7,
+                            border:"1px dashed var(--nm-border)"}}
+                          , "✅ Nessuna interazione rilevata con i dati attuali."
+                        );
+                        return React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
+                          , alerts.map((a,i)=>React.createElement('div',{key:i,style:{
+                              padding:"8px 12px",borderRadius:7,fontSize:11,lineHeight:1.6,
+                              background:"rgba(200,140,10,0.1)",border:"1px solid rgba(200,140,10,0.4)",
+                              color:"#e0b840"}}
+                            , a
+                          ))
+                        );
+                      })()
+
+                    /* Comorbilità */
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase"}},"Comorbilità")
+                    , [
+                        {k:"diabete",label:"Diabete",opts:["","Tipo 1 (T1)","Tipo 2 (T2)"]},
+                        {k:"ipertensione",label:"Ipertensione",opts:["","Sì","No"]},
+                        {k:"ipotiroidismo",label:"Ipotiroidismo",opts:["","Hashimoto","Post-chirurgico"]},
+                        {k:"ipercolesterolemia",label:"Ipercolesterolemia",opts:["","Sì","No"]},
+                      ].map(({k,label,opts})=>
+                        React.createElement('div',{key:k,style:{display:"grid",
+                            gridTemplateColumns:"120px 1fr",gap:8,alignItems:"center"}}
+                          , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text-dim)"}}
+                            , label
+                          )
+                          , React.createElement('select',{
+                              value:hemoComorbilita[k]||"",
+                              onChange:e=>{
+                                const updated={...hemoComorbilita,[k]:e.target.value};
+                                setHemoComorbilita(updated);
+                                try{localStorage.setItem("nm_comorbilita",JSON.stringify(updated));}catch(_){}
+                              },
+                              style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                                borderRadius:6,padding:"5px 8px",color:"var(--nm-text)",
+                                fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
+                            , opts.map(o=>React.createElement('option',{key:o,value:o},o||"— Non specificato —"))
+                          )
+                        )
+                      )
+
+                    /* Farmaci in uso */
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginTop:4}},"Farmaci in uso")
+                    , React.createElement('textarea',{
+                        value:hemoComorbilita.farmaci||"",
+                        onChange:e=>{
+                          const updated={...hemoComorbilita,farmaci:e.target.value};
+                          setHemoComorbilita(updated);
+                          try{localStorage.setItem("nm_comorbilita",JSON.stringify(updated));}catch(_){}
+                        },
+                        placeholder:"Elenca farmaci in uso (uno per riga o separati da virgola)...",
+                        rows:4,
+                        style:{width:"100%",boxSizing:"border-box",resize:"vertical",
+                          background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                          borderRadius:7,padding:"8px 10px",color:"var(--nm-text)",
+                          fontSize:11,fontFamily:"'DM Mono',monospace",lineHeight:1.7,outline:"none"}})
+                  )
+                : React.createElement(React.Fragment,null
+
+                    /* Intestazione colonne */
+                    , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px",
+                      gap:4,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
+                      , ["Parametro","Valore","Range Rif.","Unità","",""].map(h=>React.createElement('span',{key:h,
+                        style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
+                    )
 
               /* Sezioni per categoria — collassabili — filtrate per tab attiva */
               , ...Object.entries(
@@ -3785,6 +3957,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   )
                 )
               )
+                ) /* chiude React.Fragment del ramo else (non-farmaci) */
 
               /* ── CHECKBOX DI SICUREZZA (Human-in-the-Loop) ── */
               , React.createElement('label',{style:{display:"flex",alignItems:"flex-start",gap:10,marginTop:14,
@@ -4032,9 +4205,17 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   , [hemoFirstName,hemoLastName].filter(Boolean).join(" ")
                     || "— paziente non specificato —"
                 )
-                , hemoPatient&&React.createElement('div',{style:{fontSize:10,
-                    color:"var(--nm-text-dimmer)",marginTop:3}}
-                  , "Codice: "+hemoPatient
+                , React.createElement('div',{style:{display:"flex",gap:12,marginTop:4,flexWrap:"wrap"}}
+                  , hemoPatient&&React.createElement('span',{style:{fontSize:10,color:"var(--nm-text-dimmer)"}}
+                    , "Codice: "+hemoPatient
+                  )
+                  , (hemoBloodGroup||hemoRhFactor)&&React.createElement('span',{style:{
+                      fontSize:11,fontWeight:600,fontFamily:"'DM Mono',monospace",
+                      padding:"1px 8px",borderRadius:4,
+                      background:"rgba(200,50,50,0.15)",border:"1px solid rgba(200,50,50,0.3)",
+                      color:"#e08080"}}
+                    , (hemoBloodGroup||"?")+" Rh"+(hemoRhFactor||"?")
+                  )
                 )
               )
 
@@ -4285,19 +4466,22 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     )
                   )
                 )
-                /* Blocco identità fisso — sempre visibile in stampa */
+                /* Blocco identità dinamico — smart-hide linee vuote */
                 , React.createElement('div',{style:{
                     marginTop:10,paddingTop:8,
-                    borderTop:"1px solid var(--nm-border)"}},
-                  React.createElement('div',{style:{fontSize:12,fontWeight:600,
-                      color:"var(--nm-text)",fontFamily:"'Cormorant Garamond',serif",
-                      letterSpacing:"0.2px"}}
-                    , "Dott. Luigi Amicarelli"
-                  )
-                  , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dim)",
-                      marginTop:2,letterSpacing:"0.3px"}}
-                    , "Biologo Nutrizionista"
-                  )
+                    borderTop:"1px solid var(--nm-border)",
+                    display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
+                  , [firmaLinea1,firmaLinea2,firmaLinea3].filter(Boolean).map((line,i)=>
+                      React.createElement('div',{key:i,style:{
+                          fontSize:i===0?13:11,
+                          fontWeight:i===0?600:400,
+                          fontFamily:i===0?"'Cormorant Garamond',serif":"'DM Mono',monospace",
+                          color:i===0?"var(--nm-text)":"var(--nm-text-dim)",
+                          letterSpacing:i===0?"0.2px":"0.3px",
+                          textAlign:"center"}}
+                        , line
+                      )
+                    )
                 )
               )
 
@@ -4378,8 +4562,30 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   const TAB_LABELS = {ematologia:"🔴 Ematologia",urine:"🟡 Urine",feci:"🟤 Feci",
                     immunologia:"🔵 Immunologia",genetica:"🧬 Genetica",altro:"➕ Altro"};
                   if(results.length===0) return React.createElement('div',{
-                    style:{padding:"24px",textAlign:"center",color:"var(--nm-text-dimmer)",fontSize:12}}
-                    , q?"Nessun parametro trovato per «"+q+"»":"Nessun valore inserito ancora."
+                    style:{padding:"20px 24px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}
+                    , React.createElement('div',{style:{color:"var(--nm-text-dimmer)",fontSize:12,textAlign:"center"}}
+                      , q?"Nessun parametro trovato nel database locale per «"+q+"»":"Nessun valore inserito ancora."
+                    )
+                    , q&&React.createElement('div',{style:{display:"flex",gap:8}}
+                      , React.createElement('a',{
+                          href:"https://www.iss.it/ricerca?query="+encodeURIComponent(q),
+                          target:"_blank",rel:"noopener noreferrer",
+                          style:{padding:"7px 14px",borderRadius:7,fontSize:11,cursor:"pointer",
+                            textDecoration:"none",fontFamily:"'DM Mono',monospace",
+                            background:"rgba(0,80,200,0.15)",border:"1px solid rgba(80,140,220,0.35)",
+                            color:"#7ab0ff"}}
+                        , "🇮🇹 Cerca su ISS (Italia)"
+                      )
+                      , React.createElement('a',{
+                          href:"https://pubmed.ncbi.nlm.nih.gov/?term="+encodeURIComponent(q),
+                          target:"_blank",rel:"noopener noreferrer",
+                          style:{padding:"7px 14px",borderRadius:7,fontSize:11,cursor:"pointer",
+                            textDecoration:"none",fontFamily:"'DM Mono',monospace",
+                            background:"rgba(200,100,0,0.12)",border:"1px solid rgba(220,140,60,0.35)",
+                            color:"#ffaa6a"}}
+                        , "🌐 Cerca su PubMed (Internazionale)"
+                      )
+                    )
                   );
                   return results.slice(0,20).map(p=>{
                     const sc = HEMO_STATUS[getParamStatus(p)];
