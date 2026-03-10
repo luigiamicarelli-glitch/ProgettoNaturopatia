@@ -1532,18 +1532,39 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"f_sang",   label:"Sangue occulto",         value:"", range:"Negativo",          unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
   {id:"f_paras",  label:"Parassiti / Protozoi",   value:"", range:"Assenti",           unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
   // ── IMMUNOLOGIA ─────────────────────────────────────────────
-  {id:"im_ige",   label:"IgE totali",             value:"", range:"< 100",             unit:"kU/L",     cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
-  {id:"im_iga",   label:"IgA",                   value:"", range:"70 – 400",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
-  {id:"im_igg",   label:"IgG",                   value:"", range:"700 – 1600",         unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
-  {id:"im_igm",   label:"IgM",                   value:"", range:"40 – 230",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"altro", statusOverride:null},
-  {id:"im_ana",   label:"ANA (antinucleo)",       value:"", range:"< 1:80",            unit:"titolo",   cat:"Autoimmunità",         tab:"altro", statusOverride:null},
-  {id:"im_anca",  label:"ANCA",                  value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"altro", statusOverride:null},
-  {id:"im_tpo",   label:"Anti-TPO",              value:"", range:"< 34",              unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"altro", statusOverride:null},
-  {id:"im_tg",    label:"Anti-Tireoglobulina",   value:"", range:"< 115",             unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"altro", statusOverride:null},
-  {id:"im_rf",    label:"Fattore Reumatoide",    value:"", range:"< 14",              unit:"IU/mL",    cat:"Artrite",              tab:"altro", statusOverride:null},
-  {id:"im_ccp",   label:"Anti-CCP",              value:"", range:"< 7",               unit:"U/mL",     cat:"Artrite",              tab:"altro", statusOverride:null},
-  {id:"im_c3",    label:"Complemento C3",        value:"", range:"90 – 180",           unit:"mg/dL",    cat:"Complemento",          tab:"altro", statusOverride:null},
-  {id:"im_c4",    label:"Complemento C4",        value:"", range:"16 – 47",            unit:"mg/dL",    cat:"Complemento",          tab:"altro", statusOverride:null},
+  {id:"im_pcr",   label:"PCR (Proteina C-Reattiva)", value:"", range:"< 5",           unit:"mg/L",     cat:"Infiammazione",        tab:"immunologia", statusOverride:null},
+  {id:"im_ves",   label:"VES",                   value:"", range:"< 20 (M) / < 30 (F)", unit:"mm/h", cat:"Infiammazione",        tab:"immunologia", statusOverride:null},
+  {id:"im_ige",   label:"IgE totali",             value:"", range:"< 100",             unit:"kU/L",     cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_iga",   label:"IgA",                   value:"", range:"70 – 400",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_igg",   label:"IgG",                   value:"", range:"700 – 1600",         unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_igm",   label:"IgM",                   value:"", range:"40 – 230",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_ana",   label:"ANA (antinucleo)",       value:"", range:"< 1:80",            unit:"titolo",   cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
+  {id:"im_ena",   label:"ENA (anti-ENA)",         value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
+  {id:"im_anca",  label:"ANCA",                  value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
+  {id:"im_tpo",   label:"Anti-TPO",              value:"", range:"< 34",              unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
+  {id:"im_tg",    label:"Anti-Tireoglobulina",   value:"", range:"< 115",             unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
+  {id:"im_rf",    label:"Fattore Reumatoide",    value:"", range:"< 14",              unit:"IU/mL",    cat:"Artrite",              tab:"immunologia", statusOverride:null},
+  {id:"im_ccp",   label:"Anti-CCP",              value:"", range:"< 7",               unit:"U/mL",     cat:"Artrite",              tab:"immunologia", statusOverride:null},
+  {id:"im_c3",    label:"Complemento C3",        value:"", range:"90 – 180",           unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
+  {id:"im_c4",    label:"Complemento C4",        value:"", range:"16 – 47",            unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
+  // Sottopopolazioni linfocitarie
+  {id:"im_cd3",   label:"CD3+ (T totali)",        value:"", range:"55 – 85",           unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_cd4",   label:"CD4+ (T helper)",        value:"", range:"28 – 58",           unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_cd8",   label:"CD8+ (T citotossici)",   value:"", range:"19 – 37",           unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_cd48",  label:"CD4/CD8 ratio",          value:"", range:"1.5 – 2.5",         unit:"ratio",    cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_nk",    label:"NK (CD56+)",             value:"", range:"5 – 20",            unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  {id:"im_bcd19", label:"B cells (CD19+)",        value:"", range:"5 – 15",            unit:"%",        cat:"Linfociti",            tab:"immunologia", statusOverride:null},
+  // ── MICROIMMUNOLOGIA ─────────────────────────────────────────
+  {id:"mi_il1b",  label:"IL-1β (Interleuchina-1β)", value:"", range:"< 5",            unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_il2",   label:"IL-2",                   value:"", range:"< 10",             unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_il6",   label:"IL-6 (Interleuchina-6)", value:"", range:"< 7",             unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_tnfa",  label:"TNF-α",                  value:"", range:"< 15",             unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_ifng",  label:"IFN-γ",                  value:"", range:"< 10",             unit:"pg/mL",    cat:"Citochine pro-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_il10",  label:"IL-10 (Interleuchina-10)", value:"", range:"< 18",           unit:"pg/mL",    cat:"Citochine anti-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_il4",   label:"IL-4",                   value:"", range:"< 10",             unit:"pg/mL",    cat:"Citochine anti-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_il13",  label:"IL-13",                  value:"", range:"< 12",             unit:"pg/mL",    cat:"Citochine anti-infiammatorie", tab:"microimmunologia", statusOverride:null},
+  {id:"mi_th12",  label:"Th1/Th2 ratio",          value:"", range:"0.5 – 2.0",        unit:"ratio",    cat:"Bilancio immunologico",       tab:"microimmunologia", statusOverride:null},
+  {id:"mi_treg",  label:"T-reg (CD4+CD25+FoxP3+)", value:"", range:"5 – 10",         unit:"%",        cat:"Bilancio immunologico",       tab:"microimmunologia", statusOverride:null},
   // ── GENETICA ────────────────────────────────────────────────
   {id:"g_fvl",     label:"Fattore V di Leiden",   value:"", range:"Negativo/Wild-Type",unit:"genotipo", cat:"Coagulazione",          tab:"genetica", statusOverride:null},
   {id:"g_f2",      label:"Fattore II (Protrombina G20210A)", value:"", range:"Negativo/Wild-Type", unit:"genotipo", cat:"Coagulazione", tab:"genetica", statusOverride:null},
@@ -1558,6 +1579,287 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"g_gstm1",   label:"GSTM1",                value:"", range:"Normale",           unit:"genotipo", cat:"Detossificazione",      tab:"genetica", statusOverride:null},
   {id:"g_hmox",    label:"HO-1 (HMOX1)",         value:"", range:"Normale",           unit:"genotipo", cat:"Stress ossidativo",     tab:"genetica", statusOverride:null},
 ];
+
+// ── INFO MODALS (ⓘ Visual Support) ──────────────────────────
+const INFO_MODALS = {
+  g_mthfrc: {
+    title: "MTHFR C677T — Via della Metilazione",
+    svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="200" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="22" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">MTHFR C677T — Ciclo del Folato</text>
+      <!-- Boxes -->
+      <rect x="10" y="40" width="80" height="30" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="50" y="59" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Folato (B9)</text>
+      <rect x="120" y="40" width="80" height="30" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="55" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">5,10-Metilen-</text>
+      <text x="160" y="65" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">THF</text>
+      <rect x="230" y="40" width="80" height="30" rx="4" fill="#1a2e1a" stroke="#a8e6a3"/>
+      <text x="270" y="55" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">5-Metil-THF</text>
+      <text x="270" y="65" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">(forma attiva)</text>
+      <!-- Arrow MTHFR -->
+      <line x1="200" y1="55" x2="230" y2="55" stroke="#a8e6a3" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="215" y="50" fill="#f0a050" font-size="8" text-anchor="middle" font-family="monospace">MTHFR</text>
+      <!-- Second row: Omocisteina → Metionina -->
+      <rect x="10" y="110" width="80" height="30" rx="4" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="50" y="129" fill="#f09090" font-size="9" text-anchor="middle" font-family="monospace">Omocisteina</text>
+      <rect x="120" y="110" width="80" height="30" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="129" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Metionina</text>
+      <rect x="230" y="110" width="80" height="30" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="270" y="125" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">SAM</text>
+      <text x="270" y="135" fill="#a0a0f0" font-size="7" text-anchor="middle" font-family="monospace">(donatore CH₃)</text>
+      <line x1="90" y1="125" x2="120" y2="125" stroke="#a8e6a3" stroke-width="2" marker-end="url(#arr)"/>
+      <line x1="200" y1="125" x2="230" y2="125" stroke="#a0a0f0" stroke-width="2" marker-end="url(#arr)"/>
+      <!-- Vertical: 5-MeTHF → Omocist remetilazione -->
+      <line x1="270" y1="70" x2="270" y2="95" stroke="#88c888" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="270" y1="95" x2="50" y2="95" stroke="#88c888" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="50" y1="95" x2="50" y2="110" stroke="#88c888" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- Polymorphism box -->
+      <rect x="90" y="155" width="140" height="35" rx="4" fill="#2e1a00" stroke="#f0a050"/>
+      <text x="160" y="169" fill="#f0c070" font-size="8" text-anchor="middle" font-family="monospace">C677T: enzima -30/70%</text>
+      <text x="160" y="180" fill="#f0a050" font-size="8" text-anchor="middle" font-family="monospace">Etero: -30% · Omo: -70%</text>
+      <!-- defs -->
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#a8e6a3"/>
+        </marker>
+        <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L6,3 z" fill="#88c888"/>
+        </marker>
+      </defs>
+    </svg>`,
+    note: "La variante C677T riduce l'attività dell'enzima MTHFR, limitando la produzione di 5-MTHF necessario per la rimetilazione dell'omocisteina. In eterozigosi: -30% efficienza; in omozigosi: -70%. Supplementare con metilfolato (5-MTHF) e metilcobalamina (B12 attiva). Monitorare omocisteina plasmatica (target < 10 µmol/L)."
+  },
+  g_fvl: {
+    title: "Fattore V di Leiden — Trombofilia Ereditaria",
+    svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="180" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">Cascata Coagulazione — FV Leiden</text>
+      <!-- Normal pathway -->
+      <rect x="10" y="35" width="60" height="25" rx="3" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="40" y="51" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">F Xa + FVa</text>
+      <line x1="70" y1="47" x2="95" y2="47" stroke="#a8e6a3" stroke-width="2" marker-end="url(#a3)"/>
+      <rect x="95" y="35" width="60" height="25" rx="3" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="125" y="51" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">Protrombina</text>
+      <line x1="155" y1="47" x2="180" y2="47" stroke="#a8e6a3" stroke-width="2" marker-end="url(#a3)"/>
+      <rect x="180" y="35" width="60" height="25" rx="3" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="210" y="51" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">Trombina ↑↑</text>
+      <!-- APC inactivation blocked -->
+      <rect x="10" y="90" width="90" height="35" rx="3" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="55" y="104" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">APC (Prot. C attivata)</text>
+      <text x="55" y="115" fill="#a0a0f0" font-size="7" text-anchor="middle" font-family="monospace">normalmente inattiva FVa</text>
+      <line x1="100" y1="107" x2="130" y2="60" stroke="#e06060" stroke-width="2" stroke-dasharray="4,2"/>
+      <text x="135" y="75" fill="#e06060" font-size="9" text-anchor="middle" font-family="monospace">BLOCCO</text>
+      <text x="135" y="85" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">FV R506Q</text>
+      <!-- Risk box -->
+      <rect x="190" y="85" width="120" height="50" rx="4" fill="#2e1a00" stroke="#f0a050"/>
+      <text x="250" y="100" fill="#f0c070" font-size="9" text-anchor="middle" font-family="monospace">Rischio TVP</text>
+      <text x="250" y="112" fill="#f0a050" font-size="8" text-anchor="middle" font-family="monospace">Etero: 3–7×</text>
+      <text x="250" y="124" fill="#e08040" font-size="8" text-anchor="middle" font-family="monospace">Omo: 50–100×</text>
+      <defs><marker id="a3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#a8e6a3"/></marker></defs>
+    </svg>`,
+    note: "La mutazione R506Q (G1691A) rende il FVa resistente alla degradazione da parte della Proteina C attivata (APC). Il rischio tromboembolico aumenta 3-7x in eterozigosi e fino a 50-100x in omozigosi. Valutare profilassi in condizioni ad alto rischio (chirurgia, gravidanza, immobilizzazione). Associare sempre con PAI-1 e Protrombina G20210A."
+  },
+  mi_il6: {
+    title: "IL-6 — Citochina Pleiotropica",
+    svg: `<svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="180" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">IL-6 — Effetti Biologici</text>
+      <!-- Central IL-6 -->
+      <circle cx="160" cy="90" r="28" fill="#2e1a00" stroke="#f0a050" stroke-width="2"/>
+      <text x="160" y="87" fill="#f0c070" font-size="11" text-anchor="middle" font-family="monospace" font-weight="bold">IL-6</text>
+      <text x="160" y="99" fill="#f0a050" font-size="7" text-anchor="middle" font-family="monospace">pg/mL</text>
+      <!-- Arrows to effects -->
+      <line x1="132" y1="75" x2="95" y2="45" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="85" y="40" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">Fegato:</text>
+      <text x="85" y="50" fill="#e8c080" font-size="7" text-anchor="middle" font-family="monospace">PCR, fibrinogeno</text>
+      <line x1="188" y1="75" x2="225" y2="45" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="240" y="38" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">Th17:</text>
+      <text x="240" y="48" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">↑ autoimmunità</text>
+      <line x1="160" y1="62" x2="160" y2="35" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="160" y="28" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">Febbre (Ipotalamo)</text>
+      <line x1="132" y1="105" x2="80" y2="130" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="55" y="130" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">Ossa:</text>
+      <text x="55" y="140" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">↑ osteoclasti</text>
+      <line x1="188" y1="105" x2="240" y2="130" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="265" y="128" fill="#e8f5e8" font-size="8" text-anchor="middle" font-family="monospace">Muscolo:</text>
+      <text x="265" y="138" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">↑ catabolismo</text>
+      <line x1="160" y1="118" x2="160" y2="155" stroke="#f0a050" stroke-width="1.5" marker-end="url(#a4)"/>
+      <text x="160" y="165" fill="#a0a0f0" font-size="7" text-anchor="middle" font-family="monospace">T-reg: effetto anti-infiammatorio</text>
+      <!-- Range -->
+      <rect x="10" y="155" width="80" height="18" rx="3" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="50" y="167" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">Range: &lt; 7 pg/mL</text>
+      <defs><marker id="a4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#f0a050"/></marker></defs>
+    </svg>`,
+    note: "L'IL-6 è una citochina pleiotropica prodotta da macrofagi, cellule T e adipociti. Livelli elevati correlano con infiammazione cronica, sindrome metabolica, resistenza insulinica e malattie autoimmuni. Modulatori naturali: curcumina, omega-3, resveratrolo, NAC. Target terapeutico per farmaci biologici (tocilizumab)."
+  },
+  mi_il10: {
+    title: "IL-10 — Citochina Anti-infiammatoria",
+    svg: `<svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="170" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">IL-10 — Asse Anti-infiammatorio</text>
+      <!-- T-reg source -->
+      <rect x="10" y="40" width="70" height="30" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="45" y="59" fill="#a0a0f0" font-size="9" text-anchor="middle" font-family="monospace">T-reg / Tr1</text>
+      <line x1="80" y1="55" x2="105" y2="55" stroke="#a0a0f0" stroke-width="2" marker-end="url(#a5)"/>
+      <!-- IL-10 central -->
+      <circle cx="140" cy="55" r="25" fill="#1a2e2e" stroke="#40a0a0" stroke-width="2"/>
+      <text x="140" y="52" fill="#80e0e0" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">IL-10</text>
+      <text x="140" y="63" fill="#60b0b0" font-size="7" text-anchor="middle" font-family="monospace">&lt;18 pg/mL</text>
+      <!-- Effects: suppresses -->
+      <line x1="165" y1="55" x2="210" y2="40" stroke="#40a0a0" stroke-width="1.5" marker-end="url(#a5)"/>
+      <rect x="210" y="28" width="95" height="24" rx="3" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="257" y="44" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">↓ IL-1β, IL-6, TNF-α</text>
+      <line x1="165" y1="65" x2="210" y2="80" stroke="#40a0a0" stroke-width="1.5" marker-end="url(#a5)"/>
+      <rect x="210" y="70" width="95" height="24" rx="3" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="257" y="86" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">↓ MHC II, Th17</text>
+      <!-- Low IL-10 consequence -->
+      <rect x="10" y="105" width="140" height="35" rx="4" fill="#2e1a00" stroke="#f0a050"/>
+      <text x="80" y="118" fill="#f0c070" font-size="8" text-anchor="middle" font-family="monospace">IL-10 bassa: rischio</text>
+      <text x="80" y="130" fill="#f0a050" font-size="7" text-anchor="middle" font-family="monospace">IBD, psoriasi, artrite</text>
+      <!-- High IL-10 consequence -->
+      <rect x="165" y="105" width="145" height="35" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="237" y="118" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">IL-10 alta: immunosoppressione</text>
+      <text x="237" y="130" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">↓ difese vs infezioni/tumori</text>
+      <defs><marker id="a5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#40a0a0"/></marker></defs>
+    </svg>`,
+    note: "IL-10 è il principale freno dell'infiammazione, prodotta da T-reg, macrofagi M2 e cellule Tr1. Livelli bassi si associano a IBD, psoriasi, artrite reumatoide. Livelli elevati indicano immunosoppressione con rischio infettivo/oncologico. Valutare sempre in rapporto con IL-6 e TNF-α per il bilancio Th1/Th2."
+  },
+  mi_th12: {
+    title: "Th1/Th2 — Bilancio Immunologico",
+    svg: `<svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="190" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">Bilancio Th1 / Th2</text>
+      <!-- Scale visual -->
+      <line x1="160" y1="50" x2="160" y2="100" stroke="#a8e6a3" stroke-width="2"/>
+      <line x1="100" y1="80" x2="220" y2="80" stroke="#a8e6a3" stroke-width="2"/>
+      <!-- Th1 side -->
+      <rect x="20" y="88" width="80" height="40" rx="4" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="60" y="103" fill="#f09090" font-size="9" text-anchor="middle" font-family="monospace">Th1 dominante</text>
+      <text x="60" y="115" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">IFN-γ↑ TNF-α↑</text>
+      <text x="60" y="124" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Autoimmunità</text>
+      <!-- Th2 side -->
+      <rect x="220" y="88" width="80" height="40" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="260" y="103" fill="#a0a0f0" font-size="9" text-anchor="middle" font-family="monospace">Th2 dominante</text>
+      <text x="260" y="115" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">IL-4↑ IL-13↑ IgE↑</text>
+      <text x="260" y="124" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">Allergia, Atopia</text>
+      <!-- Balance zone -->
+      <rect x="115" y="45" width="90" height="30" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="58" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">EQUILIBRIO</text>
+      <text x="160" y="68" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">ratio 0.5 – 2.0</text>
+      <!-- Cytokines -->
+      <rect x="20" y="145" width="130" height="35" rx="4" fill="#1a1a1a" stroke="#444"/>
+      <text x="85" y="159" fill="#c8c8c8" font-size="8" text-anchor="middle" font-family="monospace">Th1: IL-2, IFN-γ, TNF-α</text>
+      <text x="85" y="170" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Immunità cellulare</text>
+      <rect x="165" y="145" width="130" height="35" rx="4" fill="#1a1a1a" stroke="#444"/>
+      <text x="230" y="159" fill="#c8c8c8" font-size="8" text-anchor="middle" font-family="monospace">Th2: IL-4, IL-5, IL-13</text>
+      <text x="230" y="170" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Immunità umorale</text>
+    </svg>`,
+    note: "Il ratio Th1/Th2 riflette il bilancio tra immunità cellulare (Th1) e umorale (Th2). Th1 prevalente: rischio autoimmunità, tiroidite, artrite. Th2 prevalente: allergie, atopia, asma. Target fisiologico 0.5–2.0. T-regolatorie (T-reg) fungono da moderatori di entrambi i bracci. Strategie di riequilibrio: microbiota, vitamina D, omega-3."
+  },
+  f_calp: {
+    title: "Calprotectina Fecale — Marker di Infiammazione Intestinale",
+    svg: `<svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="170" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">Calprotectina Fecale</text>
+      <!-- Scale bar -->
+      <rect x="20" y="40" width="280" height="20" rx="4" fill="#111"/>
+      <rect x="20" y="40" width="93" height="20" rx="4" fill="#2a6a2a" opacity="0.8"/>
+      <rect x="113" y="40" width="94" height="20" rx="0" fill="#c89010" opacity="0.8"/>
+      <rect x="207" y="40" width="93" height="20" rx="4" fill="#cc4444" opacity="0.8"/>
+      <text x="66" y="54" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">&lt; 50 µg/g</text>
+      <text x="160" y="54" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">50 – 200</text>
+      <text x="253" y="54" fill="#fff" font-size="8" text-anchor="middle" font-family="monospace">&gt; 200 µg/g</text>
+      <!-- Labels -->
+      <text x="66" y="76" fill="#88c888" font-size="9" text-anchor="middle" font-family="monospace">Normale</text>
+      <text x="66" y="86" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">IBS funzionale</text>
+      <text x="160" y="76" fill="#e0a030" font-size="9" text-anchor="middle" font-family="monospace">Borderline</text>
+      <text x="160" y="86" fill="#c89010" font-size="7" text-anchor="middle" font-family="monospace">Ripetere 4-6 sett.</text>
+      <text x="253" y="76" fill="#f08080" font-size="9" text-anchor="middle" font-family="monospace">Infiammazione</text>
+      <text x="253" y="86" fill="#e06060" font-size="7" text-anchor="middle" font-family="monospace">IBD, Crohn, CU</text>
+      <!-- Mechanism -->
+      <rect x="20" y="100" width="280" height="55" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="115" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Rilasciata da neutrofili attivati</text>
+      <text x="160" y="127" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">nella mucosa intestinale infiammata</text>
+      <text x="160" y="139" fill="#e8f5e8" font-size="7" text-anchor="middle" font-family="monospace">Stabile nelle feci 3-7 giorni · Alta sensibilità (93%) e specificità (96%)</text>
+      <text x="160" y="149" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">per distinguere IBD organica da IBS funzionale</text>
+    </svg>`,
+    note: "La calprotectina fecale è rilasciata dai neutrofili infiltranti la mucosa intestinale infiammata. È il gold-standard non-invasivo per distinguere IBD (Crohn, Colite Ulcerosa) dall'IBS funzionale. Valori > 200 µg/g indicano infiammazione attiva e richiedono colonscopia. Utile anche per monitorare la risposta terapeutica nelle IBD."
+  },
+  blood_group: {
+    title: "Gruppo Sanguigno — Implicazioni Cliniche",
+    svg: `<svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="190" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">Sistema ABO + Fattore Rh</text>
+      <!-- ABO boxes -->
+      <rect x="10" y="32" width="60" height="50" rx="5" fill="#2e1a1a" stroke="#e06060" stroke-width="1.5"/>
+      <text x="40" y="52" fill="#f09090" font-size="14" text-anchor="middle" font-family="monospace" font-weight="bold">A</text>
+      <text x="40" y="65" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">Ag-A</text>
+      <text x="40" y="75" fill="#c06060" font-size="7" text-anchor="middle" font-family="monospace">Ab anti-B</text>
+      <rect x="85" y="32" width="60" height="50" rx="5" fill="#1a1a2e" stroke="#6060e0" stroke-width="1.5"/>
+      <text x="115" y="52" fill="#a0a0f0" font-size="14" text-anchor="middle" font-family="monospace" font-weight="bold">B</text>
+      <text x="115" y="65" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">Ag-B</text>
+      <text x="115" y="75" fill="#6060b0" font-size="7" text-anchor="middle" font-family="monospace">Ab anti-A</text>
+      <rect x="160" y="32" width="60" height="50" rx="5" fill="#2e2e1a" stroke="#c0c030" stroke-width="1.5"/>
+      <text x="190" y="52" fill="#e0e070" font-size="12" text-anchor="middle" font-family="monospace" font-weight="bold">AB</text>
+      <text x="190" y="65" fill="#b0b050" font-size="7" text-anchor="middle" font-family="monospace">Ag-A e Ag-B</text>
+      <text x="190" y="75" fill="#909040" font-size="7" text-anchor="middle" font-family="monospace">Nessun Ab</text>
+      <rect x="235" y="32" width="60" height="50" rx="5" fill="#1a2e1a" stroke="#4a9e4a" stroke-width="1.5"/>
+      <text x="265" y="52" fill="#a8e6a3" font-size="14" text-anchor="middle" font-family="monospace" font-weight="bold">0</text>
+      <text x="265" y="65" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Nessun Ag</text>
+      <text x="265" y="75" fill="#68a868" font-size="7" text-anchor="middle" font-family="monospace">Ab anti-A+B</text>
+      <!-- Donor labels -->
+      <text x="190" y="94" fill="#e0e070" font-size="8" text-anchor="middle" font-family="monospace">Ricevente universale</text>
+      <text x="265" y="94" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">Donatore universale</text>
+      <!-- Rh section -->
+      <line x1="10" y1="105" x2="310" y2="105" stroke="#2a4a2a" stroke-width="1"/>
+      <text x="160" y="118" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">Fattore Rh (antigene D)</text>
+      <rect x="20" y="124" width="125" height="35" rx="4" fill="#2e1a00" stroke="#f0a050"/>
+      <text x="82" y="139" fill="#f0c070" font-size="9" text-anchor="middle" font-family="monospace">Rh+ (85% popolazione)</text>
+      <text x="82" y="151" fill="#c08040" font-size="7" text-anchor="middle" font-family="monospace">Ag D presente · dominante</text>
+      <rect x="175" y="124" width="125" height="35" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="237" y="139" fill="#a0a0f0" font-size="9" text-anchor="middle" font-family="monospace">Rh− (15% popolazione)</text>
+      <text x="237" y="151" fill="#7070c0" font-size="7" text-anchor="middle" font-family="monospace">No Ag D · può fare Ab anti-D</text>
+      <!-- Clinical note -->
+      <text x="160" y="173" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Incompatibilità Rh in gravidanza: rischio malattia emolitica del neonato (MEN)</text>
+    </svg>`,
+    note: "Il sistema ABO determina gli antigeni di membrana eritrocitaria e gli anticorpi naturali corrispondenti. Il gruppo 0 Rh− è donatore universale (no antigeni A/B/D), AB Rh+ è ricevente universale. Il fattore Rh è cruciale in gravidanza: una madre Rh− con feto Rh+ può sviluppare anticorpi anti-D (profilassi con immunoglobuline anti-D entro 72h dal parto). In naturopatia il gruppo sanguigno orienta la predisposizione costituzionale e le risposte infiammatorie."
+  },
+  im_pcr: {
+    title: "PCR — Proteina C-Reattiva",
+    svg: `<svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="170" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="20" fill="#a8e6a3" font-size="11" text-anchor="middle" font-family="monospace">PCR — Marker Infiammatorio Acuto</text>
+      <!-- Scale -->
+      <rect x="20" y="38" width="280" height="20" rx="4" fill="#111"/>
+      <rect x="20" y="38" width="70" height="20" rx="4" fill="#2a6a2a" opacity="0.8"/>
+      <rect x="90" y="38" width="70" height="20" rx="0" fill="#c89010" opacity="0.8"/>
+      <rect x="160" y="38" width="70" height="20" rx="0" fill="#e06020" opacity="0.8"/>
+      <rect x="230" y="38" width="70" height="20" rx="4" fill="#cc4444" opacity="0.8"/>
+      <text x="55" y="51" fill="#fff" font-size="7" text-anchor="middle" font-family="monospace">&lt; 1</text>
+      <text x="125" y="51" fill="#fff" font-size="7" text-anchor="middle" font-family="monospace">1 – 5</text>
+      <text x="195" y="51" fill="#fff" font-size="7" text-anchor="middle" font-family="monospace">5 – 10</text>
+      <text x="265" y="51" fill="#fff" font-size="7" text-anchor="middle" font-family="monospace">&gt; 10 mg/L</text>
+      <text x="55" y="70" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">Ottimale</text>
+      <text x="125" y="70" fill="#e0a030" font-size="8" text-anchor="middle" font-family="monospace">Infl. bassa</text>
+      <text x="195" y="70" fill="#e07030" font-size="8" text-anchor="middle" font-family="monospace">Moderata</text>
+      <text x="265" y="70" fill="#f08080" font-size="8" text-anchor="middle" font-family="monospace">Acuta/sev.</text>
+      <!-- Timeline -->
+      <text x="160" y="95" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">Cinetica: ↑ entro 6h, picco 24-48h, T½ = 19h</text>
+      <!-- Sources -->
+      <rect x="20" y="105" width="85" height="30" rx="3" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="62" y="119" fill="#a0a0f0" font-size="7" text-anchor="middle" font-family="monospace">Epatociti (fegato)</text>
+      <text x="62" y="129" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">stimolati da IL-6</text>
+      <rect x="117" y="105" width="85" height="30" rx="3" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="159" y="119" fill="#f09090" font-size="7" text-anchor="middle" font-family="monospace">hs-PCR (&lt; 3 mg/L)</text>
+      <text x="159" y="129" fill="#e08080" font-size="7" text-anchor="middle" font-family="monospace">rischio cardiovasc.</text>
+      <rect x="214" y="105" width="85" height="30" rx="3" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="256" y="119" fill="#a8e6a3" font-size="7" text-anchor="middle" font-family="monospace">Modulatori naturali:</text>
+      <text x="256" y="129" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">curcuma, omega-3</text>
+      <text x="160" y="155" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Distinzione: infezione batterica (PCR &gt; 100) vs virale (&lt; 20 mg/L)</text>
+    </svg>`,
+    note: "La PCR è sintetizzata dal fegato in risposta all'IL-6. È il marcatore di fase acuta più sensibile e rapido. La hs-PCR (alta sensibilità) < 1 mg/L è predittiva di rischio cardiovascolare basso. PCR > 100 mg/L orienta verso infezione batterica. Valutare sempre in combinazione con VES, fibrinogeno e formula leucocitaria."
+  },
+};
 
 function NaturopatiaAI() {
   // ── THEME + LANGUAGE STATE ──────────────────────────────────
@@ -1647,7 +1949,17 @@ function NaturopatiaAI() {
   const [showNewDoc, setShowNewDoc] = useState(false);
 
   // Diagnostica Integrata
-  const [hemoParams, setHemoParams] = useState(DEFAULT_HEMO_PARAMS);
+  const [hemoParams, setHemoParams] = useState(()=>{
+    try{
+      const saved = localStorage.getItem("nm_hemo_params");
+      if(!saved) return DEFAULT_HEMO_PARAMS;
+      const savedVals = JSON.parse(saved); // {id: {value, range, statusOverride}}
+      return DEFAULT_HEMO_PARAMS.map(p=>{
+        const s = savedVals[p.id];
+        return s ? {...p, value:s.value??p.value, range:s.range??p.range, statusOverride:s.statusOverride??null} : p;
+      });
+    }catch{ return DEFAULT_HEMO_PARAMS; }
+  });
   const [hemoMsgs, setHemoMsgs] = useState([]);
   const [hemoInput, setHemoInput] = useState("");
   const [hemoLoading, setHemoLoading] = useState(false);
@@ -1703,6 +2015,7 @@ function NaturopatiaAI() {
   // Global Search Bar
   const [hemoSearchOpen, setHemoSearchOpen] = useState(false);
   const [hemoSearchQ,    setHemoSearchQ]    = useState("");
+  const [hemoInfoModal,  setHemoInfoModal]  = useState({open:false, paramId:""});
   const hemoSearchRef = React.useRef(null);
   useEffect(()=>{
     const handler = e=>{
@@ -1718,6 +2031,14 @@ function NaturopatiaAI() {
   useEffect(()=>{
     if(hemoSearchOpen&&hemoSearchRef.current) hemoSearchRef.current.focus();
   },[hemoSearchOpen]);
+  // Persistenza hemoParams su localStorage (solo value/range/statusOverride — non l'intera struttura)
+  useEffect(()=>{
+    try{
+      const toSave = {};
+      hemoParams.forEach(p=>{ toSave[p.id]={value:p.value,range:p.range,statusOverride:p.statusOverride}; });
+      localStorage.setItem("nm_hemo_params", JSON.stringify(toSave));
+    }catch(_){}
+  },[hemoParams]);
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -3485,12 +3806,14 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               /* ── TAB BAR ── */
               , React.createElement('div',{style:{display:"flex",gap:3,flexWrap:"wrap",marginBottom:4}}
                 , [
-                    {id:"ematologia",  label:"🔴 Ematologia"},
-                    {id:"urine",       label:"🟡 Urine"},
-                    {id:"feci",        label:"🟤 Feci"},
-                    {id:"genetica",    label:"🧬 Genetica"},
-                    {id:"farmaci",     label:"💊 Farmaci & Comorbilità"},
-                    {id:"altro",       label:"➕ Altro"},
+                    {id:"ematologia",      label:"🔴 Ematologia"},
+                    {id:"urine",           label:"🟡 Urine"},
+                    {id:"feci",            label:"🟤 Feci"},
+                    {id:"immunologia",     label:"🛡️ Immunologia"},
+                    {id:"microimmunologia",label:"🔬 Microimmunologia"},
+                    {id:"genetica",        label:"🧬 Genetica"},
+                    {id:"farmaci",         label:"💊 Farmaci & Comorbilità"},
+                    {id:"altro",           label:"➕ Altro"},
                   ].map(t=>React.createElement('button',{key:t.id,
                     onClick:()=>{setHemoTab(t.id);setHemoShowAdd(false);},
                     style:{padding:"4px 9px",borderRadius:5,fontSize:10,cursor:"pointer",
@@ -3663,7 +3986,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               )
 
               /* Gruppo Sanguigno + Fattore Rh */
-              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px",gap:6}}
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px 20px",gap:6,alignItems:"center"}}
                 , React.createElement('select',{value:hemoBloodGroup,
                     onChange:e=>{setHemoBloodGroup(e.target.value);localStorage.setItem("nm_blood_group",e.target.value);},
                     style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
@@ -3679,6 +4002,16 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
                   , React.createElement('option',{value:""},"Rh")
                   , ["+","-"].map(r=>React.createElement('option',{key:r,value:r},"Rh "+r))
+                )
+                , React.createElement('button',{
+                    onClick:()=>setHemoInfoModal({open:true,paramId:"blood_group"}),
+                    title:"Scheda clinica: Gruppo Sanguigno",
+                    style:{background:"none",border:"none",color:"var(--nm-accent)",
+                      cursor:"pointer",fontSize:13,padding:0,lineHeight:1,
+                      fontWeight:700,transition:"opacity 0.15s",opacity:0.7},
+                    onMouseEnter:e=>e.target.style.opacity="1",
+                    onMouseLeave:e=>e.target.style.opacity="0.7"}
+                  , "ⓘ"
                 )
               )
 
@@ -3704,29 +4037,54 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     , (()=>{
                         const alerts = [];
                         const c = hemoComorbilita;
+                        const farmTxt = (c.farmaci||"").toLowerCase();
+                        // Eutirox + Calcio/Ferro/Magnesio
                         const hasIpo = c.ipotiroidismo&&c.ipotiroidismo!=="";
                         const hasFe  = hemoParams.some(p=>["ferr","fe"].includes(p.id)&&p.value!=="");
                         const hasMg  = hemoParams.some(p=>p.id==="mg"&&p.value!=="");
                         const hasCa  = hemoParams.some(p=>p.id==="ca"&&p.value!=="");
                         if(hasIpo&&(hasFe||hasMg||hasCa))
-                          alerts.push("⚠ Eutirox + Calcio/Ferro/Magnesio: distanziare l'assunzione di almeno 2–4 ore.");
+                          alerts.push({sev:"warn", msg:"Eutirox + Calcio/Ferro/Magnesio: distanziare l'assunzione di almeno 2–4 ore per evitare riduzione dell'assorbimento."});
+                        // Trombofilia + Ipertensione
                         const hasFVL = hemoParams.some(p=>p.id==="g_fvl"&&p.value&&p.value!=="");
                         const hasF2  = hemoParams.some(p=>p.id==="g_f2"&&p.value&&p.value!=="");
                         if((hasFVL||hasF2)&&c.ipertensione)
-                          alerts.push("⚠ Trombofilia genetica + Ipertensione: valutare anticoagulazione con il medico.");
+                          alerts.push({sev:"danger", msg:"Trombofilia genetica (FVL/FII) + Ipertensione: elevato rischio tromboembolico. Valutare anticoagulazione profilattica con il medico."});
+                        // Warfarin / Vitamina K
+                        const hasWarfarin = farmTxt.includes("warfarin")||farmTxt.includes("coumadin")||farmTxt.includes("acenocumar");
+                        const hasVitK = farmTxt.includes("vitamina k")||farmTxt.includes("vit k")||farmTxt.includes("vitamin k")||farmTxt.includes("menachinone")||farmTxt.includes("fillochinone");
+                        if(hasWarfarin)
+                          alerts.push({sev:"danger", msg:"Warfarin: monitorare attentamente INR. Vitamina K (verdure a foglia verde, integratori K1/K2) antagonizza l'effetto anticoagulante. Omega-3 ad alte dosi, aglio, zenzero e curcuma possono potenziarlo."});
+                        if(hasWarfarin&&hasVitK)
+                          alerts.push({sev:"danger", msg:"⛔ Warfarin + Vitamina K in uso simultane: interazione diretta — rivalutare urgentemente lo schema terapeutico con il medico."});
+                        // Statine / Pompelmo
+                        const hasStatina = farmTxt.includes("statin")||farmTxt.includes("simvastatin")||farmTxt.includes("atorvastatin")||farmTxt.includes("rosuvastat")||farmTxt.includes("fluvastat")||farmTxt.includes("pravastat");
+                        const hasPompelmo = farmTxt.includes("pompelmo")||farmTxt.includes("grapefruit");
+                        if(hasStatina)
+                          alerts.push({sev:"warn", msg:"Statine: evitare pompelmo e succo di pompelmo (inibizione CYP3A4 → aumento plasmatico fino al 200%). Attenzione anche a: eritromicina, azitromicina, ketoconazolo, amiodarone."});
+                        if(hasStatina&&hasPompelmo)
+                          alerts.push({sev:"danger", msg:"⛔ Statina + Pompelmo in uso simultaneo: rischio miopatia/rabdomiolisi. Eliminare il pompelmo dalla dieta."});
+                        // Ipercolesterolemia + Statine
+                        if(c.ipercolesterolemia&&hasStatina)
+                          alerts.push({sev:"info", msg:"Statine in corso per ipercolesterolemia: monitorare CPK, ALT/AST ogni 6 mesi. CoQ10 può ridurre mialgie da statine."});
+                        const colorMap = {warn:{bg:"rgba(200,140,10,0.1)",border:"rgba(200,140,10,0.4)",color:"#e0b840"},
+                          danger:{bg:"rgba(200,50,50,0.1)",border:"rgba(200,50,50,0.45)",color:"#f08080"},
+                          info:{bg:"rgba(60,100,200,0.08)",border:"rgba(80,120,220,0.3)",color:"#88aaee"}};
                         if(alerts.length===0) return React.createElement('div',{style:{fontSize:10,
                             color:"var(--nm-text-dimmer)",padding:"8px 10px",
                             background:"rgba(10,30,10,0.3)",borderRadius:7,
                             border:"1px dashed var(--nm-border)"}}
-                          , "✅ Nessuna interazione rilevata con i dati attuali."
+                          , "✅ Nessuna interazione rilevata. Aggiungere farmaci nella sezione sottostante per attivare il controllo."
                         );
                         return React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
-                          , alerts.map((a,i)=>React.createElement('div',{key:i,style:{
-                              padding:"8px 12px",borderRadius:7,fontSize:11,lineHeight:1.6,
-                              background:"rgba(200,140,10,0.1)",border:"1px solid rgba(200,140,10,0.4)",
-                              color:"#e0b840"}}
-                            , a
-                          ))
+                          , alerts.map((a,i)=>{
+                              const c2=colorMap[a.sev]||colorMap.warn;
+                              return React.createElement('div',{key:i,style:{
+                                  padding:"8px 12px",borderRadius:7,fontSize:11,lineHeight:1.6,
+                                  background:c2.bg,border:"1px solid "+c2.border,color:c2.color}}
+                                , "⚠ ",a.msg
+                              );
+                            })
                         );
                       })()
 
@@ -3812,7 +4170,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       const sc = HEMO_STATUS[s];
                       const isAutoComputable = !p.statusOverride && getAutoStatus(p) !== "empty" && p.value.trim();
                       return React.createElement('div',{key:p.id,
-                        style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px",
+                        style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px 14px",
                           gap:4,alignItems:"center",padding:"3px 8px",borderRadius:5,
                           background:sc.bg,transition:"background 0.15s"}}
                         /* Label */
@@ -3876,6 +4234,19 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                           onMouseLeave:e=>e.target.style.color="var(--nm-text-dimmer)"}
                           ,"✕"
                         )
+                        /* ⓘ Info modal — solo se esiste la scheda */
+                        , INFO_MODALS[p.id]
+                          ? React.createElement('button',{
+                              onClick:()=>setHemoInfoModal({open:true,paramId:p.id}),
+                              title:"Scheda clinica: "+p.label,
+                              style:{background:"none",border:"none",color:"var(--nm-accent)",
+                                cursor:"pointer",fontSize:11,padding:0,lineHeight:1,
+                                fontWeight:700,transition:"opacity 0.15s",opacity:0.7},
+                              onMouseEnter:e=>e.target.style.opacity="1",
+                              onMouseLeave:e=>e.target.style.opacity="0.7"}
+                              , "ⓘ"
+                            )
+                          : React.createElement('span',{style:{width:14}})
                       );
                     })
                   );
@@ -4265,6 +4636,52 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     )
                 )
 
+              /* ── NOTA TECNICA AUTOMATICA (Cross-Talk) ── */
+              , (()=>{
+                  const c = hemoComorbilita;
+                  const farmTxt = (c.farmaci||"").toLowerCase();
+                  const ntAlerts = [];
+                  // Eutirox + Ca/Fe/Mg
+                  const hasIpo2 = c.ipotiroidismo&&c.ipotiroidismo!=="";
+                  const hasFe2  = hemoParams.some(p=>["ferr","fe"].includes(p.id)&&p.value!=="");
+                  const hasMg2  = hemoParams.some(p=>p.id==="mg"&&p.value!=="");
+                  const hasCa2  = hemoParams.some(p=>p.id==="ca"&&p.value!=="");
+                  if(hasIpo2&&(hasFe2||hasMg2||hasCa2))
+                    ntAlerts.push("Eutirox/Levotiroxina: distanziare di almeno 2–4 ore da Calcio, Ferro e Magnesio per evitare chelazione e riduzione dell'assorbimento ormonale.");
+                  // Trombofilia + Ipertensione
+                  const hasFVL2 = hemoParams.some(p=>p.id==="g_fvl"&&p.value&&p.value!=="");
+                  const hasF22  = hemoParams.some(p=>p.id==="g_f2"&&p.value&&p.value!=="");
+                  if((hasFVL2||hasF22)&&c.ipertensione)
+                    ntAlerts.push("Trombofilia ereditaria (Fattore V Leiden / Protrombina G20210A) associata a ipertensione arteriosa: rischio tromboembolico aumentato. Consultare il medico per valutazione di terapia anticoagulante.");
+                  // Warfarin
+                  const hasWarfarin2 = farmTxt.includes("warfarin")||farmTxt.includes("coumadin")||farmTxt.includes("acenocumar");
+                  if(hasWarfarin2)
+                    ntAlerts.push("Warfarin/Acenocumarolo in terapia: Vitamina K (verdure crucifere, integratori K1/K2, natto) antagonizza l'effetto. Omega-3 ad alte dosi, aglio, zenzero e curcuma possono potenziare il sanguinamento. Monitorare INR frequentemente.");
+                  // Statine
+                  const hasStatina2 = farmTxt.includes("statin")||farmTxt.includes("simvastatin")||farmTxt.includes("atorvastatin")||farmTxt.includes("rosuvastat")||farmTxt.includes("fluvastat")||farmTxt.includes("pravastat");
+                  if(hasStatina2)
+                    ntAlerts.push("Statine in terapia: evitare pompelmo e succo di pompelmo (inibisce CYP3A4, aumenta la concentrazione plasmatica fino al 200%). Considerare supplementazione con CoQ10 (30–100 mg/die) per prevenire mialgie da statine.");
+                  if(ntAlerts.length===0) return null;
+                  return React.createElement('div',{style:{
+                      background:"rgba(180,100,0,0.08)",
+                      border:"1px solid rgba(200,130,30,0.35)",
+                      borderRadius:8,padding:"12px 16px"}}
+                    , React.createElement('div',{style:{fontSize:9,letterSpacing:"0.6px",
+                        color:"#c08030",marginBottom:8,textTransform:"uppercase",
+                        fontFamily:"'DM Mono',monospace",fontWeight:600}}
+                      , "⚠ Nota Tecnica — Interazioni Farmacologiche Rilevate"
+                    )
+                    , ntAlerts.map((note,i)=>React.createElement('div',{key:i,style:{
+                        fontSize:11,color:"var(--nm-text)",lineHeight:1.7,
+                        paddingBottom:i<ntAlerts.length-1?8:0,
+                        marginBottom:i<ntAlerts.length-1?8:0,
+                        borderBottom:i<ntAlerts.length-1?"1px solid rgba(200,130,30,0.2)":"none"}}
+                      , React.createElement('span',{style:{color:"#e0b840",marginRight:6}},"•")
+                      , note
+                    ))
+                  );
+                })()
+
               /* Riga 1: Tono + Data */
               , React.createElement('div',{style:{display:"grid",
                   gridTemplateColumns:"1fr 1fr",gap:16}}
@@ -4466,11 +4883,13 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     )
                   )
                 )
-                /* Blocco identità dinamico — smart-hide linee vuote */
+                /* Blocco identità dinamico — smart-hide linee vuote, centrato verticalmente */
                 , React.createElement('div',{style:{
                     marginTop:10,paddingTop:8,
                     borderTop:"1px solid var(--nm-border)",
-                    display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
+                    minHeight:52,
+                    display:"flex",flexDirection:"column",
+                    alignItems:"center",justifyContent:"center",gap:2}}
                   , [firmaLinea1,firmaLinea2,firmaLinea3].filter(Boolean).map((line,i)=>
                       React.createElement('div',{key:i,style:{
                           fontSize:i===0?13:11,
@@ -4523,6 +4942,63 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
           )
         )
 
+        /* ── INFO MODAL (ⓘ Visual Support) ── */
+        , hemoInfoModal.open&&INFO_MODALS[hemoInfoModal.paramId]&&(()=>{
+            const info = INFO_MODALS[hemoInfoModal.paramId];
+            return React.createElement('div',{
+              style:{position:"fixed",inset:0,zIndex:2100,
+                display:"flex",alignItems:"center",justifyContent:"center",
+                background:"rgba(0,0,0,0.75)",backdropFilter:"blur(8px)"},
+              onClick:e=>{if(e.target===e.currentTarget)setHemoInfoModal({open:false,paramId:""})}}
+              , React.createElement('div',{style:{
+                  width:"min(500px,92vw)",maxHeight:"90vh",overflowY:"auto",
+                  background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
+                  borderRadius:14,padding:"20px 22px",
+                  boxShadow:"0 24px 80px rgba(0,0,0,0.85)"}}
+                /* Header */
+                , React.createElement('div',{style:{display:"flex",alignItems:"flex-start",gap:10,marginBottom:14}}
+                  , React.createElement('div',{style:{flex:1}}
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-accent)",
+                        fontFamily:"'DM Mono',monospace",letterSpacing:"0.5px",
+                        textTransform:"uppercase",marginBottom:4}}
+                      , "Scheda Clinica"
+                    )
+                    , React.createElement('div',{style:{fontSize:14,fontWeight:600,
+                        color:"var(--nm-text)",fontFamily:"'Cormorant Garamond',serif"}}
+                      , info.title
+                    )
+                  )
+                  , React.createElement('button',{
+                      onClick:()=>setHemoInfoModal({open:false,paramId:""}),
+                      style:{background:"none",border:"none",color:"var(--nm-text-dim)",
+                        cursor:"pointer",fontSize:18,padding:"0 4px",lineHeight:1}}
+                    , "✕"
+                  )
+                )
+                /* SVG Infographic */
+                , React.createElement('div',{
+                    style:{borderRadius:8,overflow:"hidden",marginBottom:14,
+                      border:"1px solid var(--nm-border)"},
+                    dangerouslySetInnerHTML:{__html:info.svg}
+                  })
+                /* Clinical note */
+                , React.createElement('div',{style:{
+                    background:"var(--nm-bg3)",borderRadius:8,padding:"12px 14px",
+                    border:"1px solid var(--nm-border)"}}
+                  , React.createElement('div',{style:{fontSize:9,color:"var(--nm-accent)",
+                      fontFamily:"'DM Mono',monospace",letterSpacing:"0.5px",
+                      textTransform:"uppercase",marginBottom:6}}
+                    , "Nota Clinica"
+                  )
+                  , React.createElement('p',{style:{fontSize:11,color:"var(--nm-text-dim)",
+                      lineHeight:1.6,fontFamily:"'DM Mono',monospace"}}
+                    , info.note
+                  )
+                )
+              )
+            );
+          })()
+
         /* ── GLOBAL SEARCH BAR (Ctrl+K) ── */
         , hemoSearchOpen&&React.createElement('div',{
             style:{position:"fixed",inset:0,zIndex:2000,
@@ -4560,7 +5036,8 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     ? hemoParams.filter(p=>p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q))
                     : hemoParams.filter(p=>p.value!=="");
                   const TAB_LABELS = {ematologia:"🔴 Ematologia",urine:"🟡 Urine",feci:"🟤 Feci",
-                    immunologia:"🔵 Immunologia",genetica:"🧬 Genetica",altro:"➕ Altro"};
+                    immunologia:"🛡️ Immunologia",microimmunologia:"🔬 Microimmunologia",
+                    genetica:"🧬 Genetica",farmaci:"💊 Farmaci & Comorbilità",altro:"➕ Altro"};
                   if(results.length===0) return React.createElement('div',{
                     style:{padding:"20px 24px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}
                     , React.createElement('div',{style:{color:"var(--nm-text-dimmer)",fontSize:12,textAlign:"center"}}
