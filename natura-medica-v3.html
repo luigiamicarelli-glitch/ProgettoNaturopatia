@@ -1588,6 +1588,8 @@ function NaturopatiaAI() {
   const [hemoPatient, setHemoPatient] = useState("");
   const [hemoVerified, setHemoVerified] = useState(false);
   const [hemoCats, setHemoCats] = useState({}); // {catName: bool} — true=aperta
+  const [hemoShowAdd, setHemoShowAdd] = useState(false);
+  const [hemoAddForm, setHemoAddForm] = useState({label:"",value:"",range:"",unit:"",cat:"Emocromo",newCat:""});
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -3312,9 +3314,9 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
               )
 
               /* Intestazione colonne */
-              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px",
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px",
                 gap:4,padding:"6px 8px 4px",borderBottom:"1px solid var(--nm-border)",marginTop:2}}
-                , ["Parametro","Valore","Range Rif.","Unità",""].map(h=>React.createElement('span',{key:h,
+                , ["Parametro","Valore","Range Rif.","Unità","",""].map(h=>React.createElement('span',{key:h,
                   style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
               )
 
@@ -3344,7 +3346,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       const sc = HEMO_STATUS[s];
                       const isAutoComputable = !p.statusOverride && getAutoStatus(p) !== "empty" && p.value.trim();
                       return React.createElement('div',{key:p.id,
-                        style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px",
+                        style:{display:"grid",gridTemplateColumns:"1fr 72px 1fr 36px 24px 16px",
                           gap:4,alignItems:"center",padding:"3px 8px",borderRadius:5,
                           background:sc.bg,transition:"background 0.15s"}}
                         /* Label */
@@ -3380,10 +3382,97 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                             outline:p.statusOverride?"1px solid "+sc.color:"none"}}
                           , sc.badge
                         )
+                        /* Pulsante elimina riga */
+                        , React.createElement('button',{
+                          onClick:()=>setHemoParams(prev=>prev.filter(x=>x.id!==p.id)),
+                          title:"Rimuovi parametro",
+                          style:{background:"none",border:"none",color:"var(--nm-text-dimmer)",
+                            cursor:"pointer",fontSize:11,padding:0,lineHeight:1,
+                            transition:"color 0.15s"},
+                          onMouseEnter:e=>e.target.style.color="#cc5555",
+                          onMouseLeave:e=>e.target.style.color="var(--nm-text-dimmer)"}}
+                          ,"✕"
+                        )
                       );
                     })
                   );
                 })
+
+              /* ── AGGIUNGI PARAMETRO ── */
+              , React.createElement('div',{style:{marginTop:8,border:"1px dashed var(--nm-border2)",borderRadius:8,overflow:"hidden"}}
+                , React.createElement('button',{
+                  onClick:()=>setHemoShowAdd(v=>!v),
+                  style:{width:"100%",padding:"7px 10px",background:"transparent",border:"none",
+                    color:hemoShowAdd?"var(--nm-btn-danger-text,#c06060)":"var(--nm-text-dim)",
+                    cursor:"pointer",fontSize:11,fontFamily:"'DM Mono',monospace",textAlign:"left",letterSpacing:"0.3px"}}
+                  , hemoShowAdd ? "✕  Annulla" : "＋  Aggiungi parametro"
+                )
+                , hemoShowAdd && React.createElement('div',{style:{padding:"10px",display:"flex",
+                  flexDirection:"column",gap:7,background:"var(--nm-bg2)",borderTop:"1px solid var(--nm-border)"}}
+                  /* Riga 1: Nome + Unità */
+                  , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 80px",gap:6}}
+                    , React.createElement('input',{type:"text",value:hemoAddForm.label,placeholder:"Nome parametro *",
+                      onChange:e=>setHemoAddForm(f=>({...f,label:e.target.value})),
+                      style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                    , React.createElement('input',{type:"text",value:hemoAddForm.unit,placeholder:"Unità",
+                      onChange:e=>setHemoAddForm(f=>({...f,unit:e.target.value})),
+                      style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                  )
+                  /* Riga 2: Valore + Range */
+                  , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}
+                    , React.createElement('input',{type:"text",value:hemoAddForm.value,placeholder:"Valore (opzionale)",
+                      onChange:e=>setHemoAddForm(f=>({...f,value:e.target.value})),
+                      style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                    , React.createElement('input',{type:"text",value:hemoAddForm.range,placeholder:"Range rif. (es. 70–100)",
+                      onChange:e=>setHemoAddForm(f=>({...f,range:e.target.value})),
+                      style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                  )
+                  /* Riga 3: Categoria */
+                  , React.createElement('div',{style:{display:"flex",gap:6,alignItems:"center"}}
+                    , React.createElement('select',{value:hemoAddForm.cat,
+                      onChange:e=>setHemoAddForm(f=>({...f,cat:e.target.value,newCat:""})),
+                      style:{flex:1,background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
+                      , [...new Set(hemoParams.map(p=>p.cat))].map(c=>
+                          React.createElement('option',{key:c,value:c},c))
+                      , React.createElement('option',{value:"__new__"},"── Nuova categoria...")
+                    )
+                    , hemoAddForm.cat==="__new__" && React.createElement('input',{type:"text",
+                      value:hemoAddForm.newCat,placeholder:"Nome nuova categoria",
+                      onChange:e=>setHemoAddForm(f=>({...f,newCat:e.target.value})),
+                      style:{flex:1,background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                        padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}})
+                  )
+                  /* Pulsante conferma aggiunta */
+                  , React.createElement('button',{
+                    disabled:!hemoAddForm.label.trim()||(hemoAddForm.cat==="__new__"&&!hemoAddForm.newCat.trim()),
+                    onClick:()=>{
+                      const cat = hemoAddForm.cat==="__new__" ? hemoAddForm.newCat.trim() : hemoAddForm.cat;
+                      setHemoParams(prev=>[...prev,{
+                        id:"custom_"+Date.now(),
+                        label:hemoAddForm.label.trim(),
+                        value:hemoAddForm.value,
+                        range:hemoAddForm.range,
+                        unit:hemoAddForm.unit,
+                        cat,
+                        statusOverride:null,
+                      }]);
+                      setHemoAddForm(f=>({label:"",value:"",range:"",unit:"",
+                        cat:hemoAddForm.cat==="__new__"?cat:hemoAddForm.cat,newCat:""}));
+                      setHemoShowAdd(false);
+                    },
+                    style:{padding:"7px 14px",borderRadius:6,
+                      background:"var(--nm-btn-bg)",border:"1px solid var(--nm-btn-border)",
+                      color:"var(--nm-accent)",cursor:"pointer",fontSize:11,
+                      fontFamily:"'DM Mono',monospace",alignSelf:"flex-start"}}
+                    , "＋  Aggiungi alla griglia"
+                  )
+                )
+              )
 
               /* ── CHECKBOX DI SICUREZZA (Human-in-the-Loop) ── */
               , React.createElement('label',{style:{display:"flex",alignItems:"flex-start",gap:10,marginTop:14,
