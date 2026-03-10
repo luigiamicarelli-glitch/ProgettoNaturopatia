@@ -1590,6 +1590,19 @@ function NaturopatiaAI() {
   const [hemoCats, setHemoCats] = useState({}); // {catName: bool} — true=aperta
   const [hemoShowAdd, setHemoShowAdd] = useState(false);
   const [hemoAddForm, setHemoAddForm] = useState({label:"",value:"",range:"",unit:"",cat:"Emocromo",newCat:""});
+  // Cross-Talk: fonti suggerite (mock — future AI)
+  const [hemoSources, setHemoSources] = useState([
+    {id:"s1",title:"Ferritina sierica: interpretazione clinica integrata",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Revisione sistematica sull'interpretazione della ferritinemia in contesti infiammatori e non. Impact factor 8.2.",useForAnalysis:true,includeInPrint:false},
+    {id:"s2",title:"PCR ad alta sensibilità come marker cardiovascolare",domain:"journals.ahajournals.org",snippet:"La PCR-hs correla con il rischio cardiovascolare indipendentemente dal profilo lipidico.",useForAnalysis:false,includeInPrint:false},
+    {id:"s3",title:"TSH e ipotiroidismo subclinico: gestione naturopatica",domain:"integrativemedicinejournal.com",snippet:"Approcci integrativi nella gestione dell'ipotiroidismo subclinico: iodio, selenio e adattogeni.",useForAnalysis:true,includeInPrint:true},
+    {id:"s4",title:"Vitamina D: range ottimali e supplementazione",domain:"nejm.org",snippet:"Revisione dei livelli target di 25(OH)D3 e protocolli di supplementazione evidence-based.",useForAnalysis:false,includeInPrint:false},
+  ]);
+  // Cross-Talk: modal referto
+  const [hemoShowReport, setHemoShowReport] = useState(false);
+  const [hemoReportTone, setHemoReportTone] = useState("analitico");
+  const [hemoReportText, setHemoReportText] = useState("");
+  const [hemoReportDate, setHemoReportDate] = useState("");
+  const [hemoReportSelected, setHemoReportSelected] = useState(null); // null = init al open
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -3547,8 +3560,68 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   ," Analisi in corso..."
                 )
               )
+              /* ── FONTI SUGGERITE (Cross-Talk — mock) ── */
+              , hemoVerified&&React.createElement('div',{style:{
+                  borderTop:"1px solid var(--nm-border)",
+                  background:"rgba(10,22,10,0.55)",padding:"12px 20px"}}
+                , React.createElement('div',{style:{fontSize:10,letterSpacing:"0.6px",
+                    color:"var(--nm-text-dimmer)",marginBottom:8,textTransform:"uppercase"}}
+                  , "🔗 Fonti suggerite · Simulazione web search"
+                  , React.createElement('span',{style:{marginLeft:8,padding:"2px 6px",borderRadius:4,
+                      background:"rgba(74,170,74,0.12)",color:"#5aaa5a",fontSize:9}}
+                    , "Filtro Privacy attivo · solo dati anonimi trasmessi"
+                  )
+                )
+                , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:6}}
+                  , hemoSources.map(src=>React.createElement('div',{key:src.id,
+                      style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                        borderRadius:7,padding:"8px 12px",fontSize:11}}
+                    , React.createElement('div',{style:{display:"flex",justifyContent:"space-between",
+                        alignItems:"flex-start",gap:8}}
+                      , React.createElement('div',{style:{flex:1}}
+                        , React.createElement('div',{style:{fontWeight:500,color:"var(--nm-accent)",
+                            marginBottom:2,lineHeight:1.4}}
+                          , src.title
+                        )
+                        , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                            marginBottom:4}}
+                          , src.domain
+                        )
+                        , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dim)",
+                            lineHeight:1.5,fontStyle:"italic"}}
+                          , src.snippet
+                        )
+                      )
+                      , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:5,
+                          flexShrink:0,marginLeft:4}}
+                        , React.createElement('label',{style:{display:"flex",alignItems:"center",gap:5,
+                            fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
+                            whiteSpace:"nowrap"}}
+                          , React.createElement('input',{type:"checkbox",
+                              checked:src.useForAnalysis,
+                              onChange:()=>setHemoSources(prev=>prev.map(s=>s.id===src.id
+                                ?{...s,useForAnalysis:!s.useForAnalysis}:s)),
+                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                          , "Usa per analisi"
+                        )
+                        , React.createElement('label',{style:{display:"flex",alignItems:"center",gap:5,
+                            fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
+                            whiteSpace:"nowrap"}}
+                          , React.createElement('input',{type:"checkbox",
+                              checked:src.includeInPrint,
+                              onChange:()=>setHemoSources(prev=>prev.map(s=>s.id===src.id
+                                ?{...s,includeInPrint:!s.includeInPrint}:s)),
+                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                          , "Includi in stampa"
+                        )
+                      )
+                    )
+                  ))
+                )
+              )
+
               /* Input area — opacizzata e disabilitata senza verifica */
-              , React.createElement('div',{style:{padding:"12px 20px 18px",
+              , React.createElement('div',{style:{padding:"12px 20px 12px",
                 borderTop:"1px solid var(--nm-border)",
                 opacity:hemoVerified?1:0.38,transition:"opacity 0.3s",
                 pointerEvents:hemoVerified?"auto":"none"}}
@@ -3573,6 +3646,245 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     ,"Invia"
                   )
                 )
+              )
+
+              /* ── PULSANTE PREPARA REFERTO ── */
+              , React.createElement('div',{style:{padding:"0 20px 18px",
+                  opacity:hemoVerified?1:0.38,transition:"opacity 0.3s",
+                  pointerEvents:hemoVerified?"auto":"none"}}
+                , React.createElement('button',{
+                    disabled:!hemoVerified||hemoParams.filter(p=>p.value!=="").length===0,
+                    onClick:()=>{
+                      // Inizializza la selezione con tutti i params compilati
+                      const filled = hemoParams.filter(p=>p.value!=="").map(p=>p.id);
+                      setHemoReportSelected(filled);
+                      setHemoShowReport(true);
+                    },
+                    style:{width:"100%",padding:"10px 16px",borderRadius:8,fontSize:12,
+                      fontFamily:"'DM Mono',monospace",letterSpacing:"0.4px",
+                      border:"1px solid var(--nm-border)",cursor:"pointer",transition:"all 0.2s",
+                      background:"rgba(10,30,10,0.6)",color:"#6aaa6a"}},
+                  "📋 Prepara Referto per Stampa"
+                )
+              )
+            )
+          )
+        )
+
+        /* ── MODAL REFERTO PAZIENTE ── */
+        , hemoShowReport&&React.createElement('div',{
+            style:{position:"fixed",inset:0,zIndex:1000,
+              display:"flex",alignItems:"center",justifyContent:"center",
+              background:"rgba(0,0,0,0.72)",backdropFilter:"blur(4px)"},
+            onClick:e=>{if(e.target===e.currentTarget)setHemoShowReport(false)}}
+
+          , React.createElement('div',{style:{
+              width:"min(820px,92vw)",maxHeight:"88vh",
+              background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
+              borderRadius:14,display:"flex",flexDirection:"column",overflow:"hidden",
+              boxShadow:"0 24px 80px rgba(0,0,0,0.6)"}}
+
+            /* Header modal */
+            , React.createElement('div',{style:{
+                padding:"18px 24px 14px",borderBottom:"1px solid var(--nm-border)",
+                display:"flex",justifyContent:"space-between",alignItems:"center"}}
+              , React.createElement('div',null
+                , React.createElement('div',{style:{fontSize:15,fontFamily:"'Cormorant Garamond',serif",
+                    fontWeight:600,color:"var(--nm-text)"}}
+                  , "📋 Referto Paziente · Cross-Talk"
+                )
+                , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                    marginTop:2,letterSpacing:"0.4px"}}
+                  , "Spietato sui dati · Empatico nelle soluzioni"
+                )
+              )
+              , React.createElement('button',{onClick:()=>setHemoShowReport(false),
+                  style:{background:"none",border:"1px solid var(--nm-border)",
+                    borderRadius:6,color:"var(--nm-text-dim)",cursor:"pointer",
+                    padding:"4px 10px",fontSize:12}}
+                , "✕ Chiudi"
+              )
+            )
+
+            /* Body modal scrollabile */
+            , React.createElement('div',{style:{flex:1,overflowY:"auto",padding:"20px 24px",
+                display:"flex",flexDirection:"column",gap:18}}
+
+              /* Riga 1: Tono + Data */
+              , React.createElement('div',{style:{display:"grid",
+                  gridTemplateColumns:"1fr 1fr",gap:16}}
+
+                , React.createElement('div',null
+                  , React.createElement('label',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px",display:"block",marginBottom:6}}
+                    , "TONO COMUNICATIVO"
+                  )
+                  , React.createElement('select',{value:hemoReportTone,
+                      onChange:e=>setHemoReportTone(e.target.value),
+                      style:{width:"100%",background:"var(--nm-bg3)",
+                        border:"1px solid var(--nm-border2)",borderRadius:7,
+                        padding:"9px 12px",color:"var(--nm-text)",fontSize:12,
+                        fontFamily:"'DM Mono',monospace",cursor:"pointer",outline:"none"}}
+                    , React.createElement('option',{value:"analitico"},"📊 Analitico — dati e correlazioni dirette")
+                    , React.createElement('option',{value:"incoraggiante"},"🌱 Incoraggiante — focus sui progressi")
+                    , React.createElement('option',{value:"clinico"},"🔬 Schiettamente Clinico — massima precisione")
+                    , React.createElement('option',{value:"semplificato"},"💬 Semplificato — linguaggio accessibile")
+                  )
+                )
+
+                , React.createElement('div',null
+                  , React.createElement('label',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px",display:"block",marginBottom:6}}
+                    , "DATA ESAMI"
+                  )
+                  , React.createElement('input',{type:"text",value:hemoReportDate,
+                      onChange:e=>setHemoReportDate(e.target.value),
+                      placeholder:"gg/mm/aaaa",
+                      style:{width:"100%",boxSizing:"border-box",background:"var(--nm-bg3)",
+                        border:"1px solid var(--nm-border2)",borderRadius:7,
+                        padding:"9px 12px",color:"var(--nm-text)",fontSize:12,
+                        fontFamily:"'DM Mono',monospace",outline:"none"}})
+                )
+              )
+
+              /* Area testo editabile — Inquadramento e Piano */
+              , React.createElement('div',null
+                , React.createElement('label',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                    letterSpacing:"0.5px",display:"block",marginBottom:6}}
+                  , "INQUADRAMENTO E PIANO NATUROPATICO"
+                  , React.createElement('span',{style:{marginLeft:8,color:"#5aaa5a",fontSize:9}}
+                    , "· modificabile liberamente"
+                  )
+                )
+                , React.createElement('textarea',{value:hemoReportText,
+                    onChange:e=>setHemoReportText(e.target.value),
+                    placeholder:"Inserisci qui il testo del referto (piano naturopatico, raccomandazioni, osservazioni cliniche integrative)...\n\nQuesto campo è completamente editabile prima della stampa.",
+                    rows:7,
+                    style:{width:"100%",boxSizing:"border-box",resize:"vertical",
+                      background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                      borderRadius:7,padding:"10px 12px",color:"var(--nm-text)",
+                      fontSize:12,fontFamily:"'DM Mono',monospace",lineHeight:1.8,
+                      outline:"none"}})
+              )
+
+              /* Esami da stampare */
+              , React.createElement('div',null
+                , React.createElement('div',{style:{display:"flex",justifyContent:"space-between",
+                    alignItems:"center",marginBottom:8}}
+                  , React.createElement('label',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px"}}
+                    , "ESAMI DA INCLUDERE IN STAMPA"
+                  )
+                  , React.createElement('button',{
+                      onClick:()=>{
+                        const filled = hemoParams.filter(p=>p.value!=="").map(p=>p.id);
+                        const allSelected = filled.every(id=>(hemoReportSelected||[]).includes(id));
+                        setHemoReportSelected(allSelected ? [] : filled);
+                      },
+                      style:{background:"none",border:"1px solid var(--nm-border)",
+                        borderRadius:5,padding:"3px 10px",fontSize:10,
+                        color:"var(--nm-text-dim)",cursor:"pointer"}}
+                    , (()=>{
+                        const filled = hemoParams.filter(p=>p.value!=="").map(p=>p.id);
+                        const allSel = filled.every(id=>(hemoReportSelected||[]).includes(id));
+                        return allSel ? "Deseleziona tutti" : "Seleziona tutti";
+                      })()
+                  )
+                )
+                , React.createElement('div',{style:{background:"var(--nm-bg3)",
+                    border:"1px solid var(--nm-border2)",borderRadius:8,
+                    padding:"4px 0",maxHeight:180,overflowY:"auto"}}
+                  , hemoParams.filter(p=>p.value!=="").map(p=>{
+                      const selected = (hemoReportSelected||[]).includes(p.id);
+                      const sc = HEMO_STATUS[getParamStatus(p)];
+                      return React.createElement('label',{key:p.id,
+                        style:{display:"flex",alignItems:"center",gap:10,
+                          padding:"6px 14px",cursor:"pointer",transition:"background 0.15s",
+                          borderBottom:"1px solid var(--nm-border)"}}
+                        , React.createElement('input',{type:"checkbox",checked:selected,
+                            onChange:()=>setHemoReportSelected(prev=>
+                              selected ? (prev||[]).filter(id=>id!==p.id) : [...(prev||[]),p.id]),
+                            style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                        , React.createElement('span',{style:{fontSize:11,fontWeight:500,
+                            color:sc.color,minWidth:18,textAlign:"center"}}
+                          , sc.badge
+                        )
+                        , React.createElement('span',{style:{flex:1,fontSize:11,
+                            color:"var(--nm-text)"}}
+                          , p.label
+                        )
+                        , React.createElement('span',{style:{fontSize:10,
+                            color:"var(--nm-text-dimmer)",fontFamily:"'DM Mono',monospace"}}
+                          , p.value, " ", p.unit
+                        )
+                      );
+                    })
+                  , hemoParams.filter(p=>p.value!=="").length===0&&
+                    React.createElement('div',{style:{padding:"12px 14px",fontSize:11,
+                        color:"var(--nm-text-dimmer)",textAlign:"center"}}
+                      , "Nessun parametro compilato nella griglia."
+                    )
+                )
+              )
+
+              /* Fonti selezionate per la stampa */
+              , hemoSources.filter(s=>s.includeInPrint).length>0&&
+                React.createElement('div',null
+                  , React.createElement('label',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px",display:"block",marginBottom:6}}
+                    , "FONTI INCLUSE IN STAMPA"
+                  )
+                  , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
+                    , hemoSources.filter(s=>s.includeInPrint).map(s=>
+                        React.createElement('div',{key:s.id,
+                          style:{fontSize:11,color:"var(--nm-text-dim)",
+                            padding:"5px 10px",background:"var(--nm-bg3)",
+                            borderRadius:5,border:"1px solid var(--nm-border2)"}}
+                          , React.createElement('span',{style:{color:"var(--nm-accent)"}}
+                            , s.title
+                          )
+                          , " · "
+                          , React.createElement('span',{style:{fontSize:10,opacity:0.7}}
+                            , s.domain
+                          )
+                        )
+                      )
+                  )
+                )
+
+              /* Disclaimer medico-legale */
+              , React.createElement('div',{style:{
+                  background:"rgba(180,140,40,0.06)",
+                  border:"1px solid rgba(180,140,40,0.18)",
+                  borderRadius:8,padding:"12px 14px"}}
+                , React.createElement('div',{style:{fontSize:9,letterSpacing:"0.5px",
+                    color:"rgba(180,140,40,0.7)",marginBottom:4,textTransform:"uppercase"}}
+                  , "⚠ Disclaimer Medico-Legale"
+                )
+                , React.createElement('p',{style:{fontSize:10,lineHeight:1.7,
+                    color:"var(--nm-text-dim)",margin:0}}
+                  , "Il presente documento ha esclusivamente finalità informative e di supporto al consulto naturopatico. Non costituisce diagnosi medica, prescrizione terapeutica o sostituzione del parere del medico curante. I dati contenuti sono trattati in conformità al Regolamento (UE) 2016/679 (GDPR). Il paziente è invitato a condividere questo documento con il proprio medico specialista."
+                )
+              )
+            )
+
+            /* Footer modal: azioni */
+            , React.createElement('div',{style:{
+                padding:"14px 24px",borderTop:"1px solid var(--nm-border)",
+                display:"flex",justifyContent:"flex-end",gap:10}}
+              , React.createElement('button',{onClick:()=>setHemoShowReport(false),
+                  style:{background:"none",border:"1px solid var(--nm-border)",
+                    borderRadius:7,padding:"9px 18px",fontSize:12,
+                    color:"var(--nm-text-dim)",cursor:"pointer"}}
+                , "Annulla"
+              )
+              , React.createElement('button',{
+                  onClick:()=>window.print(),
+                  style:{background:"var(--nm-btn-bg)",border:"1px solid var(--nm-btn-border)",
+                    borderRadius:7,padding:"9px 20px",fontSize:12,
+                    fontFamily:"'DM Mono',monospace",color:"var(--nm-accent)",cursor:"pointer",
+                    letterSpacing:"0.3px"}}
+                , "🖨 Stampa Referto"
               )
             )
           )
