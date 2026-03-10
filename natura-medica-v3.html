@@ -1474,38 +1474,85 @@ function getParamStatus(p) {
 }
 
 const DEFAULT_HEMO_PARAMS = [
-  {id:"hgb",    label:"Emoglobina",        value:"", range:"12.0 – 17.5", unit:"g/dL",   cat:"Emocromo",      statusOverride:null},
-  {id:"hct",    label:"Ematocrito",         value:"", range:"36 – 52",     unit:"%",      cat:"Emocromo",      statusOverride:null},
-  {id:"rbc",    label:"Globuli Rossi",      value:"", range:"3.8 – 5.8",   unit:"M/µL",   cat:"Emocromo",      statusOverride:null},
-  {id:"wbc",    label:"Globuli Bianchi",    value:"", range:"4.0 – 10.0",  unit:"K/µL",   cat:"Emocromo",      statusOverride:null},
-  {id:"plt",    label:"Piastrine",          value:"", range:"150 – 400",   unit:"K/µL",   cat:"Emocromo",      statusOverride:null},
-  {id:"mcv",    label:"MCV",               value:"", range:"80 – 100",    unit:"fL",     cat:"Emocromo",      statusOverride:null},
-  {id:"ferr",   label:"Ferritina",          value:"", range:"M: 30–400 / F: 10–200", unit:"µg/L", cat:"Ferro", statusOverride:null},
-  {id:"fe",     label:"Ferro Sierico",      value:"", range:"60 – 170",    unit:"µg/dL",  cat:"Ferro",         statusOverride:null},
-  {id:"tf",     label:"Transferrina",       value:"", range:"200 – 360",   unit:"mg/dL",  cat:"Ferro",         statusOverride:null},
-  {id:"pcr",    label:"PCR",               value:"", range:"< 5",         unit:"mg/L",   cat:"Infiammazione", statusOverride:null},
-  {id:"ves",    label:"VES",               value:"", range:"M: 0–15 / F: 0–20", unit:"mm/h", cat:"Infiammazione", statusOverride:null},
-  {id:"fibr",   label:"Fibrinogeno",        value:"", range:"200 – 400",   unit:"mg/dL",  cat:"Infiammazione", statusOverride:null},
-  {id:"chol",   label:"Colesterolo Tot.",   value:"", range:"< 200",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
-  {id:"hdl",    label:"HDL",               value:"", range:"M: > 40 / F: > 50", unit:"mg/dL", cat:"Lipidi",  statusOverride:null},
-  {id:"ldl",    label:"LDL",               value:"", range:"< 130",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
-  {id:"trig",   label:"Trigliceridi",       value:"", range:"< 150",       unit:"mg/dL",  cat:"Lipidi",        statusOverride:null},
-  {id:"glic",   label:"Glicemia",           value:"", range:"70 – 100",    unit:"mg/dL",  cat:"Glicemia",      statusOverride:null},
-  {id:"hba1c",  label:"HbA1c",             value:"", range:"< 5.7",       unit:"%",      cat:"Glicemia",      statusOverride:null},
-  {id:"ins",    label:"Insulina",           value:"", range:"2 – 25",      unit:"µUI/mL", cat:"Glicemia",      statusOverride:null},
-  {id:"alt",    label:"ALT (GPT)",          value:"", range:"< 40",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
-  {id:"ast",    label:"AST (GOT)",          value:"", range:"< 40",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
-  {id:"ggt",    label:"GGT",               value:"", range:"< 55",        unit:"U/L",    cat:"Fegato",        statusOverride:null},
-  {id:"crea",   label:"Creatinina",         value:"", range:"0.6 – 1.2",   unit:"mg/dL",  cat:"Rene",          statusOverride:null},
-  {id:"urea",   label:"Urea",              value:"", range:"15 – 45",     unit:"mg/dL",  cat:"Rene",          statusOverride:null},
-  {id:"tsh",    label:"TSH",               value:"", range:"0.4 – 4.0",   unit:"µUI/mL", cat:"Tiroide",       statusOverride:null},
-  {id:"ft4",    label:"FT4",               value:"", range:"0.8 – 1.8",   unit:"ng/dL",  cat:"Tiroide",       statusOverride:null},
-  {id:"ft3",    label:"FT3",               value:"", range:"2.3 – 4.2",   unit:"pg/mL",  cat:"Tiroide",       statusOverride:null},
-  {id:"vitd",   label:"Vitamina D (25-OH)", value:"", range:"30 – 100",   unit:"ng/mL",  cat:"Micronutrienti",statusOverride:null},
-  {id:"b12",    label:"Vitamina B12",       value:"", range:"200 – 900",   unit:"pg/mL",  cat:"Micronutrienti",statusOverride:null},
-  {id:"folati", label:"Folati",             value:"", range:"3 – 20",      unit:"ng/mL",  cat:"Micronutrienti",statusOverride:null},
-  {id:"mg",     label:"Magnesio",           value:"", range:"1.7 – 2.4",   unit:"mg/dL",  cat:"Micronutrienti",statusOverride:null},
-  {id:"zn",     label:"Zinco",             value:"", range:"70 – 120",    unit:"µg/dL",  cat:"Micronutrienti",statusOverride:null},
+  // ── EMATOLOGIA ──────────────────────────────────────────────
+  {id:"hgb",    label:"Emoglobina",        value:"", range:"12.0 – 17.5",          unit:"g/dL",   cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"hct",    label:"Ematocrito",         value:"", range:"36 – 52",              unit:"%",      cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"rbc",    label:"Globuli Rossi",      value:"", range:"3.8 – 5.8",            unit:"M/µL",   cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"wbc",    label:"Globuli Bianchi",    value:"", range:"4.0 – 10.0",           unit:"K/µL",   cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"plt",    label:"Piastrine",          value:"", range:"150 – 400",            unit:"K/µL",   cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"mcv",    label:"MCV",               value:"", range:"80 – 100",             unit:"fL",     cat:"Emocromo",       tab:"ematologia", statusOverride:null},
+  {id:"ferr",   label:"Ferritina",          value:"", range:"M: 30–400 / F: 10–200",unit:"µg/L",   cat:"Ferro",          tab:"ematologia", statusOverride:null},
+  {id:"fe",     label:"Ferro Sierico",      value:"", range:"60 – 170",             unit:"µg/dL",  cat:"Ferro",          tab:"ematologia", statusOverride:null},
+  {id:"tf",     label:"Transferrina",       value:"", range:"200 – 360",            unit:"mg/dL",  cat:"Ferro",          tab:"ematologia", statusOverride:null},
+  {id:"pcr",    label:"PCR",               value:"", range:"< 5",                  unit:"mg/L",   cat:"Infiammazione",  tab:"ematologia", statusOverride:null},
+  {id:"ves",    label:"VES",               value:"", range:"M: 0–15 / F: 0–20",    unit:"mm/h",   cat:"Infiammazione",  tab:"ematologia", statusOverride:null},
+  {id:"fibr",   label:"Fibrinogeno",        value:"", range:"200 – 400",            unit:"mg/dL",  cat:"Infiammazione",  tab:"ematologia", statusOverride:null},
+  {id:"chol",   label:"Colesterolo Tot.",   value:"", range:"< 200",               unit:"mg/dL",  cat:"Lipidi",         tab:"ematologia", statusOverride:null},
+  {id:"hdl",    label:"HDL",               value:"", range:"M: > 40 / F: > 50",   unit:"mg/dL",  cat:"Lipidi",         tab:"ematologia", statusOverride:null},
+  {id:"ldl",    label:"LDL",               value:"", range:"< 130",               unit:"mg/dL",  cat:"Lipidi",         tab:"ematologia", statusOverride:null},
+  {id:"trig",   label:"Trigliceridi",       value:"", range:"< 150",               unit:"mg/dL",  cat:"Lipidi",         tab:"ematologia", statusOverride:null},
+  {id:"glic",   label:"Glicemia",           value:"", range:"70 – 100",            unit:"mg/dL",  cat:"Glicemia",       tab:"ematologia", statusOverride:null},
+  {id:"hba1c",  label:"HbA1c",             value:"", range:"< 5.7",               unit:"%",      cat:"Glicemia",       tab:"ematologia", statusOverride:null},
+  {id:"ins",    label:"Insulina",           value:"", range:"2 – 25",              unit:"µUI/mL", cat:"Glicemia",       tab:"ematologia", statusOverride:null},
+  {id:"alt",    label:"ALT (GPT)",          value:"", range:"< 40",               unit:"U/L",    cat:"Fegato",         tab:"ematologia", statusOverride:null},
+  {id:"ast",    label:"AST (GOT)",          value:"", range:"< 40",               unit:"U/L",    cat:"Fegato",         tab:"ematologia", statusOverride:null},
+  {id:"ggt",    label:"GGT",               value:"", range:"< 55",               unit:"U/L",    cat:"Fegato",         tab:"ematologia", statusOverride:null},
+  {id:"crea",   label:"Creatinina",         value:"", range:"0.6 – 1.2",          unit:"mg/dL",  cat:"Rene",           tab:"ematologia", statusOverride:null},
+  {id:"urea",   label:"Urea",              value:"", range:"15 – 45",            unit:"mg/dL",  cat:"Rene",           tab:"ematologia", statusOverride:null},
+  {id:"tsh",    label:"TSH",               value:"", range:"0.4 – 4.0",          unit:"µUI/mL", cat:"Tiroide",        tab:"ematologia", statusOverride:null},
+  {id:"ft4",    label:"FT4",               value:"", range:"0.8 – 1.8",          unit:"ng/dL",  cat:"Tiroide",        tab:"ematologia", statusOverride:null},
+  {id:"ft3",    label:"FT3",               value:"", range:"2.3 – 4.2",          unit:"pg/mL",  cat:"Tiroide",        tab:"ematologia", statusOverride:null},
+  {id:"vitd",   label:"Vitamina D (25-OH)", value:"", range:"30 – 100",          unit:"ng/mL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  {id:"b12",    label:"Vitamina B12",       value:"", range:"200 – 900",         unit:"pg/mL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  {id:"folati", label:"Folati",             value:"", range:"3 – 20",            unit:"ng/mL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  {id:"mg",     label:"Magnesio",           value:"", range:"1.7 – 2.4",         unit:"mg/dL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  {id:"zn",     label:"Zinco",             value:"", range:"70 – 120",           unit:"µg/dL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  // ── URINE ───────────────────────────────────────────────────
+  {id:"u_ph",     label:"pH urine",              value:"", range:"5.0 – 8.0",           unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
+  {id:"u_pes",    label:"Peso specifico",         value:"", range:"1.005 – 1.030",       unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
+  {id:"u_prot",   label:"Proteinuria",            value:"", range:"< 150",              unit:"mg/24h",   cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
+  {id:"u_gluc",   label:"Glucosuria",             value:"", range:"Assente",            unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
+  {id:"u_chet",   label:"Corpi chetonici",        value:"", range:"Assenti",            unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
+  {id:"u_emi",    label:"Ematuria",               value:"", range:"< 5",               unit:"GR/µL",    cat:"Sedimento",       tab:"urine", statusOverride:null},
+  {id:"u_leuc",   label:"Leucocituria",           value:"", range:"< 10",              unit:"GB/µL",    cat:"Sedimento",       tab:"urine", statusOverride:null},
+  {id:"u_nit",    label:"Nitriti",                value:"", range:"Assenti",            unit:"",         cat:"Sedimento",       tab:"urine", statusOverride:null},
+  {id:"u_crea",   label:"Creatinina urinaria",    value:"", range:"M: 0.8–1.8 / F: 0.6–1.6", unit:"g/24h", cat:"Metabolismo", tab:"urine", statusOverride:null},
+  {id:"u_microalb",label:"Microalbuminuria",      value:"", range:"< 30",              unit:"mg/g cr.", cat:"Metabolismo",     tab:"urine", statusOverride:null},
+  {id:"u_beta2",  label:"β2-Microglobulina",      value:"", range:"< 0.3",             unit:"mg/L",     cat:"Metabolismo",     tab:"urine", statusOverride:null},
+  {id:"u_oxal",   label:"Ossalato urinario",      value:"", range:"< 45",              unit:"mg/24h",   cat:"Metabolismo",     tab:"urine", statusOverride:null},
+  // ── FECI ────────────────────────────────────────────────────
+  {id:"f_calp",   label:"Calprotectina",          value:"", range:"< 50",              unit:"µg/g",     cat:"Marker infiammatori", tab:"feci", statusOverride:null},
+  {id:"f_zon",    label:"Zonulina",               value:"", range:"< 107",             unit:"ng/mL",    cat:"Marker infiammatori", tab:"feci", statusOverride:null},
+  {id:"f_liso",   label:"Lisozima",               value:"", range:"< 600",             unit:"µg/g",     cat:"Marker infiammatori", tab:"feci", statusOverride:null},
+  {id:"f_siga",   label:"sIgA secretorie",        value:"", range:"510 – 2040",        unit:"µg/mL",    cat:"Marker infiammatori", tab:"feci", statusOverride:null},
+  {id:"f_elast",  label:"Elastasi pancreatica",   value:"", range:"> 200",             unit:"µg/g",     cat:"Funzione pancreatica", tab:"feci", statusOverride:null},
+  {id:"f_grass",  label:"Grassi fecali",          value:"", range:"< 7",              unit:"g/24h",    cat:"Funzione pancreatica", tab:"feci", statusOverride:null},
+  {id:"f_ph",     label:"pH fecale",              value:"", range:"6.0 – 7.5",         unit:"",         cat:"Microbiota",           tab:"feci", statusOverride:null},
+  {id:"f_h2",     label:"Breath test H₂ (latt.)", value:"", range:"< 20",             unit:"ppm",      cat:"Microbiota",           tab:"feci", statusOverride:null},
+  {id:"f_sang",   label:"Sangue occulto",         value:"", range:"Negativo",          unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
+  {id:"f_paras",  label:"Parassiti / Protozoi",   value:"", range:"Assenti",           unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
+  // ── IMMUNOLOGIA ─────────────────────────────────────────────
+  {id:"im_ige",   label:"IgE totali",             value:"", range:"< 100",             unit:"kU/L",     cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_iga",   label:"IgA",                   value:"", range:"70 – 400",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_igg",   label:"IgG",                   value:"", range:"700 – 1600",         unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_igm",   label:"IgM",                   value:"", range:"40 – 230",           unit:"mg/dL",    cat:"Immunoglobuline",      tab:"immunologia", statusOverride:null},
+  {id:"im_ana",   label:"ANA (antinucleo)",       value:"", range:"< 1:80",            unit:"titolo",   cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
+  {id:"im_anca",  label:"ANCA",                  value:"", range:"Negativo",           unit:"",         cat:"Autoimmunità",         tab:"immunologia", statusOverride:null},
+  {id:"im_tpo",   label:"Anti-TPO",              value:"", range:"< 34",              unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
+  {id:"im_tg",    label:"Anti-Tireoglobulina",   value:"", range:"< 115",             unit:"IU/mL",    cat:"Autoimmunità tiroidea",tab:"immunologia", statusOverride:null},
+  {id:"im_rf",    label:"Fattore Reumatoide",    value:"", range:"< 14",              unit:"IU/mL",    cat:"Artrite",              tab:"immunologia", statusOverride:null},
+  {id:"im_ccp",   label:"Anti-CCP",              value:"", range:"< 7",               unit:"U/mL",     cat:"Artrite",              tab:"immunologia", statusOverride:null},
+  {id:"im_c3",    label:"Complemento C3",        value:"", range:"90 – 180",           unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
+  {id:"im_c4",    label:"Complemento C4",        value:"", range:"16 – 47",            unit:"mg/dL",    cat:"Complemento",          tab:"immunologia", statusOverride:null},
+  // ── GENETICA ────────────────────────────────────────────────
+  {id:"g_mthfrc",  label:"MTHFR C677T",          value:"", range:"Wild-type (C/C)",   unit:"genotipo", cat:"Metilazione",           tab:"genetica", statusOverride:null},
+  {id:"g_mthfra",  label:"MTHFR A1298C",         value:"", range:"Wild-type (A/A)",   unit:"genotipo", cat:"Metilazione",           tab:"genetica", statusOverride:null},
+  {id:"g_comt",    label:"COMT Val158Met",        value:"", range:"Val/Val",           unit:"genotipo", cat:"Neurotrasmettitori",    tab:"genetica", statusOverride:null},
+  {id:"g_vdr",     label:"VDR (Vit. D receptor)",value:"", range:"Wild-type",         unit:"genotipo", cat:"Metabolismo",           tab:"genetica", statusOverride:null},
+  {id:"g_apoe",    label:"APOE genotipo",         value:"", range:"ε3/ε3",            unit:"genotipo", cat:"Metabolismo lipidico",  tab:"genetica", statusOverride:null},
+  {id:"g_cyp1b1",  label:"CYP1B1",               value:"", range:"Wild-type",         unit:"genotipo", cat:"Detossificazione",      tab:"genetica", statusOverride:null},
+  {id:"g_gstm1",   label:"GSTM1",                value:"", range:"Normale",           unit:"genotipo", cat:"Detossificazione",      tab:"genetica", statusOverride:null},
+  {id:"g_hmox",    label:"HO-1 (HMOX1)",         value:"", range:"Normale",           unit:"genotipo", cat:"Stress ossidativo",     tab:"genetica", statusOverride:null},
 ];
 
 function NaturopatiaAI() {
@@ -1605,6 +1652,12 @@ function NaturopatiaAI() {
   const [hemoCats, setHemoCats] = useState({}); // {catName: bool} — true=aperta
   const [hemoShowAdd, setHemoShowAdd] = useState(false);
   const [hemoAddForm, setHemoAddForm] = useState({label:"",value:"",range:"",unit:"",cat:"Emocromo",newCat:""});
+  const [hemoTab, setHemoTab]           = useState("ematologia");
+  const [hemoShowAnamnesi, setHemoShowAnamnesi] = useState(false);
+  const [hemoAnamnesi, setHemoAnamnesi] = useState({
+    dislessia:false, disgrafia:false, discalculia:false, disortografia:false,
+    sindromDown:false, spettroAutistico:false, malattieRare:false, malattieRareTxt:"",
+  });
   // Cross-Talk: fonti suggerite (mock — future AI)
   const [hemoSources, setHemoSources] = useState([
     {id:"s1",title:"Ferritina sierica: interpretazione clinica integrata",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Revisione sistematica sull'interpretazione della ferritinemia in contesti infiammatori e non. Impact factor 8.2.",useForAnalysis:true,includeInPrint:false},
@@ -3322,6 +3375,88 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
             , React.createElement('div', {style:{width:"42%",minWidth:300,display:"flex",flexDirection:"column",
               borderRight:"1px solid var(--nm-border)",overflowY:"auto",padding:"14px 12px 24px 18px",gap:6}}
 
+              /* ── TAB BAR ── */
+              , React.createElement('div',{style:{display:"flex",gap:3,flexWrap:"wrap",marginBottom:4}}
+                , [
+                    {id:"ematologia",  label:"🔴 Ematologia"},
+                    {id:"urine",       label:"🟡 Urine"},
+                    {id:"feci",        label:"🟤 Feci"},
+                    {id:"immunologia", label:"🔵 Immunologia"},
+                    {id:"genetica",    label:"🧬 Genetica"},
+                    {id:"altro",       label:"➕ Altro"},
+                  ].map(t=>React.createElement('button',{key:t.id,
+                    onClick:()=>{setHemoTab(t.id);setHemoShowAdd(false);},
+                    style:{padding:"4px 9px",borderRadius:5,fontSize:10,cursor:"pointer",
+                      fontFamily:"'DM Mono',monospace",letterSpacing:"0.2px",border:"none",
+                      transition:"all 0.15s",
+                      background:hemoTab===t.id?"var(--nm-accent)":"var(--nm-bg3)",
+                      color:hemoTab===t.id?"#0d1a0d":"var(--nm-text-dim)",
+                      fontWeight:hemoTab===t.id?600:400}}
+                    , t.label
+                  ))
+                )
+
+              /* ── ANAMNESI SPECIALE ── */
+              , React.createElement('div',{style:{border:"1px solid var(--nm-border)",borderRadius:7,overflow:"hidden",marginBottom:2}}
+                , React.createElement('button',{
+                    onClick:()=>setHemoShowAnamnesi(v=>!v),
+                    style:{width:"100%",padding:"6px 10px",background:hemoShowAnamnesi?"var(--nm-bg2)":"transparent",
+                      border:"none",color:"var(--nm-text-dim)",cursor:"pointer",fontSize:10,
+                      fontFamily:"'DM Mono',monospace",textAlign:"left",letterSpacing:"0.3px",
+                      display:"flex",justifyContent:"space-between"}}
+                  , React.createElement('span',null,"📋 Anamnesi Speciale")
+                  , React.createElement('span',{style:{fontSize:9,opacity:0.6}},hemoShowAnamnesi?"▴ chiudi":"▾ espandi")
+                )
+                , hemoShowAnamnesi&&React.createElement('div',{style:{padding:"10px 12px",
+                    background:"var(--nm-bg2)",borderTop:"1px solid var(--nm-border)",
+                    display:"flex",flexDirection:"column",gap:8}}
+
+                  , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:2}}
+                    , "DSA — Disturbi Specifici dell'Apprendimento"
+                  )
+                  , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}
+                    , ["dislessia","disgrafia","discalculia","disortografia"].map(k=>
+                        React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                          gap:6,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
+                          padding:"3px 0",textTransform:"capitalize"}}
+                          , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                              onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                          , k.charAt(0).toUpperCase()+k.slice(1)
+                        )
+                      )
+                  )
+
+                  , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                      letterSpacing:"0.5px",textTransform:"uppercase",marginTop:4,marginBottom:2}}
+                    , "Condizioni Invalidanti / Genetiche"
+                  )
+                  , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
+                    , [
+                        {k:"sindromDown",       label:"Sindrome di Down"},
+                        {k:"spettroAutistico",  label:"Spettro Autistico (ASD)"},
+                        {k:"malattieRare",      label:"Malattia Rara"},
+                      ].map(({k,label})=>
+                        React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                          gap:6,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer"}}
+                          , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                              onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                          , label
+                        )
+                      )
+                    , hemoAnamnesi.malattieRare&&React.createElement('input',{
+                        type:"text",value:hemoAnamnesi.malattieRareTxt,
+                        onChange:e=>setHemoAnamnesi(prev=>({...prev,malattieRareTxt:e.target.value})),
+                        placeholder:"Specificare malattia rara...",
+                        style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                          borderRadius:5,padding:"5px 8px",color:"var(--nm-text)",fontSize:10,
+                          fontFamily:"'DM Mono',monospace",outline:"none",marginTop:2}})
+                  )
+                )
+              )
+
               /* Pulsante PDF — stub visivo, logica AI futura */
               , React.createElement('button', {disabled:true,
                 title:"Funzionalità futura: l'AI estrarrà i valori dal PDF e li inietterà nei campi — tu li verificherai prima del consulto",
@@ -3368,9 +3503,10 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   style:{fontSize:9,color:"var(--nm-text-dimmer)",textTransform:"uppercase",letterSpacing:"0.08em"}},h))
               )
 
-              /* Sezioni per categoria — collassabili */
+              /* Sezioni per categoria — collassabili — filtrate per tab attiva */
               , ...Object.entries(
-                  hemoParams.reduce((acc,p)=>{(acc[p.cat]=acc[p.cat]||[]).push(p);return acc;},{})
+                  hemoParams.filter(p=>(p.tab||"ematologia")===hemoTab)
+                    .reduce((acc,p)=>{(acc[p.cat]=acc[p.cat]||[]).push(p);return acc;},{})
                 ).map(([cat,catParams])=>{
                   const isOpen = hemoCats[cat] !== false;
                   const altCount = catParams.filter(p=>{const s=getParamStatus(p);return s!=="normal"&&s!=="empty";}).length;
@@ -3485,7 +3621,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       onChange:e=>setHemoAddForm(f=>({...f,cat:e.target.value,newCat:""})),
                       style:{flex:1,background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
                         padding:"5px 8px",color:"var(--nm-text)",fontSize:11,fontFamily:"'DM Mono',monospace",outline:"none"}}
-                      , [...new Set(hemoParams.map(p=>p.cat))].map(c=>
+                      , [...new Set(hemoParams.filter(p=>(p.tab||"ematologia")===hemoTab).map(p=>p.cat))].map(c=>
                           React.createElement('option',{key:c,value:c},c))
                       , React.createElement('option',{value:"__new__"},"── Nuova categoria...")
                     )
@@ -3507,6 +3643,7 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                         range:hemoAddForm.range,
                         unit:hemoAddForm.unit,
                         cat,
+                        tab:hemoTab,
                         statusOverride:null,
                       }]);
                       setHemoAddForm(f=>({label:"",value:"",range:"",unit:"",
@@ -3765,6 +3902,52 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   , "Codice: "+hemoPatient
                 )
               )
+
+              /* ── QUADRO CLINICO DI BASE (Anamnesi Speciale) ── */
+              , (hemoAnamnesi.dislessia||hemoAnamnesi.disgrafia||hemoAnamnesi.discalculia||
+                 hemoAnamnesi.disortografia||hemoAnamnesi.sindromDown||
+                 hemoAnamnesi.spettroAutistico||hemoAnamnesi.malattieRare)&&
+                React.createElement('div',{style:{
+                    background:"rgba(10,20,45,0.5)",
+                    border:"1px solid rgba(80,120,200,0.3)",
+                    borderRadius:8,padding:"12px 16px"}}
+                  , React.createElement('div',{style:{fontSize:9,letterSpacing:"0.6px",
+                      color:"rgba(140,170,230,0.75)",marginBottom:8,textTransform:"uppercase",
+                      fontFamily:"'DM Mono',monospace"}}
+                    , "Quadro Clinico di Base"
+                  )
+                  , (hemoAnamnesi.dislessia||hemoAnamnesi.disgrafia||
+                     hemoAnamnesi.discalculia||hemoAnamnesi.disortografia)&&
+                    React.createElement('div',{style:{marginBottom:6,lineHeight:1.6}}
+                      , React.createElement('span',{style:{fontSize:10,fontWeight:600,
+                          color:"rgba(160,185,245,0.9)",marginRight:6,fontFamily:"'DM Mono',monospace"}}
+                        , "DSA:"
+                      )
+                      , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)"}}
+                        , ["dislessia","disgrafia","discalculia","disortografia"]
+                            .filter(k=>hemoAnamnesi[k])
+                            .map(k=>k.charAt(0).toUpperCase()+k.slice(1))
+                            .join(", ")
+                      )
+                    )
+                  , (hemoAnamnesi.sindromDown||hemoAnamnesi.spettroAutistico||
+                     hemoAnamnesi.malattieRare)&&
+                    React.createElement('div',{style:{lineHeight:1.6}}
+                      , React.createElement('span',{style:{fontSize:10,fontWeight:600,
+                          color:"rgba(160,185,245,0.9)",marginRight:6,fontFamily:"'DM Mono',monospace"}}
+                        , "Condizioni:"
+                      )
+                      , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)"}}
+                        , [
+                            hemoAnamnesi.sindromDown?"Sindrome di Down":null,
+                            hemoAnamnesi.spettroAutistico?"Spettro Autistico (ASD)":null,
+                            hemoAnamnesi.malattieRare
+                              ?("Malattia Rara"+(hemoAnamnesi.malattieRareTxt?" — "+hemoAnamnesi.malattieRareTxt:""))
+                              :null,
+                          ].filter(Boolean).join(" · ")
+                      )
+                    )
+                )
 
               /* Riga 1: Tono + Data */
               , React.createElement('div',{style:{display:"grid",
