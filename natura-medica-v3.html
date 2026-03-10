@@ -1507,6 +1507,26 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"folati", label:"Folati",             value:"", range:"3 – 20",            unit:"ng/mL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
   {id:"mg",     label:"Magnesio",           value:"", range:"1.7 – 2.4",         unit:"mg/dL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
   {id:"zn",     label:"Zinco",             value:"", range:"70 – 120",           unit:"µg/dL",  cat:"Micronutrienti", tab:"ematologia", statusOverride:null},
+  // Formula leucocitaria assoluta (per NLR, PLR)
+  {id:"neut",    label:"Neutrofili (valore ass.)",  value:"", range:"1.8 – 7.5",    unit:"K/µL",  cat:"Formula Leucocitaria", tab:"ematologia", statusOverride:null},
+  {id:"linf",    label:"Linfociti (valore ass.)",   value:"", range:"1.0 – 4.5",    unit:"K/µL",  cat:"Formula Leucocitaria", tab:"ematologia", statusOverride:null},
+  // Proteine ed elettroforesi (per A/G ratio)
+  {id:"tot_prot",label:"Proteine totali",           value:"", range:"6.4 – 8.3",    unit:"g/dL",  cat:"Proteine",             tab:"ematologia", statusOverride:null},
+  {id:"alb",     label:"Albumina",                  value:"", range:"3.5 – 5.0",    unit:"g/dL",  cat:"Proteine",             tab:"ematologia", statusOverride:null},
+  {id:"glob",    label:"Globuline (tot_prot – alb)",value:"", range:"2.0 – 3.5",    unit:"g/dL",  cat:"Proteine",             tab:"ematologia", statusOverride:null},
+  // APO per rapporto B/A1
+  {id:"apob",    label:"APO-B",                     value:"", range:"< 100",         unit:"mg/dL", cat:"Cardiovascolare",      tab:"ematologia", statusOverride:null},
+  {id:"apoa1",   label:"APO-A1",                    value:"", range:"120 – 200",     unit:"mg/dL", cat:"Cardiovascolare",      tab:"ematologia", statusOverride:null},
+  // Ematologia avanzata (da analizzatore di ultima generazione)
+  {id:"em_ig",      label:"Granulociti Immaturi (IG%)", value:"", range:"< 0.5",       unit:"%",      cat:"Ematologia Avanzata", tab:"ematologia", statusOverride:null},
+  {id:"em_neutgi",  label:"Neutro-GI (granuloc. immAss)",value:"", range:"< 0.03",     unit:"K/µL",   cat:"Ematologia Avanzata", tab:"ematologia", statusOverride:null},
+  {id:"em_neutri",  label:"Neutro-RI (neutrofili RI)",  value:"", range:"< 2.0",       unit:"%",      cat:"Ematologia Avanzata", tab:"ematologia", statusOverride:null},
+  {id:"em_aslymp",  label:"AS-LYMP (Linfociti B att.)", value:"", range:"< 3",         unit:"%",      cat:"Ematologia Avanzata", tab:"ematologia", statusOverride:null},
+  {id:"em_relymp",  label:"RE-LYMP (Linfoc. T reatt.)", value:"", range:"< 2",         unit:"%",      cat:"Ematologia Avanzata", tab:"ematologia", statusOverride:null},
+  // Cardiovascolare
+  {id:"cv_ldlox",   label:"LDL Ossidate",               value:"", range:"< 60",        unit:"U/L",    cat:"Cardiovascolare",     tab:"ematologia", statusOverride:null},
+  {id:"cv_lpa",     label:"Lipoproteina (a)",            value:"", range:"< 30",        unit:"mg/dL",  cat:"Cardiovascolare",     tab:"ematologia", statusOverride:null},
+  {id:"cv_satfe",   label:"Saturazione Transferrina",    value:"", range:"20 – 50",     unit:"%",      cat:"Cardiovascolare",     tab:"ematologia", statusOverride:null},
   // ── URINE ───────────────────────────────────────────────────
   {id:"u_ph",     label:"pH urine",              value:"", range:"5.0 – 8.0",           unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
   {id:"u_pes",    label:"Peso specifico",         value:"", range:"1.005 – 1.030",       unit:"",         cat:"Fisico-chimica",  tab:"urine", statusOverride:null},
@@ -1531,6 +1551,9 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"f_h2",     label:"Breath test H₂ (latt.)", value:"", range:"< 20",             unit:"ppm",      cat:"Microbiota",           tab:"feci", statusOverride:null},
   {id:"f_sang",   label:"Sangue occulto",         value:"", range:"Negativo",          unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
   {id:"f_paras",  label:"Parassiti / Protozoi",   value:"", range:"Assenti",           unit:"",         cat:"Screening",            tab:"feci", statusOverride:null},
+  // Disbiosi — marker putrefattivi
+  {id:"f_scatolo",  label:"Scatolo",                   value:"", range:"< 10",        unit:"µg/L",   cat:"Disbiosi",            tab:"feci", statusOverride:null},
+  {id:"f_indicano", label:"Indicano",                  value:"", range:"< 15",        unit:"mg/L",   cat:"Disbiosi",            tab:"feci", statusOverride:null},
   // ── IMMUNOLOGIA ─────────────────────────────────────────────
   {id:"im_pcr",   label:"PCR (Proteina C-Reattiva)", value:"", range:"< 5",           unit:"mg/L",     cat:"Infiammazione",        tab:"immunologia", statusOverride:null},
   {id:"im_ves",   label:"VES",                   value:"", range:"< 20 (M) / < 30 (F)", unit:"mm/h", cat:"Infiammazione",        tab:"immunologia", statusOverride:null},
@@ -1568,6 +1591,57 @@ const DEFAULT_HEMO_PARAMS = [
   {id:"mi_il13",  label:"IL-13",                  value:"", range:"< 12",             unit:"pg/mL",    cat:"Citochine anti-infiammatorie", tab:"microimmunologia", statusOverride:null},
   {id:"mi_th12",  label:"Th1/Th2 ratio",          value:"", range:"0.5 – 2.0",        unit:"ratio",    cat:"Bilancio immunologico",       tab:"microimmunologia", statusOverride:null},
   {id:"mi_treg",  label:"T-reg (CD4+CD25+FoxP3+)", value:"", range:"5 – 10",         unit:"%",        cat:"Bilancio immunologico",       tab:"microimmunologia", statusOverride:null},
+  // ── ENDOCRINOLOGIA & STRESS ─────────────────────────────────
+  {id:"en_cort_em",  label:"Cortisolo Ematico (08:00)",  value:"", range:"6 – 23",      unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_dheas",    label:"DHEA-S",                    value:"", range:"80 – 560",     unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_test",     label:"Testosterone Totale",        value:"", range:"M:270–1070 F:15–70",unit:"ng/dL",cat:"Ormoni Sessuali",    tab:"endocrinologia", statusOverride:null},
+  {id:"en_estr",     label:"Estradiolo (E2)",            value:"", range:"M:10–40 F:20–350", unit:"pg/mL", cat:"Ormoni Sessuali",    tab:"endocrinologia", statusOverride:null},
+  {id:"en_shbg",     label:"SHBG",                      value:"", range:"M:10–57 F:18–144", unit:"nmol/L",cat:"Ormoni Sessuali",    tab:"endocrinologia", statusOverride:null},
+  {id:"en_lh",       label:"LH",                        value:"", range:"M:1.7–8.6 F:var.",unit:"mIU/mL",cat:"Ipofisari",          tab:"endocrinologia", statusOverride:null},
+  {id:"en_fsh",      label:"FSH",                       value:"", range:"M:1.5–12 F:var.", unit:"mIU/mL", cat:"Ipofisari",          tab:"endocrinologia", statusOverride:null},
+  {id:"en_prl",      label:"Prolattina",                value:"", range:"M:<15 F:<25",     unit:"ng/mL",  cat:"Ipofisari",          tab:"endocrinologia", statusOverride:null},
+  // Cortisolo Salivare — valori gestiti con selettore Singolo/Curva (vedi UI speciale)
+  {id:"en_cort_saliv",label:"Cortisolo Salivare (singolo)",value:"", range:"0.5 – 1.5", unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_cort_s08", label:"Cortisolo Saliv. 08:00",    value:"", range:"0.5 – 1.5",    unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_cort_s12", label:"Cortisolo Saliv. 12:00",    value:"", range:"0.2 – 0.9",    unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_cort_s16", label:"Cortisolo Saliv. 16:00",    value:"", range:"0.1 – 0.6",    unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  {id:"en_cort_s22", label:"Cortisolo Saliv. 22:00",    value:"", range:"< 0.27",       unit:"µg/dL",  cat:"Asse Stress (HPA)",   tab:"endocrinologia", statusOverride:null},
+  // ── MICRONUTRIENTI & TOSSICITÀ ──────────────────────────────
+  // Elettroliti e Macro
+  {id:"mn_ca",      label:"Calcio totale",           value:"", range:"8.5 – 10.5",   unit:"mg/dL",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_ca_ion",  label:"Calcio ionizzato",        value:"", range:"4.6 – 5.3",    unit:"mg/dL",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_mg",      label:"Magnesio sierico",        value:"", range:"1.7 – 2.2",    unit:"mg/dL",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_mg_eri",  label:"Magnesio eritrocitario",  value:"", range:"4.2 – 6.8",    unit:"mg/dL",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_na",      label:"Sodio",                   value:"", range:"136 – 145",    unit:"mEq/L",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_k",       label:"Potassio",                value:"", range:"3.5 – 5.0",    unit:"mEq/L",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  {id:"mn_p",       label:"Fosforo",                 value:"", range:"2.5 – 4.5",    unit:"mg/dL",  cat:"Elettroliti & Macro",   tab:"micronutrienti", statusOverride:null},
+  // Oligoelementi
+  {id:"mn_zn",      label:"Zinco",                   value:"", range:"70 – 120",     unit:"µg/dL",  cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  {id:"mn_cu",      label:"Rame",                    value:"", range:"70 – 140",     unit:"µg/dL",  cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  {id:"mn_se",      label:"Selenio",                 value:"", range:"70 – 150",     unit:"µg/L",   cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  {id:"mn_mn",      label:"Manganese",               value:"", range:"4 – 15",       unit:"µg/L",   cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  {id:"mn_cr",      label:"Cromo",                   value:"", range:"0.05 – 0.50",  unit:"µg/L",   cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  {id:"mn_iodio",   label:"Iodio urinario",          value:"", range:"100 – 200",    unit:"µg/L",   cat:"Oligoelementi",         tab:"micronutrienti", statusOverride:null},
+  // Vitamine
+  {id:"mn_vita",    label:"Vitamina A (retinolo)",   value:"", range:"30 – 80",      unit:"µg/dL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_vitc",    label:"Vitamina C",              value:"", range:"0.4 – 2.0",    unit:"mg/dL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_vite",    label:"Vitamina E (α-tocofer.)", value:"", range:"5.0 – 20.0",   unit:"mg/L",   cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_vitd",    label:"Vitamina D (25-OH)",      value:"", range:"40 – 80",      unit:"ng/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_vitk1",   label:"Vitamina K1 (fillochin.)",value:"", range:"0.2 – 3.2",    unit:"ng/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_vitk2",   label:"Vitamina K2 (menachin.)", value:"", range:"0.1 – 2.0",    unit:"ng/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b1",      label:"Vitamina B1 (tiamina)",   value:"", range:"70 – 180",     unit:"nmol/L", cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b2",      label:"Vitamina B2 (riboflavina)",value:"", range:"100 – 300",   unit:"nmol/L", cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b3",      label:"Vitamina B3 (niacina)",   value:"", range:"30 – 100",     unit:"µg/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b5",      label:"Vitamina B5 (pant. ac.)", value:"", range:"165 – 1000",   unit:"µg/L",   cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b6",      label:"Vitamina B6 (piridoss.)", value:"", range:"20 – 125",     unit:"nmol/L", cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b9",      label:"Vitamina B9 (ac. folico)",value:"", range:"3 – 17",       unit:"ng/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_b12",     label:"Vitamina B12 (cobalam.)", value:"", range:"200 – 900",    unit:"pg/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  {id:"mn_coq10",   label:"Coenzima Q10",            value:"", range:"0.40 – 1.91",  unit:"µg/mL",  cat:"Vitamine",              tab:"micronutrienti", statusOverride:null},
+  // Metalli Pesanti (Tossicità)
+  {id:"mn_pb",      label:"Piombo (Pb)",             value:"", range:"< 5",          unit:"µg/dL",  cat:"Metalli Pesanti",       tab:"micronutrienti", statusOverride:null},
+  {id:"mn_hg",      label:"Mercurio (Hg)",           value:"", range:"< 5",          unit:"µg/L",   cat:"Metalli Pesanti",       tab:"micronutrienti", statusOverride:null},
+  {id:"mn_al",      label:"Alluminio (Al)",          value:"", range:"< 10",         unit:"µg/L",   cat:"Metalli Pesanti",       tab:"micronutrienti", statusOverride:null},
+  {id:"mn_cd",      label:"Cadmio (Cd)",             value:"", range:"< 0.5",        unit:"µg/L",   cat:"Metalli Pesanti",       tab:"micronutrienti", statusOverride:null},
   // ── GENETICA ────────────────────────────────────────────────
   {id:"g_fvl",     label:"Fattore V di Leiden",   value:"", range:"Negativo/Wild-Type",unit:"genotipo", cat:"Coagulazione",          tab:"genetica", statusOverride:null},
   {id:"g_f2",      label:"Fattore II (Protrombina G20210A)", value:"", range:"Negativo/Wild-Type", unit:"genotipo", cat:"Coagulazione", tab:"genetica", statusOverride:null},
@@ -1907,6 +1981,192 @@ const INFO_MODALS = {
     </svg>`,
     note: "Il sistema ABO determina gli antigeni di membrana eritrocitaria e gli anticorpi naturali corrispondenti. Il gruppo 0 Rh− è donatore universale (no antigeni A/B/D), AB Rh+ è ricevente universale. Il fattore Rh è cruciale in gravidanza: una madre Rh− con feto Rh+ può sviluppare anticorpi anti-D (profilassi con immunoglobuline anti-D entro 72h dal parto). In naturopatia il gruppo sanguigno orienta la predisposizione costituzionale e le risposte infiammatorie."
   },
+  mn_coq10: {
+    title: "Ciclo di Krebs & Fosforilazione Ossidativa",
+    svg: `<svg viewBox="0 0 320 215" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="215" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="18" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">Ciclo di Krebs — Cofattori Vitaminici</text>
+      <!-- Krebs cycle circle -->
+      <circle cx="160" cy="105" r="52" fill="none" stroke="#2a4a2a" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="160" y="101" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace" font-weight="bold">Acetil-CoA</text>
+      <text x="160" y="113" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Ciclo di Krebs</text>
+      <!-- Nodes on the circle -->
+      <circle cx="160" cy="53" r="12" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="57" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Citrato</text>
+      <circle cx="205" cy="70" r="12" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="205" y="74" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Isocit.</text>
+      <circle cx="212" cy="120" r="12" fill="#2e1a00" stroke="#c08020"/>
+      <text x="212" y="124" fill="#e0a040" font-size="7" text-anchor="middle" font-family="monospace">α-KG</text>
+      <circle cx="175" cy="155" r="12" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="175" y="159" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Succ.</text>
+      <circle cx="120" cy="150" r="12" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="120" y="154" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Fum.</text>
+      <circle cx="108" cy="105" r="12" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="108" y="109" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Malato</text>
+      <!-- Cofactors as annotations -->
+      <text x="230" y="68" fill="#f0c070" font-size="7" font-family="monospace">B3 (NAD+)</text>
+      <text x="230" y="118" fill="#f0a050" font-size="7" font-family="monospace">B1, B3, CoA</text>
+      <text x="40" y="108" fill="#f0c070" font-size="7" font-family="monospace">B2 (FAD)</text>
+      <!-- ETC / ATP Synthesis -->
+      <rect x="10" y="175" width="300" height="30" rx="5" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="160" y="187" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">Catena di trasporto elettroni (ETC) → ATP Sintasi</text>
+      <text x="160" y="198" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">CoQ10 trasporta e− da Complessi I/II → Complesso III · Deficit: produzione ATP ridotta</text>
+      <!-- Legend cofactors -->
+      <rect x="10" y="155" width="90" height="16" rx="3" fill="#2e2e1a" stroke="#c0a020" stroke-width="0.8"/>
+      <text x="55" y="166" fill="#f0c070" font-size="7" text-anchor="middle" font-family="monospace">B1·B2·B3 = redox</text>
+    </svg>`,
+    note: "Le vitamine del gruppo B sono cofattori essenziali del ciclo di Krebs: B1 (tiamina) nella decarbossilazione piruvato→Acetil-CoA; B2 (riboflavina/FAD) e B3 (niacina/NAD+) trasportano elettroni; B5 (CoA). Il CoQ10 (ubichinone) è il carrier di elettroni nella catena respiratoria mitocondriale — senza di esso la produzione di ATP si riduce drasticamente. Deficit → fatica cronica, miopatia, intolleranza all'esercizio."
+  },
+  mn_b9: {
+    title: "Ciclo della Metilazione — Ruolo di B9 e B12",
+    svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="200" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="18" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">Ciclo della Metilazione — B9 &amp; B12</text>
+      <!-- Methylation cycle -->
+      <rect x="10" y="30" width="80" height="28" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="50" y="47" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">Folato (B9)</text>
+      <line x1="90" y1="44" x2="115" y2="44" stroke="#a8e6a3" stroke-width="1.5" marker-end="url(#bm1)"/>
+      <text x="102" y="40" fill="#f0a050" font-size="7" text-anchor="middle" font-family="monospace">MTHFR</text>
+      <rect x="115" y="30" width="90" height="28" rx="4" fill="#1a2e1a" stroke="#a8e6a3"/>
+      <text x="160" y="42" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">5-MTHF</text>
+      <text x="160" y="52" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">(forma attiva B9)</text>
+      <line x1="205" y1="44" x2="230" y2="44" stroke="#a8e6a3" stroke-width="1.5" marker-end="url(#bm1)"/>
+      <rect x="230" y="30" width="80" height="28" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="270" y="42" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">Metionina</text>
+      <text x="270" y="52" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">+ B12 (cob.)</text>
+      <!-- Omocisteine -->
+      <rect x="200" y="95" width="80" height="28" rx="4" fill="#2e1a1a" stroke="#e06060"/>
+      <text x="240" y="113" fill="#f09090" font-size="8" text-anchor="middle" font-family="monospace">Omocisteina</text>
+      <line x1="270" y1="58" x2="270" y2="82" stroke="#8080d0" stroke-width="1.5"/>
+      <line x1="270" y1="82" x2="240" y2="95" stroke="#8080d0" stroke-width="1.5" marker-end="url(#bm2)"/>
+      <text x="275" y="78" fill="#8080d0" font-size="7" font-family="monospace">SAM→SAH</text>
+      <!-- B12 role -->
+      <rect x="10" y="95" width="100" height="40" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="60" y="110" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">B12 (Metilcob.)</text>
+      <text x="60" y="121" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">Essenziale per la</text>
+      <text x="60" y="131" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">rimetilazione Omocist.</text>
+      <line x1="110" y1="110" x2="200" y2="110" stroke="#6060e0" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#bm2)"/>
+      <!-- Deficiency boxes -->
+      <rect x="10" y="148" width="140" height="40" rx="4" fill="#2e1a00" stroke="#f0a050"/>
+      <text x="80" y="162" fill="#f0c070" font-size="8" text-anchor="middle" font-family="monospace">Deficit B9 → anemia</text>
+      <text x="80" y="173" fill="#f0a050" font-size="7" text-anchor="middle" font-family="monospace">macrocitica, ↑ omocisteina</text>
+      <text x="80" y="183" fill="#c08030" font-size="7" text-anchor="middle" font-family="monospace">NTD in gravidanza</text>
+      <rect x="165" y="148" width="145" height="40" rx="4" fill="#1a1a2e" stroke="#6060e0"/>
+      <text x="237" y="162" fill="#a0a0f0" font-size="8" text-anchor="middle" font-family="monospace">Deficit B12 → anemia</text>
+      <text x="237" y="173" fill="#8080d0" font-size="7" text-anchor="middle" font-family="monospace">perniciosa, neuropatia</text>
+      <text x="237" y="183" fill="#7070c0" font-size="7" text-anchor="middle" font-family="monospace">↑ omocisteina</text>
+      <defs>
+        <marker id="bm1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#a8e6a3"/></marker>
+        <marker id="bm2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#6060e0"/></marker>
+      </defs>
+    </svg>`,
+    note: "B9 (acido folico/5-MTHF) e B12 (metilcobalamina) sono i pilastri del ciclo della metilazione. B9 fornisce il gruppo metile (5-MTHF → MTHFR → metionina); B12 è cofattore dell'enzima metionina sintasi che rimetila l'omocisteina. Il deficit di entrambi causa ipomocisteina, anemia macrocitica e disfunzione neurologica. In presenza di MTHFR mutato, preferire 5-MTHF e metilcobalamina alle forme sintetiche."
+  },
+  mn_b12: {
+    title: "Ciclo della Metilazione — Ruolo di B9 e B12",
+    svg: `<svg viewBox="0 0 320 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="60" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="22" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">↑ Vedi scheda B9 — stesso ciclo</text>
+      <text x="160" y="38" fill="#88c888" font-size="8" text-anchor="middle" font-family="monospace">B12 (metilcobalamina) · cofattore metionina sintasi</text>
+      <text x="160" y="50" fill="#68a868" font-size="7" text-anchor="middle" font-family="monospace">Interagisce con B9/MTHFR per la rimetilazione dell'omocisteina</text>
+    </svg>`,
+    note: "La vitamina B12 (metilcobalamina) è cofattore dell'enzima metionina sintasi. Trasferisce il gruppo metile dalla 5-MTHF (B9 attiva) all'omocisteina, producendo metionina e rigenerando il THF. Senza B12 sufficiente, il folato rimane 'intrappolato' nella forma 5-MTHF inutilizzabile (trapping del folato). Forme preferite: metilcobalamina (sublinguale) > adenosilcobalamina > cianocobalamina."
+  },
+  mn_zn: {
+    title: "Zinco & Rame — Assorbimento Competitivo",
+    svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="200" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="18" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">Assorbimento Competitivo Zn / Cu</text>
+      <!-- Intestinal lumen -->
+      <rect x="10" y="28" width="300" height="50" rx="5" fill="#111" stroke="#2a4a2a"/>
+      <text x="20" y="42" fill="#4a6a4a" font-size="8" font-family="monospace">LUME INTESTINALE</text>
+      <!-- Zn and Cu in lumen -->
+      <circle cx="80" cy="55" r="14" fill="#2e2e1a" stroke="#c0c020" stroke-width="2"/>
+      <text x="80" y="59" fill="#e0e060" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">Zn</text>
+      <circle cx="240" cy="55" r="14" fill="#2e1a1a" stroke="#c06020" stroke-width="2"/>
+      <text x="240" y="59" fill="#e08040" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">Cu</text>
+      <!-- Transporter ZIP4 -->
+      <rect x="110" y="32" width="100" height="46" rx="4" fill="#1a2e1a" stroke="#4a9e4a"/>
+      <text x="160" y="48" fill="#a8e6a3" font-size="8" text-anchor="middle" font-family="monospace">ZIP4 / DMT1</text>
+      <text x="160" y="59" fill="#88c888" font-size="7" text-anchor="middle" font-family="monospace">Trasportatori condivisi</text>
+      <text x="160" y="69" fill="#68a868" font-size="6" text-anchor="middle" font-family="monospace">(competizione per lo stesso sito)</text>
+      <!-- Arrows competing -->
+      <line x1="94" y1="58" x2="110" y2="58" stroke="#c0c020" stroke-width="2" marker-end="url(#zn1)"/>
+      <line x1="226" y1="58" x2="210" y2="58" stroke="#c06020" stroke-width="2" marker-end="url(#cu1)"/>
+      <!-- Enterocyte -->
+      <rect x="10" y="88" width="300" height="55" rx="5" fill="#1a1a0d" stroke="#3a5a2a"/>
+      <text x="20" y="102" fill="#4a6a4a" font-size="8" font-family="monospace">ENTEROCITA</text>
+      <!-- MT (Metallothionein) -->
+      <rect x="50" y="100" width="90" height="35" rx="4" fill="#2e2e1a" stroke="#c0c020"/>
+      <text x="95" y="115" fill="#e0e060" font-size="8" text-anchor="middle" font-family="monospace">Metalotioneina (MT)</text>
+      <text x="95" y="126" fill="#c0c040" font-size="7" text-anchor="middle" font-family="monospace">↑ Zn → ↑ MT → sequestra Cu</text>
+      <rect x="175" y="100" width="120" height="35" rx="4" fill="#2e1a1a" stroke="#c06020"/>
+      <text x="235" y="115" fill="#e08040" font-size="8" text-anchor="middle" font-family="monospace">ATP7A (esportatore Cu)</text>
+      <text x="235" y="126" fill="#c06020" font-size="7" text-anchor="middle" font-family="monospace">→ Cu verso circolazione</text>
+      <!-- Bloodstream -->
+      <rect x="10" y="153" width="300" height="35" rx="5" fill="#1a0d0d" stroke="#4a2a2a"/>
+      <text x="20" y="167" fill="#6a4a4a" font-size="8" font-family="monospace">SANGUE</text>
+      <text x="160" y="167" fill="#c8c8c8" font-size="8" text-anchor="middle" font-family="monospace">Ratio ottimale Zn/Cu: 8–12 (eccesso Zn → deplezione Cu)</text>
+      <text x="160" y="179" fill="#888" font-size="7" text-anchor="middle" font-family="monospace">Cu: ceruloplasmina · Zn: albumina, α2-macroglobulina</text>
+      <defs>
+        <marker id="zn1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#c0c020"/></marker>
+        <marker id="cu1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#c06020"/></marker>
+      </defs>
+    </svg>`,
+    note: "Zinco e Rame competono per gli stessi trasportatori intestinali (ZIP4, DMT1). L'eccesso di Zn induce la sintesi di metallotioneina (MT) nell'enterocita, che sequestra il Cu impedendone l'assorbimento. Ratio Zn/Cu ottimale: 8–12. Supplementazione cronica ad alto dosaggio di Zn (> 50 mg/die) può causare carenza di Cu con anemia sideropetica, neutropenia e neuropatia. Monitorare entrambi se si supplementa uno."
+  },
+  mn_cu: {
+    title: "Zinco & Rame — Assorbimento Competitivo",
+    svg: `<svg viewBox="0 0 320 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="40" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="16" fill="#a8e6a3" font-size="9" text-anchor="middle" font-family="monospace">↑ Vedi scheda Zinco — stesso meccanismo competitivo</text>
+      <text x="160" y="30" fill="#e08040" font-size="8" text-anchor="middle" font-family="monospace">Ratio Zn/Cu target: 8–12 · Eccesso Cu: stress ossidativo, neuroinfiammazione</text>
+    </svg>`,
+    note: "Il rame (Cu) in eccesso è pro-ossidante e neuroinfiammatorio (correlato ad Alzheimer, Wilson). La ceruloplasmina trasporta il 95% del Cu ematico — livelli bassi indicano carenza o eccesso di Zn. Fonti alimentari Cu: fegato, frutti di mare, cioccolato fondente, noci. Valutare sempre in coppia con Zinco e Ceruloplasmina."
+  },
+  en_cort_saliv: {
+    title: "Cortisolo Salivare — Curva Circadiana",
+    svg: `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
+      <rect width="320" height="200" fill="#0d1a0d" rx="8"/>
+      <text x="160" y="18" fill="#a8e6a3" font-size="10" text-anchor="middle" font-family="monospace">Cortisolo Salivare — Curva Circadiana</text>
+      <!-- Axes -->
+      <line x1="35" y1="160" x2="305" y2="160" stroke="#2a4a2a" stroke-width="1.5"/>
+      <line x1="35" y1="30" x2="35" y2="160" stroke="#2a4a2a" stroke-width="1.5"/>
+      <!-- Y labels -->
+      <text x="30" y="40" fill="#4a6a4a" font-size="7" text-anchor="end" font-family="monospace">1.5</text>
+      <text x="30" y="80" fill="#4a6a4a" font-size="7" text-anchor="end" font-family="monospace">0.9</text>
+      <text x="30" y="120" fill="#4a6a4a" font-size="7" text-anchor="end" font-family="monospace">0.4</text>
+      <text x="30" y="155" fill="#4a6a4a" font-size="7" text-anchor="end" font-family="monospace">0.1</text>
+      <!-- X labels -->
+      <text x="60" y="173" fill="#4a6a4a" font-size="8" text-anchor="middle" font-family="monospace">08:00</text>
+      <text x="145" y="173" fill="#4a6a4a" font-size="8" text-anchor="middle" font-family="monospace">12:00</text>
+      <text x="225" y="173" fill="#4a6a4a" font-size="8" text-anchor="middle" font-family="monospace">16:00</text>
+      <text x="295" y="173" fill="#4a6a4a" font-size="8" text-anchor="middle" font-family="monospace">22:00</text>
+      <!-- Normal curve (green) — points at x=60,145,225,295 -->
+      <!-- y mapping: 1.5→40, 0.9→78, 0.4→118, 0.1→152 -->
+      <polyline points="60,40 145,78 225,118 295,152" fill="none" stroke="#6abf6a" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="60" cy="40" r="4" fill="#6abf6a"/>
+      <circle cx="145" cy="78" r="4" fill="#6abf6a"/>
+      <circle cx="225" cy="118" r="4" fill="#6abf6a"/>
+      <circle cx="295" cy="152" r="4" fill="#6abf6a"/>
+      <!-- Flattened curve (orange) — burnout pattern -->
+      <polyline points="60,105 145,110 225,115 295,118" fill="none" stroke="#e07030" stroke-width="2" stroke-dasharray="5,3" stroke-linejoin="round"/>
+      <circle cx="60" cy="105" r="3" fill="#e07030"/>
+      <circle cx="145" cy="110" r="3" fill="#e07030"/>
+      <circle cx="225" cy="115" r="3" fill="#e07030"/>
+      <circle cx="295" cy="118" r="3" fill="#e07030"/>
+      <!-- High-flat curve (red) — stress cronico -->
+      <polyline points="60,55 145,60 225,65 295,72" fill="none" stroke="#e06060" stroke-width="2" stroke-dasharray="3,2" stroke-linejoin="round"/>
+      <!-- Legend -->
+      <line x1="45" y1="184" x2="70" y2="184" stroke="#6abf6a" stroke-width="2"/>
+      <text x="75" y="188" fill="#6abf6a" font-size="7" font-family="monospace">Fisiologico (alta pendenza)</text>
+      <line x1="160" y1="184" x2="185" y2="184" stroke="#e07030" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="190" y="188" fill="#e07030" font-size="7" font-family="monospace">Burnout/Esaurimento</text>
+      <line x1="255" y1="195" x2="280" y2="195" stroke="#e06060" stroke-width="2" stroke-dasharray="3,2"/>
+      <text x="45" y="199" fill="#e06060" font-size="7" font-family="monospace">Stress cronico (curva piatta alta)</text>
+    </svg>`,
+    note: "Il cortisolo salivare segue un ritmo circadiano fisiologico: picco al mattino (08:00: 0.5–1.5 µg/dL), declino progressivo fino alla notte (22:00: < 0.27 µg/dL). La pendenza della curva è il dato chiave: curva piatta-alta (stress cronico HPA), curva piatta-bassa (esaurimento adrenocorticale/burnout), inversione (cortisolo notturno > mattutino). Correlazioni: DHEA-S basso + cortisolo alto = catabolismo cronico. Supporto: adattogeni (ashwagandha, rhodiola), igiene del sonno, magnesio serale."
+  },
   im_pcr: {
     title: "PCR — Proteina C-Reattiva",
     svg: `<svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px">
@@ -2099,6 +2359,9 @@ function NaturopatiaAI() {
   const [hemoSearchOpen, setHemoSearchOpen] = useState(false);
   const [hemoSearchQ,    setHemoSearchQ]    = useState("");
   const [hemoInfoModal,  setHemoInfoModal]  = useState({open:false, paramId:""});
+  const [hemoCortMode,   setHemoCortMode]   = useState(()=>localStorage.getItem("nm_cort_mode")||"singolo");
+  const [hemoPatientAge, setHemoPatientAge] = useState(()=>localStorage.getItem("nm_pt_age")||"");
+  const [hemoPatientSex, setHemoPatientSex] = useState(()=>localStorage.getItem("nm_pt_sex")||"M");
   const hemoSearchRef = React.useRef(null);
   useEffect(()=>{
     const handler = e=>{
@@ -3891,12 +4154,14 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 , [
                     {id:"ematologia",      label:"🔴 Ematologia"},
                     {id:"urine",           label:"🟡 Urine"},
-                    {id:"feci",            label:"🟤 Feci"},
+                    {id:"feci",            label:"🟤 Feci & Disbiosi"},
                     {id:"immunologia",     label:"🛡️ Immunologia"},
                     {id:"microimmunologia",label:"🔬 Microimmunologia"},
                     {id:"genetica",        label:"🧬 Genetica"},
-                    {id:"farmaci",         label:"💊 Farmaci & Comorbilità"},
-                    {id:"altro",           label:"➕ Altro"},
+                    {id:"endocrinologia",  label:"⚡ Endocrinologia & Stress"},
+                    {id:"micronutrienti",  label:"💎 Micronutrienti & Tossicità"},
+                    {id:"indici",          label:"📐 Indici Derivati"},
+                    {id:"farmaci",         label:"💊 Farmaci & Referto"},
                   ].map(t=>React.createElement('button',{key:t.id,
                     onClick:()=>{setHemoTab(t.id);setHemoShowAdd(false);},
                     style:{padding:"4px 9px",borderRadius:5,fontSize:10,cursor:"pointer",
@@ -4112,8 +4377,298 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 )
               )
 
+              /* ── TAB INDICI DERIVATI: motore di calcolo ── */
+              , hemoTab==="indici"&&(()=>{
+                  const v = id => { const p=hemoParams.find(x=>x.id===id); return p&&p.value!=""?parseFloat(p.value):null; };
+                  const age = parseFloat(hemoPatientAge)||null;
+                  const sex = hemoPatientSex;
+
+                  // ── CALCOLI ──
+                  const glic=v("glic"), ins=v("ins"), trig=v("trig"), chol=v("chol"), hdl=v("hdl");
+                  const neut=v("neut"), linf=v("linf"), plt=v("plt");
+                  const ast=v("ast"), alt=v("alt");
+                  const alb=v("alb"), glob=v("glob")||( (v("tot_prot")&&v("alb")) ? v("tot_prot")-v("alb") : null );
+                  const apob=v("apob"), apoa1=v("apoa1");
+                  const crea=v("crea");
+                  const en_test=v("en_test"), en_shbg=v("en_shbg"), en_estr=v("en_estr");
+                  const en_cort=v("en_cort_em"), en_dheas=v("en_dheas");
+
+                  const homaIR = (ins&&glic) ? (ins*glic)/405 : null;
+                  const tygIdx = (trig&&glic&&trig>0&&glic>0) ? Math.log((trig*glic)/2) : null;
+                  const castelli= (chol&&hdl&&hdl>0) ? chol/hdl : null;
+                  const tgHdl  = (trig&&hdl&&hdl>0) ? trig/hdl : null;
+                  const apoBa1 = (apob&&apoa1&&apoa1>0) ? apob/apoa1 : null;
+                  const nlr    = (neut&&linf&&linf>0) ? neut/linf : null;
+                  const plr    = (plt&&linf&&linf>0) ? plt/linf : null;
+                  const deRitis= (ast&&alt&&alt>0) ? ast/alt : null;
+                  const agRatio= (alb&&glob&&glob>0) ? alb/glob : null;
+                  // eGFR CKD-EPI 2021
+                  let egfr = null;
+                  if(crea&&age){
+                    const kappa=sex==="F"?0.7:0.9, alpha=sex==="F"?-0.241:-0.302;
+                    const ratio=crea/kappa;
+                    egfr = 142*Math.pow(Math.min(ratio,1),alpha)*Math.pow(Math.max(ratio,1),-1.200)*Math.pow(0.9938,age)*(sex==="F"?1.012:1);
+                  }
+                  const fai    = (en_test&&en_shbg&&en_shbg>0) ? (en_test/en_shbg)*100 : null;
+                  const te2    = (en_test&&en_estr&&en_estr>0) ? en_test/en_estr : null;
+                  const cortDhea=(en_cort&&en_dheas&&en_dheas>0) ? en_cort/en_dheas : null;
+
+                  // ── RENDERING FUNZIONE ──
+                  const badge=(val,ranges)=>{
+                    if(val===null) return {label:"N/D",color:"var(--nm-text-dimmer)",bg:"var(--nm-bg3)"};
+                    for(const r of ranges){
+                      if(r.check(val)) return {label:r.label,color:r.color,bg:r.bg};
+                    }
+                    return {label:"?",color:"var(--nm-text-dimmer)",bg:"var(--nm-bg3)"};
+                  };
+                  const card=(label,formula,val,ranges,unit,note)=>{
+                    const {label:bl,color:bc,bg:bb}=badge(val,ranges);
+                    const display = val!==null ? val.toFixed(2) : "—";
+                    return React.createElement('div',{style:{
+                        background:"var(--nm-bg3)",border:`1px solid ${val!==null?bc:"var(--nm-border)"}`,
+                        borderRadius:8,padding:"10px 12px",display:"flex",flexDirection:"column",gap:5}}
+                      , React.createElement('div',{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}
+                        , React.createElement('div',null
+                          , React.createElement('div',{style:{fontSize:11,fontWeight:600,color:"var(--nm-text)",
+                              fontFamily:"'Cormorant Garamond',serif"}}
+                            , label
+                          )
+                          , React.createElement('div',{style:{fontSize:8,color:"var(--nm-text-dimmer)",
+                              fontFamily:"'DM Mono',monospace",marginTop:2}}
+                            , formula
+                          )
+                        )
+                        , React.createElement('div',{style:{
+                            background:bb,color:bc,border:`1px solid ${bc}`,
+                            borderRadius:5,padding:"2px 8px",fontSize:10,fontWeight:600,
+                            fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap"}}
+                          , display+(unit?" "+unit:"")
+                        )
+                      )
+                      , React.createElement('div',{style:{
+                          fontSize:9,fontWeight:600,color:bc,fontFamily:"'DM Mono',monospace"}}
+                        , bl
+                      )
+                      , note&&React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",lineHeight:1.5}}
+                        , note
+                      )
+                    );
+                  };
+
+                  const sections = [
+                    {title:"⚡ Rischio Metabolico", cards:[
+                      card("HOMA-IR","(Insulina × Glicemia) / 405",homaIR,[
+                        {check:v=>v<1.0,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<2.5,   label:"Borderline",     color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=2.5,  label:"Insulino-resistenza",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"",homaIR!==null?"Soglia diagnostica: > 2.5 = insulino-resistenza · > 5 = grave":"Richiede: Insulina + Glicemia"),
+                      card("TyG Index","ln(Trigliceridi × Glicemia / 2)",tygIdx,[
+                        {check:v=>v<8.5,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<9.0,   label:"Borderline",     color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=9.0,  label:"Rischio elevato",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Proxy di insulino-resistenza adiposa · Correlato a NAFLD"),
+                    ]},
+                    {title:"❤️ Rischio Cardiovascolare", cards:[
+                      card("Indice di Castelli","Colesterolo Totale / HDL",castelli,[
+                        {check:v=>v<3.5,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<5.0,   label:"Nella norma",    color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=5.0,  label:"Rischio elevato",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Target ottimale: < 3.5 (M), < 3.0 (F)"),
+                      card("Rapporto TG/HDL","Trigliceridi / HDL",tgHdl,[
+                        {check:v=>v<1.5,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<3.0,   label:"Borderline",     color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=3.0,  label:"Rischio metabolico",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Proxy di dimensione LDL piccole e dense (aterogene)"),
+                      card("Rapporto APO-B / APO-A1","APO-B / APO-A1",apoBa1,[
+                        {check:v=>v<0.7,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<0.9,   label:"Borderline",     color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=0.9,  label:"Rischio elevato",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Predittore indipendente di rischio CV · Target: < 0.7 (M), < 0.6 (F)"),
+                    ]},
+                    {title:"🔬 Infiammazione & Fegato", cards:[
+                      card("NLR — Neutrofili/Linfociti","Neutrofili ass. / Linfociti ass.",nlr,[
+                        {check:v=>v<2.0,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<3.0,   label:"Nella norma",    color:"#88c888",bg:"rgba(50,120,50,0.08)"},
+                        {check:v=>v<5.0,   label:"Infiammazione",  color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=5.0,  label:"Infiammazione grave",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Marker semplice di stress immuno-infiammatorio sistemico"),
+                      card("PLR — Piastrine/Linfociti","Piastrine / Linfociti ass.",plr,[
+                        {check:v=>v<100,   label:"Ottimale",       color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<150,   label:"Nella norma",    color:"#88c888",bg:"rgba(50,120,50,0.08)"},
+                        {check:v=>v>=150,  label:"Elevato",        color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                      ],"","Correlato a infiammazione cronica, rischio tromboembolico"),
+                      card("Indice De Ritis","AST / ALT",deRitis,[
+                        {check:v=>v>=0.8&&v<=1.3,label:"Fisiologico",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<0.8,  label:"Suggestivo epatite virale",color:"#88aaee",bg:"rgba(60,100,200,0.10)"},
+                        {check:v=>v>1.3&&v<2.0,label:"Borderline",color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=2.0, label:"Danno alcoolico/acuto",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","< 1: epatite virale/metabolica · > 2: epatopatia alcoolica o severa"),
+                      card("Rapporto A/G","Albumina / Globuline",agRatio,[
+                        {check:v=>v>=1.1&&v<=2.5,label:"Fisiologico",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<1.1,  label:"Ridotto (infiamm./cirrosi)",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                        {check:v=>v>2.5,  label:"Elevato (ipergammaglobulinemia)",color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                      ],"","Albumina usa: alb · Globuline = tot_prot − alb (o inserimento diretto)"),
+                    ]},
+                    {title:"🫘 Funzione Renale", cards:[
+                      React.createElement('div',{key:"egfr-note",style:{
+                          background:"var(--nm-bg3)",border:"1px solid var(--nm-border)",
+                          borderRadius:8,padding:"10px 12px"}}
+                        , React.createElement('div',{style:{fontSize:11,fontWeight:600,
+                            color:"var(--nm-text)",fontFamily:"'Cormorant Garamond',serif",marginBottom:8}}
+                          , "eGFR — CKD-EPI 2021"
+                        )
+                        , React.createElement('div',{style:{display:"flex",gap:8,marginBottom:8,flexWrap:"wrap"}}
+                          , React.createElement('div',null
+                            , React.createElement('div',{style:{fontSize:8,color:"var(--nm-text-dimmer)",
+                                textTransform:"uppercase",letterSpacing:"0.4px",marginBottom:3}},"Età")
+                            , React.createElement('input',{type:"number",value:hemoPatientAge,
+                                onChange:e=>{setHemoPatientAge(e.target.value);localStorage.setItem("nm_pt_age",e.target.value);},
+                                placeholder:"aa",min:1,max:120,
+                                style:{width:58,background:"var(--nm-bg2)",border:"1px solid var(--nm-border2)",
+                                  borderRadius:5,padding:"4px 6px",color:"var(--nm-text)",fontSize:11,
+                                  fontFamily:"'DM Mono',monospace",outline:"none"}})
+                          )
+                          , React.createElement('div',null
+                            , React.createElement('div',{style:{fontSize:8,color:"var(--nm-text-dimmer)",
+                                textTransform:"uppercase",letterSpacing:"0.4px",marginBottom:3}},"Sesso")
+                            , React.createElement('select',{value:hemoPatientSex,
+                                onChange:e=>{setHemoPatientSex(e.target.value);localStorage.setItem("nm_pt_sex",e.target.value);},
+                                style:{background:"var(--nm-bg2)",border:"1px solid var(--nm-border2)",
+                                  borderRadius:5,padding:"4px 8px",color:"var(--nm-text)",fontSize:11,
+                                  fontFamily:"'DM Mono',monospace",outline:"none"}}
+                              , React.createElement('option',{value:"M"},"M")
+                              , React.createElement('option',{value:"F"},"F")
+                            )
+                          )
+                        )
+                        , React.createElement('div',{style:{display:"flex",justifyContent:"space-between",alignItems:"center"}}
+                          , React.createElement('div',{style:{fontSize:8,color:"var(--nm-text-dimmer)",
+                              fontFamily:"'DM Mono',monospace"}}
+                            , "142 × min(Scr/κ,1)^α × max(Scr/κ,1)^(−1.2) × 0.9938^età"
+                          )
+                          , (()=>{
+                              const {label:bl,color:bc,bg:bb}=badge(egfr,[
+                                {check:v=>v>=90,  label:"G1 — Normale",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                                {check:v=>v>=60,  label:"G2 — Lievem. ridotto",color:"#88c888",bg:"rgba(50,120,50,0.08)"},
+                                {check:v=>v>=45,  label:"G3a — Lieve-Moderato",color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                                {check:v=>v>=30,  label:"G3b — Moderato-Grave",color:"#e07030",bg:"rgba(180,90,20,0.12)"},
+                                {check:v=>v>=15,  label:"G4 — Grave",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                                {check:v=>v<15,   label:"G5 — Insufficienza",color:"#cc2222",bg:"rgba(160,20,20,0.15)"},
+                              ]);
+                              return React.createElement('div',{style:{
+                                  background:bb,color:bc,border:`1px solid ${bc}`,
+                                  borderRadius:5,padding:"3px 10px",fontSize:11,fontWeight:600,
+                                  fontFamily:"'DM Mono',monospace"}}
+                                , egfr!==null?egfr.toFixed(1)+" mL/min/1.73m²":(!crea?"Inserire Creatinina":!age?"Inserire Età":"N/D")
+                              );
+                            })()
+                        )
+                        , egfr!==null&&React.createElement('div',{style:{fontSize:9,fontWeight:600,
+                            color:badge(egfr,[
+                              {check:v=>v>=90,color:"#6abf6a"},{check:v=>v>=60,color:"#88c888"},
+                              {check:v=>v>=45,color:"#c8a020"},{check:v=>v>=30,color:"#e07030"},
+                              {check:v=>v>=15,color:"#e06060"},{check:v=>v<15,color:"#cc2222"},
+                            ]).color,fontFamily:"'DM Mono',monospace",marginTop:4}}
+                          , badge(egfr,[
+                              {check:v=>v>=90,label:"G1 — Funzione normale (> 90)"},{check:v=>v>=60,label:"G2 — Lievemente ridotto (60–90)"},
+                              {check:v=>v>=45,label:"G3a — Lieve-Moderato (45–60)"},{check:v=>v>=30,label:"G3b — Moderato-Grave (30–45)"},
+                              {check:v=>v>=15,label:"G4 — Grave (15–30)"},{check:v=>v<15,label:"G5 — Insufficienza renale (< 15)"},
+                            ]).label
+                        )
+                      ),
+                    ]},
+                    {title:"🧬 Ormonale", cards:[
+                      card("FAI — Free Androgen Index","(Testosterone / SHBG) × 100",fai,[
+                        {check:v=>v>=35&&v<=92&&sex==="M",label:"Fisiologico (M)",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v>=0.5&&v<=6.0&&sex==="F",label:"Fisiologico (F)",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<35&&sex==="M",label:"Basso — ipoandrogenismo",color:"#88aaee",bg:"rgba(60,100,200,0.10)"},
+                        {check:v=>v>6.0&&sex==="F",label:"Elevato — PCOS/iperandrogenismo",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                        {check:v=>v>92&&sex==="M",label:"Elevato",color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:()=>true,label:"—",color:"var(--nm-text-dimmer)",bg:"var(--nm-bg3)"},
+                      ],"%","Richiede: Testosterone totale + SHBG"),
+                      card("Rapporto T/E2","Testosterone / Estradiolo",te2,[
+                        {check:v=>v>=10&&v<=100,label:"Fisiologico",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<10,label:"Dominanza estrogenica",color:"#88aaee",bg:"rgba(60,100,200,0.10)"},
+                        {check:v=>v>100,label:"Dominanza androgenica",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Riferimento maschile · Valori femminili variano in base al ciclo"),
+                      card("Cortisolo / DHEA-S","Cortisolo ematico / DHEA-S",cortDhea,[
+                        {check:v=>v<0.1,  label:"Ottimale (anabolico)",color:"#6abf6a",bg:"rgba(50,120,50,0.12)"},
+                        {check:v=>v<0.2,  label:"Nella norma",         color:"#88c888",bg:"rgba(50,120,50,0.08)"},
+                        {check:v=>v<0.4,  label:"Stress moderato",     color:"#c8a020",bg:"rgba(180,140,20,0.12)"},
+                        {check:v=>v>=0.4, label:"Dominanza cortisolica (catabolismo)",color:"#e06060",bg:"rgba(180,50,50,0.12)"},
+                      ],"","Rapporto inversamente proporzionale al benessere adrenocorticale"),
+                    ]},
+                  ];
+
+                  return React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:14,paddingTop:4}}
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.4px",fontFamily:"'DM Mono',monospace",
+                        padding:"6px 10px",background:"rgba(10,30,10,0.2)",borderRadius:6,
+                        border:"1px dashed var(--nm-border)"}}
+                      , "Scheda sola lettura · Gli indici si aggiornano in tempo reale dai valori inseriti nelle altre schede"
+                    )
+                    , sections.map(sec=>React.createElement('div',{key:sec.title}
+                        , React.createElement('div',{style:{fontSize:10,fontWeight:600,color:"var(--nm-accent)",
+                            fontFamily:"'Cormorant Garamond',serif",marginBottom:6,
+                            letterSpacing:"0.3px"}}
+                          , sec.title
+                        )
+                        , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}
+                          , sec.cards.map((c,i)=>React.createElement(React.Fragment,{key:i},c))
+                        )
+                      ))
+                  );
+                })()
+
+              /* ── TAB ENDOCRINOLOGIA: selettore Cortisolo Salivare ── */
+              , hemoTab==="endocrinologia"&&React.createElement('div',{
+                  style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border)",
+                    borderRadius:8,padding:"10px 14px",marginBottom:4}}
+                , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                    letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:8}}
+                  , "Cortisolo Salivare — Modalità"
+                )
+                , React.createElement('div',{style:{display:"flex",gap:6,marginBottom:hemoCortMode==="curva"?10:0}}
+                  , ["singolo","curva"].map(mode=>React.createElement('button',{key:mode,
+                      onClick:()=>{setHemoCortMode(mode);localStorage.setItem("nm_cort_mode",mode);},
+                      style:{padding:"4px 14px",borderRadius:5,fontSize:10,cursor:"pointer",border:"none",
+                        fontFamily:"'DM Mono',monospace",transition:"all 0.15s",
+                        background:hemoCortMode===mode?"var(--nm-accent)":"var(--nm-bg2)",
+                        color:hemoCortMode===mode?"#0d1a0d":"var(--nm-text-dim)",
+                        fontWeight:hemoCortMode===mode?600:400}}
+                    , mode==="singolo"?"Singolo":"Curva 4 prelievi (08 · 12 · 16 · 22)"
+                  ))
+                )
+                , hemoCortMode==="curva"&&React.createElement('div',{
+                    style:{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}
+                  , [{id:"en_cort_s08",label:"08:00",range:"0.5–1.5"},{id:"en_cort_s12",label:"12:00",range:"0.2–0.9"},
+                     {id:"en_cort_s16",label:"16:00",range:"0.1–0.6"},{id:"en_cort_s22",label:"22:00",range:"< 0.27"}]
+                    .map(pt=>{
+                      const p = hemoParams.find(x=>x.id===pt.id)||{value:""};
+                      return React.createElement('div',{key:pt.id,style:{display:"flex",flexDirection:"column",gap:3}}
+                        , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                            textAlign:"center",fontFamily:"'DM Mono',monospace"}}
+                          , pt.label
+                        )
+                        , React.createElement('input',{type:"text",value:p.value,placeholder:"—",
+                            onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===pt.id
+                              ?{...x,value:e.target.value,statusOverride:null}:x)),
+                            style:{background:"var(--nm-bg2)",border:"1px solid var(--nm-border2)",
+                              borderRadius:5,padding:"5px 6px",color:"var(--nm-accent)",fontSize:12,
+                              fontFamily:"'DM Mono',monospace",textAlign:"center",
+                              width:"100%",outline:"none"}})
+                        , React.createElement('div',{style:{fontSize:8,color:"var(--nm-text-dimmer)",
+                            textAlign:"center"}}
+                          , pt.range+" µg/dL"
+                        )
+                      );
+                    })
+                )
+              )
+
               /* ── TAB FARMACI: UI speciale ── */
-              , hemoTab==="farmaci"
+              , (hemoTab==="indici") ? null
+                : hemoTab==="farmaci"
                 ? React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:10,paddingTop:4}}
 
                     /* Alert Cross-Talk */
@@ -4228,7 +4783,13 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
 
               /* Sezioni per categoria — collassabili — filtrate per tab attiva */
               , ...Object.entries(
-                  hemoParams.filter(p=>(p.tab||"ematologia")===hemoTab)
+                  hemoParams.filter(p=>{
+                    if((p.tab||"ematologia")!==hemoTab) return false;
+                    // Cortisolo salivare: mostra solo il set coerente con la modalità selezionata
+                    if(p.id==="en_cort_saliv") return hemoCortMode==="singolo";
+                    if(["en_cort_s08","en_cort_s12","en_cort_s16","en_cort_s22"].includes(p.id)) return false; // gestiti dall'UI speciale
+                    return true;
+                  })
                     .reduce((acc,p)=>{(acc[p.cat]=acc[p.cat]||[]).push(p);return acc;},{})
                 ).map(([cat,catParams])=>{
                   const isOpen = hemoCats[cat] !== false;
@@ -4259,8 +4820,24 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                         /* Label */
                         , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)",
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},title:p.label}, p.label)
-                        /* Valore — toggle Omo/Etero/Neg per Genetica, testo libero per tutti gli altri */
-                        , p.tab==="genetica"
+                        /* Valore — Gravità per Scatolo/Indicano, toggle Genetica, testo libero per altri */
+                        , (p.id==="f_scatolo"||p.id==="f_indicano")
+                          ? React.createElement('div',{style:{display:"flex",gap:2}}
+                              , ["—","Assente","Lieve","Media","Grave"].map(opt=>{
+                                  const colors={"—":"var(--nm-bg3)",Assente:"#2a6a2a",Lieve:"#6a6a10",Media:"#8a4a10",Grave:"#8a1a1a"};
+                                  const sel = p.value===(opt==="—"?"":opt);
+                                  return React.createElement('button',{key:opt,
+                                    onClick:()=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                                      ?{...x,value:opt==="—"?"":opt,statusOverride:null}:x)),
+                                    style:{flex:1,padding:"2px 0",fontSize:8,cursor:"pointer",
+                                      border:"1px solid var(--nm-border)",borderRadius:4,
+                                      fontFamily:"'DM Mono',monospace",transition:"all 0.15s",
+                                      background:sel?colors[opt]:"var(--nm-bg3)",
+                                      color:sel&&opt!=="—"?"#ffffff":"var(--nm-text-dimmer)"}}
+                                  , opt);
+                                })
+                            )
+                          : p.tab==="genetica"
                           ? React.createElement('div',{style:{display:"flex",gap:2}}
                               , ["—","Neg","Etero","Omo"].map(opt=>React.createElement('button',{key:opt,
                                   onClick:()=>setHemoParams(prev=>prev.map(x=>x.id===p.id
@@ -5118,9 +5695,12 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                   const results = q
                     ? hemoParams.filter(p=>p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q))
                     : hemoParams.filter(p=>p.value!=="");
-                  const TAB_LABELS = {ematologia:"🔴 Ematologia",urine:"🟡 Urine",feci:"🟤 Feci",
-                    immunologia:"🛡️ Immunologia",microimmunologia:"🔬 Microimmunologia",
-                    genetica:"🧬 Genetica",farmaci:"💊 Farmaci & Comorbilità",altro:"➕ Altro"};
+                  const TAB_LABELS = {
+                    ematologia:"🔴 Ematologia", urine:"🟡 Urine", feci:"🟤 Feci & Disbiosi",
+                    immunologia:"🛡️ Immunologia", microimmunologia:"🔬 Microimmunologia",
+                    genetica:"🧬 Genetica", endocrinologia:"⚡ Endocrinologia & Stress",
+                    micronutrienti:"💎 Micronutrienti & Tossicità", indici:"📐 Indici Derivati",
+                    farmaci:"💊 Farmaci & Referto", altro:"➕ Altro"};
                   if(results.length===0) return React.createElement('div',{
                     style:{padding:"20px 24px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}
                     , React.createElement('div',{style:{color:"var(--nm-text-dimmer)",fontSize:12,textAlign:"center"}}
