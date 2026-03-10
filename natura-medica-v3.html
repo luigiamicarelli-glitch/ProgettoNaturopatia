@@ -7,6 +7,21 @@
     *{box-sizing:border-box;margin:0;padding:0}
     html,body,#root{height:100%;background:var(--nm-bg,#0d160d);color:var(--nm-text,#b8d0b0)}
     @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+    @media print{
+      body *{visibility:hidden}
+      #nm-hemo-print-overlay,#nm-hemo-print-overlay *{visibility:visible}
+      #nm-hemo-print-overlay{
+        position:fixed!important;inset:0!important;
+        background:white!important;backdrop-filter:none!important;
+        display:block!important;padding:24px!important;overflow:auto!important;
+        color:#111!important
+      }
+      #nm-hemo-print-modal{
+        width:100%!important;max-height:none!important;overflow:visible!important;
+        box-shadow:none!important;border:none!important;background:white!important;color:#111!important
+      }
+      .nm-no-print{display:none!important}
+    }
     ::-webkit-scrollbar{width:4px}
     ::-webkit-scrollbar-track{background:var(--nm-bg,#0d160d)}
     ::-webkit-scrollbar-thumb{background:var(--nm-border,#2a4a2a);border-radius:2px}
@@ -1603,6 +1618,10 @@ function NaturopatiaAI() {
   const [hemoReportText, setHemoReportText] = useState("");
   const [hemoReportDate, setHemoReportDate] = useState("");
   const [hemoReportSelected, setHemoReportSelected] = useState(null); // null = init al open
+  const [hemoFirstName, setHemoFirstName] = useState("");
+  const [hemoLastName,  setHemoLastName]  = useState("");
+  const [hemoSignature, setHemoSignature] = useState(()=>localStorage.getItem("nm_hemo_sig")||null);
+  const hemoSigRef = React.useRef(null);
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -3312,6 +3331,22 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 , "📄 Carica Referto PDF  — pre-compilazione AI (in arrivo)"
               )
 
+              /* Nome + Cognome paziente */
+              , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}
+                , React.createElement('input',{type:"text",value:hemoFirstName,
+                    onChange:e=>setHemoFirstName(e.target.value),
+                    placeholder:"Nome paziente",
+                    style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                      padding:"6px 8px",color:"var(--nm-text)",fontSize:11,
+                      fontFamily:"'DM Mono',monospace",outline:"none",width:"100%"}})
+                , React.createElement('input',{type:"text",value:hemoLastName,
+                    onChange:e=>setHemoLastName(e.target.value),
+                    placeholder:"Cognome",
+                    style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",borderRadius:6,
+                      padding:"6px 8px",color:"var(--nm-text)",fontSize:11,
+                      fontFamily:"'DM Mono',monospace",outline:"none",width:"100%"}})
+              )
+
               /* Paziente + Reset */
               , React.createElement('div', {style:{display:"flex",gap:8,alignItems:"center"}}
                 , React.createElement('select', {value:hemoPatient, onChange:e=>setHemoPatient(e.target.value),
@@ -3673,12 +3708,13 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
 
         /* ── MODAL REFERTO PAZIENTE ── */
         , hemoShowReport&&React.createElement('div',{
+            id:"nm-hemo-print-overlay",
             style:{position:"fixed",inset:0,zIndex:1000,
               display:"flex",alignItems:"center",justifyContent:"center",
               background:"rgba(0,0,0,0.72)",backdropFilter:"blur(4px)"},
             onClick:e=>{if(e.target===e.currentTarget)setHemoShowReport(false)}}
 
-          , React.createElement('div',{style:{
+          , React.createElement('div',{id:"nm-hemo-print-modal",style:{
               width:"min(820px,92vw)",maxHeight:"88vh",
               background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
               borderRadius:14,display:"flex",flexDirection:"column",overflow:"hidden",
@@ -3709,6 +3745,26 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
             /* Body modal scrollabile */
             , React.createElement('div',{style:{flex:1,overflowY:"auto",padding:"20px 24px",
                 display:"flex",flexDirection:"column",gap:18}}
+
+              /* Intestazione paziente */
+              , React.createElement('div',{style:{
+                  background:"rgba(10,30,10,0.35)",border:"1px solid var(--nm-border)",
+                  borderRadius:8,padding:"12px 16px"}}
+                , React.createElement('div',{style:{fontSize:9,letterSpacing:"0.6px",
+                    color:"var(--nm-text-dimmer)",marginBottom:6,textTransform:"uppercase"}}
+                  , "Referto per"
+                )
+                , React.createElement('div',{style:{fontSize:17,
+                    fontFamily:"'Cormorant Garamond',serif",fontWeight:600,
+                    color:"var(--nm-text)",letterSpacing:"0.2px"}}
+                  , [hemoFirstName,hemoLastName].filter(Boolean).join(" ")
+                    || "— paziente non specificato —"
+                )
+                , hemoPatient&&React.createElement('div',{style:{fontSize:10,
+                    color:"var(--nm-text-dimmer)",marginTop:3}}
+                  , "Codice: "+hemoPatient
+                )
+              )
 
               /* Riga 1: Tono + Data */
               , React.createElement('div',{style:{display:"grid",
@@ -3851,6 +3907,81 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                       )
                   )
                 )
+
+              /* ── FIRMA DEL PROFESSIONISTA ── */
+              , React.createElement('div',{style:{borderTop:"1px solid var(--nm-border)",paddingTop:16}}
+                , React.createElement('div',{style:{fontSize:9,letterSpacing:"0.6px",
+                    color:"var(--nm-text-dimmer)",marginBottom:8,textTransform:"uppercase"}}
+                  , "Firma del Professionista"
+                )
+                /* Input file nascosto */
+                , React.createElement('input',{type:"file",accept:"image/png,image/jpeg",
+                    ref:hemoSigRef,style:{display:"none"},
+                    onChange:e=>{
+                      const f=e.target.files&&e.target.files[0];
+                      if(!f)return;
+                      const r=new FileReader();
+                      r.onload=ev=>{
+                        setHemoSignature(ev.target.result);
+                        try{localStorage.setItem("nm_hemo_sig",ev.target.result);}catch(_){}
+                      };
+                      r.readAsDataURL(f);
+                      e.target.value=""; // reset per permettere ri-upload stesso file
+                    }})
+                /* Area anteprima firma */
+                , React.createElement('div',{style:{
+                    border:"1px dashed var(--nm-border2)",borderRadius:8,
+                    padding:"14px 16px",minHeight:90,
+                    display:"flex",flexDirection:"column",gap:10,
+                    background:"var(--nm-bg3)"}}
+                  , hemoSignature
+                    ? React.createElement('img',{src:hemoSignature,alt:"Firma",
+                        style:{maxHeight:80,maxWidth:260,objectFit:"contain",
+                          display:"block",borderRadius:4}})
+                    : React.createElement('div',{style:{
+                        fontSize:11,color:"var(--nm-text-dimmer)",fontStyle:"italic",
+                        textAlign:"center",margin:"auto",padding:"10px 0",
+                        borderBottom:"1px solid var(--nm-border2)",
+                        minWidth:200,minHeight:48}}
+                      , "Spazio per firma a penna sul foglio stampato"
+                    )
+                  /* Pulsanti — nascosti in stampa */
+                  , React.createElement('div',{className:"nm-no-print",
+                      style:{display:"flex",gap:8,marginTop:4}}
+                    , React.createElement('button',{
+                        onClick:()=>{if(hemoSigRef.current)hemoSigRef.current.click();},
+                        style:{background:"var(--nm-btn-bg)",border:"1px solid var(--nm-btn-border)",
+                          borderRadius:6,padding:"5px 12px",fontSize:10,
+                          fontFamily:"'DM Mono',monospace",color:"var(--nm-accent)",cursor:"pointer"}}
+                      , "📷 Importa Firma (PNG/JPG)"
+                    )
+                    , hemoSignature&&React.createElement('button',{
+                        onClick:()=>{
+                          setHemoSignature(null);
+                          try{localStorage.removeItem("nm_hemo_sig");}catch(_){}
+                        },
+                        style:{background:"none",border:"1px solid var(--nm-border)",
+                          borderRadius:6,padding:"5px 12px",fontSize:10,
+                          fontFamily:"'DM Mono',monospace",color:"var(--nm-text-dim)",cursor:"pointer"}}
+                      , "✏ Firma Manuale"
+                    )
+                  )
+                )
+                /* Blocco identità fisso — sempre visibile in stampa */
+                , React.createElement('div',{style:{
+                    marginTop:10,paddingTop:8,
+                    borderTop:"1px solid var(--nm-border)"}},
+                  React.createElement('div',{style:{fontSize:12,fontWeight:600,
+                      color:"var(--nm-text)",fontFamily:"'Cormorant Garamond',serif",
+                      letterSpacing:"0.2px"}}
+                    , "Dott. Luigi Amicarelli"
+                  )
+                  , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dim)",
+                      marginTop:2,letterSpacing:"0.3px"}}
+                    , "Biologo Nutrizionista"
+                  )
+                )
+              )
 
               /* Disclaimer medico-legale */
               , React.createElement('div',{style:{
