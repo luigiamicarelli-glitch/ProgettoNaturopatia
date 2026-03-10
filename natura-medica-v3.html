@@ -1655,15 +1655,25 @@ function NaturopatiaAI() {
   const [hemoTab, setHemoTab]           = useState("ematologia");
   const [hemoShowAnamnesi, setHemoShowAnamnesi] = useState(false);
   const [hemoAnamnesi, setHemoAnamnesi] = useState({
+    // DSA
     dislessia:false, disgrafia:false, discalculia:false, disortografia:false,
-    sindromDown:false, spettroAutistico:false, malattieRare:false, malattieRareTxt:"",
+    // Neurodivergenza
+    autismo:false, adhd:false, dyspraxia:false,
+    // Psichiatria
+    depressione:false, ansia:false, disturbo_bipolare:false, schizofrenia:false,
+    // Malattie Degenerative
+    parkinson:false, alzheimer:false, sla:false, sclerosi_multipla:false,
+    // Genetiche/Rare
+    sindromDown:false, malattieRare:false, malattieRareTxt:"",
   });
   // Cross-Talk: fonti suggerite (mock — future AI)
   const [hemoSources, setHemoSources] = useState([
-    {id:"s1",title:"Ferritina sierica: interpretazione clinica integrata",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Revisione sistematica sull'interpretazione della ferritinemia in contesti infiammatori e non. Impact factor 8.2.",useForAnalysis:true,includeInPrint:false},
-    {id:"s2",title:"PCR ad alta sensibilità come marker cardiovascolare",domain:"journals.ahajournals.org",snippet:"La PCR-hs correla con il rischio cardiovascolare indipendentemente dal profilo lipidico.",useForAnalysis:false,includeInPrint:false},
-    {id:"s3",title:"TSH e ipotiroidismo subclinico: gestione naturopatica",domain:"integrativemedicinejournal.com",snippet:"Approcci integrativi nella gestione dell'ipotiroidismo subclinico: iodio, selenio e adattogeni.",useForAnalysis:true,includeInPrint:true},
-    {id:"s4",title:"Vitamina D: range ottimali e supplementazione",domain:"nejm.org",snippet:"Revisione dei livelli target di 25(OH)D3 e protocolli di supplementazione evidence-based.",useForAnalysis:false,includeInPrint:false},
+    {id:"s1",lang:"IT",title:"Ferritina sierica: interpretazione clinica integrata",domain:"iss.it",snippet:"Istituto Superiore di Sanità — Linee guida sulla carenza di ferro e anemia sideropenica in età adulta.",useForAnalysis:true,includeInPrint:false},
+    {id:"s2",lang:"EN",title:"Serum ferritin as a marker of iron stores",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Systematic review on ferritin interpretation in inflammatory vs. non-inflammatory contexts. IF 8.2.",useForAnalysis:true,includeInPrint:false},
+    {id:"s3",lang:"IT",title:"Ipotiroidismo subclinico: approccio integrativo",domain:"iss.it",snippet:"ISS — Documento di indirizzo per la gestione del TSH border-line. Aggiornamento 2023.",useForAnalysis:false,includeInPrint:false},
+    {id:"s4",lang:"EN",title:"Subclinical hypothyroidism: naturopathic management",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Integrative approaches: iodine, selenium and adaptogenic herbs in subclinical thyroid dysfunction.",useForAnalysis:true,includeInPrint:true},
+    {id:"s5",lang:"EN",title:"Vitamin D optimal ranges and supplementation protocols",domain:"pubmed.ncbi.nlm.nih.gov",snippet:"Meta-analysis of 25(OH)D3 target levels and evidence-based supplementation strategies.",useForAnalysis:false,includeInPrint:false},
+    {id:"s6",lang:"IT",title:"MTHFR e polimorfismi: impatto clinico in medicina integrativa",domain:"iss.it",snippet:"ISS — Valutazione clinica del polimorfismo C677T e A1298C nel contesto della metilazione.",useForAnalysis:false,includeInPrint:false},
   ]);
   // Cross-Talk: modal referto
   const [hemoShowReport, setHemoShowReport] = useState(false);
@@ -1675,6 +1685,24 @@ function NaturopatiaAI() {
   const [hemoLastName,  setHemoLastName]  = useState("");
   const [hemoSignature, setHemoSignature] = useState(()=>localStorage.getItem("nm_hemo_sig")||null);
   const hemoSigRef = React.useRef(null);
+  // Global Search Bar
+  const [hemoSearchOpen, setHemoSearchOpen] = useState(false);
+  const [hemoSearchQ,    setHemoSearchQ]    = useState("");
+  const hemoSearchRef = React.useRef(null);
+  useEffect(()=>{
+    const handler = e=>{
+      if((e.ctrlKey||e.metaKey)&&e.key==="k"){
+        e.preventDefault();
+        setHemoSearchOpen(v=>{ if(!v) setHemoSearchQ(""); return !v; });
+      }
+      if(e.key==="Escape") setHemoSearchOpen(false);
+    };
+    window.addEventListener("keydown",handler);
+    return ()=>window.removeEventListener("keydown",handler);
+  },[]);
+  useEffect(()=>{
+    if(hemoSearchOpen&&hemoSearchRef.current) hemoSearchRef.current.focus();
+  },[hemoSearchOpen]);
 
   // Admin
   const [newUserForm, setNewUserForm] = useState({username:"",password:"",full_name:"",role:"staff"});
@@ -3368,7 +3396,16 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
 
         /* ── ANALISI EMATICHE ── */
         , panel==="hemo" && React.createElement(React.Fragment, null
-          , React.createElement(PanelHeader, {title:"Analisi Ematiche", sub:"Human-in-the-Loop — verifica obbligatoria prima del consulto AI"})
+          , React.createElement(PanelHeader, {title:"Analisi Ematiche", sub:"Human-in-the-Loop — verifica obbligatoria prima del consulto AI",
+              action:React.createElement('button',{onClick:()=>{setHemoSearchOpen(true);setHemoSearchQ("");},
+                style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border)",borderRadius:6,
+                  padding:"4px 10px",fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
+                  fontFamily:"'DM Mono',monospace",display:"flex",alignItems:"center",gap:6}}
+                ,React.createElement('span',null,"🔍")
+                ,React.createElement('span',null,"Cerca")
+                ,React.createElement('span',{style:{fontSize:9,opacity:0.6,border:"1px solid var(--nm-border)",
+                    borderRadius:3,padding:"1px 4px"}},"Ctrl+K")
+              )})
           , React.createElement('div', {style:{flex:1,display:"flex",overflow:"hidden"}}
 
             /* ── GRIGLIA PARAMETRI (sinistra) ── */
@@ -3409,50 +3446,123 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                 )
                 , hemoShowAnamnesi&&React.createElement('div',{style:{padding:"10px 12px",
                     background:"var(--nm-bg2)",borderTop:"1px solid var(--nm-border)",
-                    display:"flex",flexDirection:"column",gap:8}}
+                    display:"flex",flexDirection:"column",gap:10}}
 
-                  , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
-                      letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:2}}
-                    , "DSA — Disturbi Specifici dell'Apprendimento"
-                  )
-                  , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}
-                    , ["dislessia","disgrafia","discalculia","disortografia"].map(k=>
-                        React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
-                          gap:6,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",
-                          padding:"3px 0",textTransform:"capitalize"}}
-                          , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
-                              onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
-                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
-                          , k.charAt(0).toUpperCase()+k.slice(1)
+                  /* DSA */
+                  , React.createElement('div',null
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , "DSA — Disturbi Specifici dell'Apprendimento"
+                    )
+                    , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:3}}
+                      , ["dislessia","disgrafia","discalculia","disortografia"].map(k=>
+                          React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                            gap:5,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",padding:"2px 0"}}
+                            , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                                onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                                style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                            , k.charAt(0).toUpperCase()+k.slice(1)
+                          )
                         )
-                      )
+                    )
                   )
 
-                  , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
-                      letterSpacing:"0.5px",textTransform:"uppercase",marginTop:4,marginBottom:2}}
-                    , "Condizioni Invalidanti / Genetiche"
-                  )
-                  , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
-                    , [
-                        {k:"sindromDown",       label:"Sindrome di Down"},
-                        {k:"spettroAutistico",  label:"Spettro Autistico (ASD)"},
-                        {k:"malattieRare",      label:"Malattia Rara"},
-                      ].map(({k,label})=>
-                        React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
-                          gap:6,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer"}}
-                          , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
-                              onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
-                              style:{accentColor:"#4aaa4a",cursor:"pointer"}})
-                          , label
+                  /* Neurodivergenza */
+                  , React.createElement('div',null
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , "Neurodivergenza"
+                    )
+                    , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:3}}
+                      , [
+                          {k:"autismo",   label:"Autismo (ASD)"},
+                          {k:"adhd",      label:"ADHD"},
+                          {k:"dyspraxia", label:"Disprassia"},
+                        ].map(({k,label})=>
+                          React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                            gap:5,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",padding:"2px 0"}}
+                            , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                                onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                                style:{accentColor:"#5a8aff",cursor:"pointer"}})
+                            , label
+                          )
                         )
-                      )
-                    , hemoAnamnesi.malattieRare&&React.createElement('input',{
-                        type:"text",value:hemoAnamnesi.malattieRareTxt,
-                        onChange:e=>setHemoAnamnesi(prev=>({...prev,malattieRareTxt:e.target.value})),
-                        placeholder:"Specificare malattia rara...",
-                        style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
-                          borderRadius:5,padding:"5px 8px",color:"var(--nm-text)",fontSize:10,
-                          fontFamily:"'DM Mono',monospace",outline:"none",marginTop:2}})
+                    )
+                  )
+
+                  /* Psichiatria */
+                  , React.createElement('div',null
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , "Psichiatria"
+                    )
+                    , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:3}}
+                      , [
+                          {k:"depressione",       label:"Depressione"},
+                          {k:"ansia",             label:"Ansia / DOC"},
+                          {k:"disturbo_bipolare", label:"Disturbo Bipolare"},
+                          {k:"schizofrenia",      label:"Schizofrenia"},
+                        ].map(({k,label})=>
+                          React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                            gap:5,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",padding:"2px 0"}}
+                            , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                                onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                                style:{accentColor:"#aa5aff",cursor:"pointer"}})
+                            , label
+                          )
+                        )
+                    )
+                  )
+
+                  /* Malattie Degenerative */
+                  , React.createElement('div',null
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , "Malattie Degenerative / Neurologiche"
+                    )
+                    , React.createElement('div',{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:3}}
+                      , [
+                          {k:"parkinson",        label:"Parkinson"},
+                          {k:"alzheimer",        label:"Alzheimer"},
+                          {k:"sla",              label:"SLA"},
+                          {k:"sclerosi_multipla",label:"Sclerosi Multipla"},
+                        ].map(({k,label})=>
+                          React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                            gap:5,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer",padding:"2px 0"}}
+                            , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                                onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                                style:{accentColor:"#ff8a5a",cursor:"pointer"}})
+                            , label
+                          )
+                        )
+                    )
+                  )
+
+                  /* Genetiche / Rare */
+                  , React.createElement('div',null
+                    , React.createElement('div',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                        letterSpacing:"0.5px",textTransform:"uppercase",marginBottom:4}}
+                      , "Genetiche / Rare"
+                    )
+                    , React.createElement('div',{style:{display:"flex",flexDirection:"column",gap:4}}
+                      , [{k:"sindromDown",label:"Sindrome di Down"},{k:"malattieRare",label:"Malattia Rara"}]
+                          .map(({k,label})=>
+                            React.createElement('label',{key:k,style:{display:"flex",alignItems:"center",
+                              gap:5,fontSize:10,color:"var(--nm-text-dim)",cursor:"pointer"}}
+                              , React.createElement('input',{type:"checkbox",checked:hemoAnamnesi[k],
+                                  onChange:()=>setHemoAnamnesi(prev=>({...prev,[k]:!prev[k]})),
+                                  style:{accentColor:"#4aaa4a",cursor:"pointer"}})
+                              , label
+                            )
+                          )
+                      , hemoAnamnesi.malattieRare&&React.createElement('input',{
+                          type:"text",value:hemoAnamnesi.malattieRareTxt,
+                          onChange:e=>setHemoAnamnesi(prev=>({...prev,malattieRareTxt:e.target.value})),
+                          placeholder:"Specificare malattia rara...",
+                          style:{background:"var(--nm-bg3)",border:"1px solid var(--nm-border2)",
+                            borderRadius:5,padding:"5px 8px",color:"var(--nm-text)",fontSize:10,
+                            fontFamily:"'DM Mono',monospace",outline:"none"}})
+                    )
                   )
                 )
               )
@@ -3536,15 +3646,32 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                         /* Label */
                         , React.createElement('span',{style:{fontSize:11,color:"var(--nm-text)",
                           overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"},title:p.label}, p.label)
-                        /* Valore — testo libero: numeri, "Assenti", "< 5", ecc. */
-                        , React.createElement('input',{type:"text",value:p.value,placeholder:"—",
-                          onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id
-                            ?{...x,value:e.target.value,statusOverride:null}:x)),
-                          style:{background:"var(--nm-bg3)",
-                            border:`1px solid ${s==="normal"||s==="empty"?"var(--nm-border2)":sc.color}`,
-                            borderRadius:6,padding:"3px 6px",color:sc.color,fontSize:12,
-                            fontFamily:"'DM Mono',monospace",width:"100%",
-                            outline:"none",transition:"border-color 0.2s"}})
+                        /* Valore — toggle Omo/Etero/Neg per Genetica, testo libero per tutti gli altri */
+                        , p.tab==="genetica"
+                          ? React.createElement('div',{style:{display:"flex",gap:2}}
+                              , ["—","Neg","Etero","Omo"].map(opt=>React.createElement('button',{key:opt,
+                                  onClick:()=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                                    ?{...x,value:opt==="—"?"":opt,statusOverride:null}:x)),
+                                  style:{flex:1,padding:"2px 0",fontSize:9,cursor:"pointer",
+                                    border:"1px solid var(--nm-border)",borderRadius:4,
+                                    fontFamily:"'DM Mono',monospace",transition:"all 0.15s",
+                                    background:(p.value===(opt==="—"?"":opt))
+                                      ? opt==="Omo"?"#cc4444":opt==="Etero"?"#c89010":opt==="Neg"?"#2a6a2a":"var(--nm-bg3)"
+                                      : "var(--nm-bg3)",
+                                    color:(p.value===(opt==="—"?"":opt))
+                                      ? opt==="—"?"var(--nm-text-dim)":"#ffffff"
+                                      : "var(--nm-text-dimmer)"}}
+                                , opt
+                              ))
+                            )
+                          : React.createElement('input',{type:"text",value:p.value,placeholder:"—",
+                              onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id
+                                ?{...x,value:e.target.value,statusOverride:null}:x)),
+                              style:{background:"var(--nm-bg3)",
+                                border:`1px solid ${s==="normal"||s==="empty"?"var(--nm-border2)":sc.color}`,
+                                borderRadius:6,padding:"3px 6px",color:sc.color,fontSize:12,
+                                fontFamily:"'DM Mono',monospace",width:"100%",
+                                outline:"none",transition:"border-color 0.2s"}})
                         /* Range riferimento — testo libero */
                         , React.createElement('input',{type:"text",value:p.range,
                           onChange:e=>setHemoParams(prev=>prev.map(x=>x.id===p.id
@@ -3755,9 +3882,17 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                             marginBottom:2,lineHeight:1.4}}
                           , src.title
                         )
-                        , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dimmer)",
-                            marginBottom:4}}
-                          , src.domain
+                        , React.createElement('div',{style:{display:"flex",alignItems:"center",
+                            gap:6,marginBottom:4}}
+                          , React.createElement('span',{style:{fontSize:9,padding:"1px 5px",borderRadius:3,
+                              fontFamily:"'DM Mono',monospace",
+                              background:src.lang==="IT"?"rgba(0,100,200,0.18)":"rgba(200,100,0,0.15)",
+                              color:src.lang==="IT"?"#6aaaff":"#ffaa6a"}}
+                            , src.lang==="IT"?"🇮🇹 ISS":"🌐 PubMed"
+                          )
+                          , React.createElement('span',{style:{fontSize:10,color:"var(--nm-text-dimmer)"}}
+                            , src.domain
+                          )
                         )
                         , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dim)",
                             lineHeight:1.5,fontStyle:"italic"}}
@@ -4200,6 +4335,88 @@ ${refSign?`<div class="sig">${T.sec_sign}<br>${refSign}</div>`:""}
                     letterSpacing:"0.3px"}}
                 , "🖨 Stampa Referto"
               )
+            )
+          )
+        )
+
+        /* ── GLOBAL SEARCH BAR (Ctrl+K) ── */
+        , hemoSearchOpen&&React.createElement('div',{
+            style:{position:"fixed",inset:0,zIndex:2000,
+              display:"flex",alignItems:"flex-start",justifyContent:"center",
+              paddingTop:"12vh",
+              background:"rgba(0,0,0,0.65)",backdropFilter:"blur(6px)"},
+            onClick:e=>{if(e.target===e.currentTarget)setHemoSearchOpen(false)}}
+          , React.createElement('div',{style:{
+              width:"min(600px,88vw)",
+              background:"var(--nm-bg2)",border:"1px solid var(--nm-border)",
+              borderRadius:12,overflow:"hidden",
+              boxShadow:"0 20px 60px rgba(0,0,0,0.7)"}}
+            /* Input */
+            , React.createElement('div',{style:{
+                display:"flex",alignItems:"center",gap:10,
+                padding:"14px 18px",borderBottom:"1px solid var(--nm-border)"}}
+              , React.createElement('span',{style:{fontSize:16,opacity:0.5}},"🔍")
+              , React.createElement('input',{
+                  ref:hemoSearchRef,
+                  value:hemoSearchQ,
+                  onChange:e=>setHemoSearchQ(e.target.value),
+                  placeholder:"Cerca parametro in tutte le schede...",
+                  style:{flex:1,background:"none",border:"none",outline:"none",
+                    color:"var(--nm-text)",fontSize:13,fontFamily:"'DM Mono',monospace"}})
+              , React.createElement('span',{style:{fontSize:9,color:"var(--nm-text-dimmer)",
+                  padding:"2px 6px",border:"1px solid var(--nm-border)",borderRadius:4}}
+                , "ESC"
+              )
+            )
+            /* Risultati */
+            , React.createElement('div',{style:{maxHeight:340,overflowY:"auto"}}
+              , (()=>{
+                  const q = hemoSearchQ.trim().toLowerCase();
+                  const results = q
+                    ? hemoParams.filter(p=>p.label.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q))
+                    : hemoParams.filter(p=>p.value!=="");
+                  const TAB_LABELS = {ematologia:"🔴 Ematologia",urine:"🟡 Urine",feci:"🟤 Feci",
+                    immunologia:"🔵 Immunologia",genetica:"🧬 Genetica",altro:"➕ Altro"};
+                  if(results.length===0) return React.createElement('div',{
+                    style:{padding:"24px",textAlign:"center",color:"var(--nm-text-dimmer)",fontSize:12}}
+                    , q?"Nessun parametro trovato per «"+q+"»":"Nessun valore inserito ancora."
+                  );
+                  return results.slice(0,20).map(p=>{
+                    const sc = HEMO_STATUS[getParamStatus(p)];
+                    return React.createElement('div',{key:p.id,
+                      onClick:()=>{setHemoTab(p.tab||"ematologia");setHemoSearchOpen(false);},
+                      style:{display:"flex",alignItems:"center",gap:12,padding:"10px 18px",
+                        cursor:"pointer",borderBottom:"1px solid var(--nm-border)",
+                        transition:"background 0.1s"}
+                      }
+                      , React.createElement('span',{style:{fontSize:12,fontWeight:600,
+                          color:sc.color,minWidth:16,textAlign:"center"}}
+                        , sc.badge
+                      )
+                      , React.createElement('div',{style:{flex:1,minWidth:0}}
+                        , React.createElement('div',{style:{fontSize:12,color:"var(--nm-text)",
+                            overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}
+                          , p.label
+                        )
+                        , React.createElement('div',{style:{fontSize:10,color:"var(--nm-text-dimmer)",marginTop:1}}
+                          , TAB_LABELS[p.tab||"ematologia"]," · ",p.cat
+                        )
+                      )
+                      , p.value&&React.createElement('span',{style:{fontSize:11,color:sc.color,
+                          fontFamily:"'DM Mono',monospace",flexShrink:0}}
+                        , p.value," ",p.unit
+                      )
+                    );
+                  });
+                })()
+            )
+            /* Footer hint */
+            , React.createElement('div',{style:{
+                padding:"8px 18px",borderTop:"1px solid var(--nm-border)",
+                display:"flex",justifyContent:"space-between",
+                fontSize:9,color:"var(--nm-text-dimmer)"}}
+              , React.createElement('span',null,"↵ vai alla scheda  ·  senza query: mostra valori inseriti")
+              , React.createElement('span',null,"Ctrl+K per chiudere")
             )
           )
         )
